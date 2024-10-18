@@ -17,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class PrincipalWindow extends JFrame{
 	
@@ -88,8 +89,12 @@ public class PrincipalWindow extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-		PrincipalWindow pw = new PrincipalWindow();
-		pw.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new InicioSesion().setVisible(true);
+            }
+        });
 	}
 	
 
