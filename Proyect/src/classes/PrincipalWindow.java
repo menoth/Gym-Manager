@@ -6,8 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,8 +23,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class PrincipalWindow extends JFrame{
+public class PrincipalWindow extends JFrame {
 	
+private JFrame previous;
+	
+
 	public PrincipalWindow() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +49,9 @@ public class PrincipalWindow extends JFrame{
 		
 		//Button que al clickear te saldran las cosas
 		JButton menuButton = new JButton("EXTRA");
+		
+		//Button para cambiar a la ventana "Perfil de usuario"
+		JButton profileButton = new JButton("PROFILE");
 			
 		 // Crear el menú desplegable (JPopupMenu)
         JPopupMenu menuDesplegable = new JPopupMenu();
@@ -55,6 +65,20 @@ public class PrincipalWindow extends JFrame{
         menuDesplegable.add(opcion1);
         menuDesplegable.add(opcion2);
         menuDesplegable.add(opcion3);
+        
+        // Hacer que el botón "PROFILE" salte a la ventana perfil de usuario
+        profileButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				setVisible(false);
+				PerfilUsuario perfilUsuario = new PerfilUsuario();
+				perfilUsuario.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				perfilUsuario.setVisible(true);
+			}
+        	
+        });
         
         //Obtener el tamaño de la pantalla
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -73,6 +97,8 @@ public class PrincipalWindow extends JFrame{
         //Añadimos al panel el button
         otherThings.add(Box.createVerticalStrut(150));
         otherThings.add(menuButton, BorderLayout.CENTER);
+        profile.add(Box.createVerticalStrut(150));
+        profile.add(profileButton, BorderLayout.CENTER);
         
         
 		pNorth.add(otherThings, BorderLayout.EAST);
@@ -81,9 +107,7 @@ public class PrincipalWindow extends JFrame{
 		
 		JPanel pBody = new JPanel();
 		pBody.setBackground(Color.white);
-		add(pBody);
-		
-		
+				
 		setVisible(true);
 		
 	}
@@ -95,7 +119,14 @@ public class PrincipalWindow extends JFrame{
                 new InicioSesion().setVisible(true);
             }
         });
+		
+	
 	}
+
+
+	
+	
+	
 	
 
 }
