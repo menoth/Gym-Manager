@@ -30,6 +30,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import gui.main.MainProyecto;
+
 import javax.swing.JPopupMenu;
 
 
@@ -232,11 +236,17 @@ public class PrincipalWindow extends JFrame {
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if(respuesta == JOptionPane.YES_OPTION) {
-			System.exit(0);
+			dispose();
+			openMainProyecto();
 		}
 	}
 	
-     // Método para realizar la búsqueda
+     private static void openMainProyecto() {
+    	 InicioSesion inicioSesion = new InicioSesion();
+    	 inicioSesion.setVisible(true);
+	}
+
+	// Método para realizar la búsqueda
      private void buscar() {
          String textoBusqueda = campo_busqueda.getText().toLowerCase();
          lista.clear(); // Limpiar los resultados previos
