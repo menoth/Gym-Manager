@@ -15,6 +15,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.Box;
@@ -22,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -47,7 +51,8 @@ public class PrincipalWindow extends JFrame {
 		setSize(640, 480);
 		setVisible(true);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//Ahora el cierre pasa por un menú antes de cerrarse
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
 		//Panel donde va a ir el perfil, el buscador y el menu desplegable
@@ -191,8 +196,30 @@ public class PrincipalWindow extends JFrame {
                  buscar();
              }
          });
+         
+         //WindowListener para cerrar aplicación
+         addWindowListener(new WindowAdapter() { 
+			 	@Override 
+			 	public void windowClosing(WindowEvent e) { 
+			 	 	confirmarSalida();
+			 	} 
+		 
+			}); 
      }
 
+	//Dialogo para cerrar la aplicación
+	private void confirmarSalida() {
+		int respuesta = JOptionPane.showConfirmDialog(
+				this,
+				"¿Desea cerrar sesión?",
+				"Confirmar salida",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if(respuesta == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+	
      // Método para realizar la búsqueda
      private void buscar() {
          String textoBusqueda = campo_busqueda.getText().toLowerCase();
