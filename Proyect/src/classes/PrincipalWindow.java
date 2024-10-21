@@ -115,6 +115,9 @@ public class PrincipalWindow extends JFrame {
         JMenuItem opcion6 = new JMenuItem("CERRAR SESIÓN");
         opcion6.setBackground(Color.LIGHT_GRAY);
         
+        opcion6.addActionListener(e -> confirmarSalidaSesion());
+        
+        
         // Añadir las opciones al menú
         menuDesplegable.add(opcion1);
         menuDesplegable.add(opcion2);
@@ -207,12 +210,25 @@ public class PrincipalWindow extends JFrame {
 			}); 
      }
 
-	//Dialogo para cerrar la aplicación
+	//Dialogo para salir mediante el botón x
 	private void confirmarSalida() {
 		int respuesta = JOptionPane.showConfirmDialog(
 				this,
-				"¿Desea cerrar sesión?",
+				"¿Desea salir? Si lo hace se cerrará su sesión.",
 				"Confirmar salida",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if(respuesta == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+	
+	//Dialogo para cerrar sesión mediante el botón de cerrar sesión
+	private void confirmarSalidaSesion() {
+		int respuesta = JOptionPane.showConfirmDialog(
+				this,
+				"¿Desea cerrar sesión?",
+				"Cerrar sesión",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if(respuesta == JOptionPane.YES_OPTION) {
