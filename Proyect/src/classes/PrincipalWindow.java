@@ -2,9 +2,12 @@ package classes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-
+import java.awt.Component;
+import java.awt.Composite;
 import java.awt.Dimension;
-
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,11 +17,17 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneLayout;
+import javax.swing.SwingConstants;
 
 
 public class PrincipalWindow extends JFrame {
@@ -38,13 +47,18 @@ public class PrincipalWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
+		JPanel general = new JPanel();
+		general.setLayout(new BorderLayout());
+		
 		//Panel donde va a ir el perfil, el buscador y el menu desplegable
 		JPanel pNorth = new JPanel();
 		pNorth.setBackground(Color.black);
 		
 		// Editar el tamaño vertical del panel de arriba
 		pNorth.setPreferredSize(new Dimension(0, 150));
-		add(pNorth, BorderLayout.NORTH);
+		
+		//Añadimos todo a la ventana
+		general.add(pNorth, BorderLayout.NORTH);
 		
 		//Creamos el panel donde va a ir el PERFIL
 		JPanel profile = new JPanel();
@@ -61,6 +75,7 @@ public class PrincipalWindow extends JFrame {
 				// Hacemos que la ventana principal no se vea
 				setVisible(false);
 				PerfilUsuario perfilUsuario = new PerfilUsuario();
+				// Cuando se abra la interfaz ocupará toda la pantalla
 				perfilUsuario.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				//Hacemos que la ventana del perfil se vea
 				perfilUsuario.setVisible(true);
@@ -86,6 +101,7 @@ public class PrincipalWindow extends JFrame {
         // Crear las opciones del menú
         JMenuItem opcion1 = new JMenuItem("ACCEDE COMO ADMINISTRADOR");
         opcion1.setBackground(Color.LIGHT_GRAY);
+        opcion1.setHorizontalTextPosition(SwingConstants.CENTER);
         JMenuItem opcion2 = new JMenuItem("RUTINAS GUARDADAS");
         opcion2.setBackground(Color.LIGHT_GRAY);
         JMenuItem opcion3 = new JMenuItem("SEGUIMIENTO PROPIO");
@@ -135,15 +151,50 @@ public class PrincipalWindow extends JFrame {
 		// Editar el tamaño horizontal del panel de la derecha del menú
 		otherThings.setPreferredSize(new Dimension(200, 0));
 		otherThings.setBackground(Color.DARK_GRAY);
-        
-		//El cuerpo donde va a ir lo de añadir entrenamientos
-		JPanel pBody = new JPanel();
-		pBody.setBackground(Color.white);
-				
+		
+		// Creamos el panel donde irá el botón para añadir entrenamientos
+		JPanel panelAñadirEntrenamientos = new JPanel();
+		panelAñadirEntrenamientos.setBackground(Color.LIGHT_GRAY);
+		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
+		general.add(panelAñadirEntrenamientos, BorderLayout.SOUTH);
+		
+		// Creamos el botón que va a contener el panel añadirEntrenamientos y lo configuramos
+		JButton añadirEntreno = new JButton("AÑADIR ENTRENAMIENTO");
+		añadirEntreno.setFont(new Font("Serif", Font.PLAIN, 24));
+		añadirEntreno.setPreferredSize(new Dimension(400, 70));
+		panelAñadirEntrenamientos.add(añadirEntreno, BorderLayout.CENTER);
+		
+		// ActionListener al boton para añadir entrenamientos
+		añadirEntreno.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent e) {
+ 
+            }
+		});
+		
+		// Creamos el panel donde van a ir los entrenamientos que hemos creado
+		JPanel entrenamientos = new JPanel();
+		entrenamientos.setBackground(Color.LIGHT_GRAY);
+		general.add(entrenamientos, BorderLayout.CENTER);
+		
+		// El jsp que va a tener los entrenamientos
+		JScrollPane jsp = new JScrollPane();
+		jsp.setPreferredSize(new Dimension(600, 500));
+		
+		// Nos aseguramos de que lo de bajar aparezca cuando hayan demasiadas cosas dentro: CHATGPT
+		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		entrenamientos.add(jsp, BorderLayout.CENTER);	
+		
+		
+		
+		add(general);
 		setVisible(true);
 		
 	}
 	
+	public static void main(String[] args) {
+		new PrincipalWindow();
+	}
 
 
 }
