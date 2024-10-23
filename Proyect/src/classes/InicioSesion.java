@@ -16,18 +16,22 @@ public class InicioSesion extends JFrame {
     private JPasswordField passwordField;
     private JButton botonLogin;
     private JButton botonCancel;
+    private JButton botonRegistrarse;
     
     public InicioSesion() {
     	
     	// Ajuste 
         setTitle("Inicio de Sesión");
-        setSize(350, 200);
+        setSize(720, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); 
-        
+             
         // Creación del panel y su ajuste
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2, 10, 10));
+        panel.setLayout(new GridLayout(3, 2, 30, 30));
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(20, 20, 40, 20));
+        
+        
         
         // Apartado de la petición de usuario
         JLabel userLabel = new JLabel("Usuario:");
@@ -41,9 +45,21 @@ public class InicioSesion extends JFrame {
         panel.add(passwordLabel);
         panel.add(passwordField);
         
+        
         //Creación de los botones
         botonLogin = new JButton("Iniciar Sesión");
         botonCancel = new JButton("Cancelar");
+        
+      //Creamos un boderLayout para el boton registrarse
+        setLayout(new BorderLayout());
+        botonRegistrarse = new JButton("Registrarse");
+        botonRegistrarse.setPreferredSize(new Dimension(665, 50));
+        JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelAbajo.setLayout(new GridLayout(2,1));
+        panelAbajo.add(new JLabel());
+        panelAbajo.add(botonRegistrarse);
+        add(panelAbajo, BorderLayout.SOUTH);	
+        
         
         //Añadimos Action Listeners
         botonLogin.addActionListener(new ActionListener() {
@@ -73,7 +89,9 @@ public class InicioSesion extends JFrame {
         //Añadimos los paneles
         panel.add(botonLogin);
         panel.add(botonCancel);
+        
         add(panel, BorderLayout.CENTER);
+        
         
     }
     private boolean validarLogin(String username, String password) {
