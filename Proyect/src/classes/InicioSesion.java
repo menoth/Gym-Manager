@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class InicioSesion extends JFrame {
     /**
@@ -25,6 +27,7 @@ public class InicioSesion extends JFrame {
         setSize(720, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); 
+        
              
         // Creación del panel y su ajuste
         JPanel panel = new JPanel();
@@ -92,11 +95,34 @@ public class InicioSesion extends JFrame {
         
         add(panel, BorderLayout.CENTER);
         
+      //WindowListener para cerrar aplicación
+        addWindowListener(new WindowAdapter() { 
+			 	@Override 
+			 	public void windowClosing(WindowEvent e) { 
+			 	 	confirmarSalida();
+			 	} 
+		 
+			});
+        
         
     }
     private boolean validarLogin(String username, String password) {
         return username.equals("admin") && password.equals("1234");
     }
+    
+  //Dialogo para salir mediante el botón x
+  	private void confirmarSalida() {
+  		int respuesta = JOptionPane.showConfirmDialog(
+  				this,
+  				"¿Desea cerrar la aplicación?",
+  				"Confirmar salida",
+  				JOptionPane.YES_NO_OPTION,
+  				JOptionPane.QUESTION_MESSAGE);
+  		if(respuesta == JOptionPane.YES_OPTION) {
+  			System.exit(0);
+  		}
+  	}
+  	
 
   
 }
