@@ -64,6 +64,16 @@ public class InicioSesion extends JFrame {
         add(panelAbajo, BorderLayout.SOUTH);	
         
         
+        //Action listener para el boton registrarse que lleva a otra ventana
+        botonRegistrarse.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				abrirRegistrarse();
+			}
+        });
+        
+        
         //Añadimos Action Listeners
         botonLogin.addActionListener(new ActionListener() {
             @Override
@@ -109,6 +119,12 @@ public class InicioSesion extends JFrame {
     private boolean validarLogin(String username, String password) {
         return username.equals("admin") && password.equals("1234");
     }
+    
+    //Método para abrir la ventana de registro al hacer click en el boton registrarse
+    private static void abrirRegistrarse() {
+   	 Registro registro = new Registro();
+   	 registro.setVisible(true);
+	}
     
   //Dialogo para salir mediante el botón x
   	private void confirmarSalida() {
