@@ -47,7 +47,7 @@ public class Registro extends JFrame{
         
         //Etiqueta "Apellido" con su caja de texto
         JTextField textFieldApellido = new JTextField();
-        JLabel labelApellido = new JLabel("Apellido:");
+        JLabel labelApellido = new JLabel("Apellidos:");
         
       //Etiqueta "Usuario" con su caja de texto
         JTextField textFieldUsuario = new JTextField();
