@@ -4,11 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -20,8 +30,6 @@ public class Registro extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private JTextField userTextField;
-    private JPasswordField passwordField;
     private JButton botonRegistrarse;
     private JButton botonCancel;
     private JButton botonInicioSesion;
@@ -58,8 +66,8 @@ public class Registro extends JFrame{
         JLabel labelCorreo = new JLabel("Correo electrónico:");
         
         //Etiqueta "Contraseña" con su caja de texto
-        JTextField textFieldContraseña = new JTextField();
-        JLabel labelContraseña = new JLabel("Contraseña:");
+        JTextField textFieldContrasena = new JTextField();
+        JLabel labelContrasena = new JLabel("Contraseña:");
         
         //Añadimos las etiquetas y las cajas de texto al Panel1 en el orden correspondiente
         panel1.add(labelNombre);
@@ -74,8 +82,8 @@ public class Registro extends JFrame{
         panel1.add(labelCorreo);
         panel1.add(textFieldCorreo);
         
-        panel1.add(labelContraseña);
-        panel1.add(textFieldContraseña); 
+        panel1.add(labelContrasena);
+        panel1.add(textFieldContrasena); 
         
         //Creamos los botones Cancelar y registrarse
         botonCancel = new JButton("Cancelar");
@@ -108,6 +116,109 @@ public class Registro extends JFrame{
         //Agregamos el panel2 a la ventana
         add(panel2, BorderLayout.SOUTH);	
         
+        
+      //Metodo para borrar lo escrito al darle a Cancelar
+        botonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textFieldNombre.setText("");
+                textFieldApellido.setText("");
+                textFieldUsuario.setText("");
+                textFieldCorreo.setText("");
+                textFieldContrasena.setText("");
+               
+            }
+        });
+        
+        //Action listener del boton registrarse
+        botonRegistrarse.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String nombre = textFieldNombre.getText();
+				String apellidos = textFieldApellido.getText();
+				String usuario = textFieldUsuario.getText();
+				String correo = textFieldCorreo.getText();
+				String contraseña = textFieldContrasena.getText();
+				
+				//Antes de comenzar con el registro buscamos en nuestro CSV
+				//si el correo ya está registrado o si el usuario está en uso.
+				if(buscarCoincidencia(correo, usuario) == 1) {
+					JOptionPane.showMessageDialog(Registro.this, 
+							"Este correo electrónico ya está asociado a una cuenta");
+				}else if(buscarCoincidencia(correo, usuario) == 2) {
+					JOptionPane.showMessageDialog(Registro.this, 
+							"Este nombre de usuario ya está en uso");
+				}else {
+					completarRegistro(nombre, apellidos, usuario, correo, contraseña);
+					nuevoPrincipal();
+				}
+			}	
+			
+        });
+        
+	}
+	
+	//Este metodo lee el CSV y si encuentra el correo en la base de datos
+	//devuelve 1 y si encuentra el usuario devuelve 2. Teniendo preferencia
+	//la busqueda del correo electrónico mediante un break.
+	protected int buscarCoincidencia(String correo, String usuario) {
+		Integer coincidencia = 0;
+		
+		File f = new File("baseDeDatos.csv");
+		
+		try {
+			Scanner sc = new Scanner(f);
+			while(sc.hasNextLine()) {
+				String linea = sc.nextLine();
+				String[] campos = linea.split(";");
+				String nombreBase = campos[0];
+				String apellidosBase = campos[1];
+				String usuarioBase = campos[2];
+				String correoElectronicoBase = campos[3];
+				String contrasenaBase = campos[4];
+				
+				if(correo.equals(correoElectronicoBase)) {
+					coincidencia = 1;
+					break;
+				}
+				if(usuario.equals(usuarioBase)) {
+					coincidencia = 2;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return coincidencia;
+		
+	}
+	
+	//Metodo para cambiar a la ventana principal después del registro
+	protected void nuevoPrincipal() {
+		PrincipalWindow principal = new PrincipalWindow();
+		dispose();
+		JOptionPane.showMessageDialog(Registro.this, "Registro exitoso");
+	   	principal.setVisible(true);
+	   	
+	}
+	
+	//Metodo que escribe en el CSV el registro
+	protected void completarRegistro(String nombre, String apellidos, String usuario, String correo,
+			String contrasena) {
+		
+			try {
+				PrintWriter pw = new PrintWriter(new FileWriter("baseDeDatos.csv", true));
+				
+				
+					pw.println(nombre + ";" + apellidos + ";" + usuario + ";" + correo + ";" + contrasena + ";");
+				
+				
+				pw.close();
+			} catch (IOException e) {
+				System.out.println("Error: no se ha podido abrir el fichero ");
+			} 
+		
+		
 	}
 
 }

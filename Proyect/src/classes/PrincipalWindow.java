@@ -69,7 +69,7 @@ public class PrincipalWindow extends JFrame {
 	private JFrame previous;
 	
 	public PrincipalWindow() {
-		
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		// Ahora el cierre pasa por un menú antes de cerrarse
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

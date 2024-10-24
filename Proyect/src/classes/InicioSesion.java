@@ -124,7 +124,7 @@ public class InicioSesion extends JFrame {
     //Leer el fichero CSV para verificar el log in
     private boolean validarLogin(String username, String password) {
     	Boolean sesion = false;
-    	//return username.equals("admin") && password.equals("1234");
+    		
     	File f = new File("baseDeDatos.csv");
     	
     	try {
