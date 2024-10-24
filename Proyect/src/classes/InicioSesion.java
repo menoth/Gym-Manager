@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class InicioSesion extends JFrame {
     /**
@@ -90,7 +93,8 @@ public class InicioSesion extends JFrame {
                 }
             }
         });
-
+        
+        //Metodo para borrar lo escrito al darle a Cancelar
         botonCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,8 +120,38 @@ public class InicioSesion extends JFrame {
         
         
     }
+    
+    //Leer el fichero CSV para verificar el log in
     private boolean validarLogin(String username, String password) {
-        return username.equals("admin") && password.equals("1234");
+    	Boolean sesion = false;
+    	//return username.equals("admin") && password.equals("1234");
+    	File f = new File("baseDeDatos.csv");
+    	
+    	try {
+			Scanner sc = new Scanner (f);
+			while(sc.hasNextLine()) {
+				String linea = sc.nextLine();
+				String[] campos = linea.split(";");
+				String nombre = campos[0];
+				String apellidos = campos[1];
+				String usuario = campos[2];
+				String correoElectronico = campos[3];
+				String contraseña = campos[4];
+				
+				//El inicio de sesión se puede hacer mediante 
+				//"correo + contraseña" 
+				//"usuario + contraseña"
+				if ((username.equals(usuario) || password.equals(contraseña)) && 
+						(username.equals(correoElectronico) || password.equals(contraseña))) {
+					sesion = true;
+					break;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sesion;
+    	
     }
     
     //Método para abrir la ventana de registro al hacer click en el boton registrarse
