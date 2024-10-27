@@ -117,6 +117,19 @@ public class Registro extends JFrame{
         add(panel2, BorderLayout.SOUTH);	
         
         
+        botonInicioSesion.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InicioSesion inicioSesion = new InicioSesion();
+				dispose();
+			   	inicioSesion.setVisible(true);
+				
+			}
+        });
+        	
+        
+        
       //Metodo para borrar lo escrito al darle a Cancelar
         botonCancel.addActionListener(new ActionListener() {
             @Override
