@@ -9,9 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-
-
-
+import java.awt.PopupMenu;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +45,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import gui.main.MainProyecto;
 
@@ -61,6 +61,7 @@ public class PrincipalWindow extends JFrame {
     private JButton boton_buscar;
     private JList<String> lista_resultados;
     private DefaultListModel<String> lista;
+    private JPopupMenu popUpMenu;
 
     // Lista con los datos a buscar
     private List<String> datos = new ArrayList<>();
@@ -244,39 +245,42 @@ public class PrincipalWindow extends JFrame {
 		
 		 JPanel panelBusqueda = new JPanel();
 		 panelBusqueda.add(Box.createVerticalStrut(150));
+		 popUpMenu = new JPopupMenu();
 	     
 	     panelBusqueda.add(campo_busqueda);
 	     panelBusqueda.add(boton_buscar);
 	     panelBusqueda.setBackground(Color.BLACK);
 	     pNorth.add(panelBusqueda, BorderLayout.CENTER);
-	     /**
-	     if(buscar()) {
-	    	 general.add(new JScrollPane(lista_resultados), BorderLayout.CENTER);
-	     }
-		 **/
+	     
 		    
 		 //Datos prueba para el buscador
-		 datos.add("Perfil 1");
-		 datos.add("Perfil 2");
-		 datos.add("Perfil 3");
-	   	 datos.add("Perfil 4");
-
-   	// Acción del botón buscar
-         boton_buscar.addActionListener(new ActionListener() {
+		 datos.add("Pablo");
+		 datos.add("Iker");
+		 datos.add("Andrei");
+	   	 datos.add("Andoni	");
+	   	 
+	   	 //Listeners para el popUpMenu
+	   	 campo_busqueda.getDocument().addDocumentListener(new DocumentListener() {
+	   		 
+	   		 //Listener para que cada vez que se escriba se llame al método
              @Override
-             public void actionPerformed(ActionEvent e) {
-                 buscar();
+             public void insertUpdate(DocumentEvent e) {
+                 actualizarResultados();
+             }
+             
+             //Listener para que cada vez que se borre llame al método
+             @Override
+             public void removeUpdate(DocumentEvent e) {
+                 actualizarResultados();
+             }
+             
+             //Listener que omitimos pero es necesario para completar el método DocumentListener
+             @Override
+             public void changedUpdate(DocumentEvent e) {
+                 actualizarResultados();
              }
          });
-
-         // Acción para buscar cuando se presiona Enter en el campo de texto
-         campo_busqueda.addActionListener(new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 buscar();
-             }
-         });
-         
+	   	 
          //WindowListener para cerrar aplicación
          addWindowListener(new WindowAdapter() { 
 			 	@Override 
@@ -292,6 +296,67 @@ public class PrincipalWindow extends JFrame {
      }
 	
 	//------------------------------MÉTODOS-------------------------------------------------------------------
+	
+	
+	//Método para el buscador
+	protected void actualizarResultados() {
+		
+		//Recoge lo que se ha escrito en campo_busqueda 
+		//El trim se utiliza para eliminar espacios al principio y al final
+		String textoBusqueda = campo_busqueda.getText().trim();
+		
+		//Si se llama a actualizarResultados(), siginifica que se ha hecho una modificación
+		//en el campo_busqueda por lo que antes de mostrar nuevos resultados hay que eliminar 
+		//el popUp anterior
+		popUpMenu.removeAll();
+		
+		//Primero metemos en la lista resultados los perfiles que coincidan
+		if(!textoBusqueda.isEmpty()) {
+			 List<String> resultados = new ArrayList<>();
+	            for (String item : datos) {
+	                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+	                    resultados.add(item);
+	                }
+	            }
+	     
+		//
+		if(!textoBusqueda.isEmpty()) {
+			for (String resultado : resultados) {
+				
+				//Por cada resultado se crea un JMenuItem
+                JMenuItem menuItem = new JMenuItem(resultado);
+                
+                //Este listener lo que hace es cerrar el menú cuando se hace click
+                //en un perfil del popUp. Esto hay que conectarlo con llevarle a la pagina de ese perfil.
+                menuItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+        
+                        popUpMenu.setVisible(false); 
+                    }
+                });
+                
+                //Añadir cada resultado al menú
+                popUpMenu.add(menuItem);
+		}
+			 //Mostrar el popup justo debajo del campo de búsqueda
+            popUpMenu.show(campo_busqueda, 0, campo_busqueda.getHeight());
+            
+            //Sin esto cada vez que se escribe/borra una letra hay que volver a hacer 
+            //click (seleccionar) el JTextField para seguir escribiendo
+            campo_busqueda.requestFocusInWindow();
+        } 
+		// Ocultar si no hay resultados
+		else {
+            popUpMenu.setVisible(false); 
+        }
+    }
+		//Ocultar si no hay texto de búsqueda
+		else {
+        popUpMenu.setVisible(false); 
+    }
+}
+	
 
 	//Dialogo para salir mediante el botón x
 	private void confirmarSalida() {
