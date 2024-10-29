@@ -206,15 +206,15 @@ public class PrincipalWindow extends JFrame {
 		añadirEntreno.setPreferredSize(new Dimension(400, 70));
 		panelAñadirEntrenamientos.add(añadirEntreno, BorderLayout.CENTER);
 		
-		// AÑADIR ACTION LISTENER (***TAREA***)
-		/**
-		añadirEntreno.addMouseListener(new MouseAdapter() {
-			@Override
-            public void mousePressed(MouseEvent e) {
- 
+		// Añadir action listener para abrir la ventana de creacion de rutinas
+		añadirEntreno.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	dispose();
+                VentanaRutina vr = new VentanaRutina();
+                vr.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
-		});
-		**/
+        });
 		
 		// Añadimos el panel que va a contener el botón de añadir entrenamientos
 		general.add(panelAñadirEntrenamientos, BorderLayout.SOUTH);
