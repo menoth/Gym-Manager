@@ -16,14 +16,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.Scanner;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -253,11 +253,8 @@ public class PrincipalWindow extends JFrame {
 	     pNorth.add(panelBusqueda, BorderLayout.CENTER);
 	     
 		    
-		 //Datos prueba para el buscador
-		 datos.add("Pablo");
-		 datos.add("Iker");
-		 datos.add("Andrei");
-	   	 datos.add("Andoni	");
+		 //Ponemos en el buscador todos los nombres de usuario que haya en la base de datos
+	     datosUsuario((ArrayList<String>) datos);
 	   	 
 	   	 //Listeners para el popUpMenu
 	   	 campo_busqueda.getDocument().addDocumentListener(new DocumentListener() {
@@ -406,9 +403,27 @@ public class PrincipalWindow extends JFrame {
              lista.addElement("No se encontraron resultados");
          }
      }
+     
+     //Metodo para añadir todos los usuarios a el PopUpMenu
+     private void datosUsuario(ArrayList<String> datos) {
+    	 File f = new File("baseDeDatos.csv");
+    	 try {
+    		 Scanner sc = new Scanner (f);
+    		 while(sc.hasNextLine()) {
+    			 String linea = sc.nextLine();
+    			 String[] campos = linea.split(";");
+    			 String usuario = campos[2];
+    			 
+    			 datos.add(usuario);
+    		 }
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	 }
 
      public static void main(String[] args) {
          PrincipalWindow pw = new PrincipalWindow();
          pw.setExtendedState(JFrame.MAXIMIZED_BOTH);
      }
+     
 }
