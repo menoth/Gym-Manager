@@ -87,6 +87,7 @@ public class InicioSesion extends JFrame {
                     JOptionPane.showMessageDialog(InicioSesion.this, "Inicio de sesión exitoso");
                     dispose();
                     PrincipalWindow pw = new PrincipalWindow();
+                    
             		pw.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 } else {
                     JOptionPane.showMessageDialog(InicioSesion.this, "Usuario o contraseña incorrectos");
@@ -172,7 +173,5 @@ public class InicioSesion extends JFrame {
   			System.exit(0);
   		}
   	}
-  	
-
   
 }
