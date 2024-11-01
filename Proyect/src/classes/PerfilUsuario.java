@@ -2,10 +2,13 @@ package classes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.Flow;
@@ -15,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 public class PerfilUsuario extends JFrame {
@@ -68,6 +72,80 @@ public class PerfilUsuario extends JFrame {
 		
 		//Añadimos el panelNorte
 		add(panelNorte, BorderLayout.NORTH);
+		
+		//-------------------------------------------------------
+		
+		//Nuevo panel en la izquierda
+		JPanel panelOeste = new JPanel();
+		
+		//Tendrá una columna y tres filas, una para la descripción del perfil
+		//y 2 para la vitrina de logros.
+		panelOeste.setLayout(new GridLayout(2, 1));
+		
+		
+		//Margenes para el panelNorte
+		panelOeste.setBorder(new EmptyBorder(60, 80, 10, 10)); 	
+		
+		//Creamos otro panel que irá en la posicion (1,1) del gridLayout
+		//con el fin de ajustar el tamaño del JTextArea
+		JPanel panelSubOeste1 = new JPanel();
+		panelSubOeste1.setLayout(new FlowLayout());
+		
+		
+		//Creamos un jTextArea que será la descripción del usuario
+		JTextArea desc = new JTextArea("Steam es una plataforma de distribución digital"
+				+ " de videojuegos desarrollada por Valve Corporation. "
+				+ "Fue lanzada en septiembre de 2003 como una forma para"
+				+ " Valve de proveer actualizaciones automáticas a sus juegos,"
+				+ " pero finalmente se amplió para incluir"
+				+ " juegos de terceros.");
+		
+		//Detalles del JTextArea
+		desc.setWrapStyleWord(true); // Ajusta palabras completas en la línea siguiente
+		desc.setLineWrap(true); // Habilita el ajuste de línea
+		desc.setEditable(false); // No editable
+		desc.setFont(new Font("Arial", Font.PLAIN, 18));
+		desc.setPreferredSize(new Dimension(400, 200));
+		
+		//Añadimos la descripcion a panelSubOeste1
+		panelSubOeste1.add(desc);
+			
+	//Nuevo panelSubOeste2 para el label vitrina
+		JPanel panelSubOeste2 = new JPanel();
+		panelSubOeste2.setLayout(new BorderLayout());
+		
+		JLabel labelVitrina = new JLabel("Vitrina");
+		
+		panelSubOeste2.add(labelVitrina, BorderLayout.NORTH);
+		
+		//Un panel de (2,3) para la vitrina
+		JPanel vitrina = new JPanel();
+		vitrina.setLayout(new GridLayout(2,3));
+		
+		JLabel prueba1 = new JLabel("aa");
+		vitrina.add(prueba1);
+		JLabel prueba2 = new JLabel("aa");
+		vitrina.add(prueba2);
+		JLabel prueba3 = new JLabel("aa");
+		vitrina.add(prueba3);
+		JLabel prueba4 = new JLabel("aa");
+		vitrina.add(prueba4);
+		JLabel prueba5 = new JLabel("aa");
+		vitrina.add(prueba5);
+		JLabel prueba6 = new JLabel("aa");
+		vitrina.add(prueba6);
+		
+		panelSubOeste2.add(vitrina);
+		
+		//Añadimos el panelSubOeste1 a panelOeste
+		panelOeste.add(panelSubOeste1);
+		
+		//Añadimos el panelSubOeste2 a panelOeste
+		panelOeste.add(panelSubOeste2);
+		
+		;
+		//Añadimos el panelOeste
+		add(panelOeste, BorderLayout.WEST);		
 		
 		//Listener para volver a la ventana principal cuando se presiona el
 		//botón volver
