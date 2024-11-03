@@ -1,6 +1,9 @@
-package classes;
+package gui;
 
 import javax.swing.*;
+
+import domain.ModeloJTable;
+
 import java.awt.*;
 
 public class InterfazRutina extends JFrame {

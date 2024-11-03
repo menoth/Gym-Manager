@@ -1,4 +1,4 @@
-package classes;
+package gui;
 
 import java.awt.Component;
 import javax.swing.JButton;

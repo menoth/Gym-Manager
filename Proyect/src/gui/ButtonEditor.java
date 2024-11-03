@@ -1,4 +1,4 @@
-package classes;
+package gui;
 
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -11,6 +11,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+
+import domain.ModeloJTable;
 
 public class ButtonEditor extends DefaultCellEditor {
     private static final long serialVersionUID = 1L;

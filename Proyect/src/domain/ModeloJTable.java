@@ -1,4 +1,4 @@
-package classes;
+package domain;
 
 import javax.swing.table.AbstractTableModel;
 

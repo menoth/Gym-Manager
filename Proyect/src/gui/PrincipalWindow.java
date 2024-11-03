@@ -1,4 +1,4 @@
-package classes;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,7 +48,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import gui.main.MainProyecto;
+import main.MainProyecto;
 
 import javax.swing.JPopupMenu;
 import javax.swing.ScrollPaneLayout;

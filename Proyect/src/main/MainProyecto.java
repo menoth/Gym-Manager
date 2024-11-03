@@ -1,8 +1,9 @@
-package gui.main;
+package main;
 
 
 import javax.swing.SwingUtilities;
-import classes.InicioSesion;
+
+import gui.InicioSesion;
 
 
 public class MainProyecto {
