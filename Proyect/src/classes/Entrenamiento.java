@@ -83,7 +83,7 @@ public class Entrenamiento extends Rutina {
 	}
 
 	
-	}
+}
 	
 	
 

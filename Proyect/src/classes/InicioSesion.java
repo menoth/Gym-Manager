@@ -52,11 +52,11 @@ public class InicioSesion extends JFrame {
         panel.add(passwordField);
         
         
-        //Creación de los botones
+        // Creación de los botones
         botonLogin = new JButton("Iniciar Sesión");
         botonCancel = new JButton("Cancelar");
         
-      //Creamos un boderLayout para el boton registrarse
+        // Creamos un boderLayout para el boton registrarse
         setLayout(new BorderLayout());
         botonRegistrarse = new JButton("Registrarse");
         botonRegistrarse.setPreferredSize(new Dimension(665, 50));
@@ -67,7 +67,7 @@ public class InicioSesion extends JFrame {
         add(panelAbajo, BorderLayout.SOUTH);	
         
         
-        //Action listener para el boton registrarse que lleva a otra ventana
+        // Action listener para el boton registrarse que lleva a otra ventana
         botonRegistrarse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -77,7 +77,7 @@ public class InicioSesion extends JFrame {
         });
         
         
-        //Añadimos Action Listeners
+        // Añadimos Action Listeners
         botonLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,7 +95,7 @@ public class InicioSesion extends JFrame {
             }
         });
         
-        //Metodo para borrar lo escrito al darle a Cancelar
+        // Metodo para borrar lo escrito al darle a Cancelar
         botonCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,25 +104,22 @@ public class InicioSesion extends JFrame {
             }
         });
         
-        //Añadimos los paneles
+        // Añadimos los paneles
         panel.add(botonLogin);
         panel.add(botonCancel);
         
         add(panel, BorderLayout.CENTER);
         
-      //WindowListener para cerrar aplicación
+      // WindowListener para cerrar aplicación
         addWindowListener(new WindowAdapter() { 
 			 	@Override 
 			 	public void windowClosing(WindowEvent e) { 
 			 	 	confirmarSalida();
 			 	} 
-		 
-			});
-        
-        
+			}); 
     }
     
-    //Leer el fichero CSV para verificar el log in
+    // Leer el fichero CSV para verificar el log in
     private boolean validarLogin(String username, String password) {
     	Boolean sesion = false;
     		
@@ -139,9 +136,9 @@ public class InicioSesion extends JFrame {
 				String correoElectronico = campos[3];
 				String contraseña = campos[4];
 				
-				//El inicio de sesión se puede hacer mediante 
-				//"correo + contraseña" 
-				//"usuario + contraseña"
+				// El inicio de sesión se puede hacer mediante 
+				// "correo + contraseña" 
+				// "usuario + contraseña"
 				if ((username.equals(usuario) || password.equals(contraseña)) && 
 						(username.equals(correoElectronico) || password.equals(contraseña))) {
 					sesion = true;
@@ -155,13 +152,13 @@ public class InicioSesion extends JFrame {
     	
     }
     
-    //Método para abrir la ventana de registro al hacer click en el boton registrarse
+    // Método para abrir la ventana de registro al hacer click en el boton registrarse
     private static void abrirRegistrarse() {
    	 Registro registro = new Registro();
    	 registro.setVisible(true);
 	}
     
-  //Dialogo para salir mediante el botón x
+  // Dialogo para salir mediante el botón x
   	private void confirmarSalida() {
   		int respuesta = JOptionPane.showConfirmDialog(
   				this,

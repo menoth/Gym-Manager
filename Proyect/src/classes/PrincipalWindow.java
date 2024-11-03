@@ -211,8 +211,8 @@ public class PrincipalWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-                VentanaRutina vr = new VentanaRutina();
-                vr.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                InterfazRutina ir = new InterfazRutina();
+                ir.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
 		
