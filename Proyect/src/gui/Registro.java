@@ -92,7 +92,7 @@ public class Registro extends JFrame{
         
       
         // Creamos el boton Iniciar Sesión y le asigamos un tamaño
-        botonInicioSesion = new JButton("Iniciar Sesión");
+        botonInicioSesion = new JButton("¿Ya tienes una cuenta?");
         botonInicioSesion.setPreferredSize(new Dimension(665, 45));
         
         // Creamos un nuevo panel2 para poder centrar el boton de Iniciar Sesión 

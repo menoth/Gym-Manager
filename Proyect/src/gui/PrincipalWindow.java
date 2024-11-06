@@ -201,7 +201,7 @@ public class PrincipalWindow extends JFrame {
 		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
 		
 		// Creamos el botón que va a contener el panel añadirEntrenamientos y lo configuramos
-		JButton añadirEntreno = new JButton("AÑADIR ENTRENAMIENTO");
+		JButton añadirEntreno = new JButton("AÑADIR RUTINA");
 		añadirEntreno.setFont(new Font("Serif", Font.PLAIN, 24));
 		añadirEntreno.setPreferredSize(new Dimension(400, 70));
 		panelAñadirEntrenamientos.add(añadirEntreno, BorderLayout.CENTER);

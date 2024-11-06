@@ -5,6 +5,8 @@ import javax.swing.*;
 import domain.ModeloJTable;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class InterfazRutina extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -12,7 +14,7 @@ public class InterfazRutina extends JFrame {
     InterfazRutina() {
     	
     	
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
         ModeloJTable modelo = new ModeloJTable();
@@ -28,10 +30,34 @@ public class InterfazRutina extends JFrame {
         
         // Añadimos todo a la interfaz
         add(new JScrollPane(table), BorderLayout.CENTER);
+        
+        //WindowListener para cerrar aplicación
+        addWindowListener(new WindowAdapter() { 
+			 	@Override 
+			 	public void windowClosing(WindowEvent e) { 
+			 	 	confirmarSalida();
+			 	} 
+		 
+			});
 
         setVisible(true);
     }
-
+    
+    //---------------------------MÉTODOS-----------------------------------------------------------------------------------------------------
+    
+    private void confirmarSalida() {
+		int respuesta = JOptionPane.showConfirmDialog(
+				this,
+				"¿Desea cancelar la rutina? Se borrará todo...",
+				"Confirmar salida",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if(respuesta == JOptionPane.YES_OPTION) {
+			dispose();
+			new PrincipalWindow();
+		}
+	}
+    
     public static void main(String[] args) {
         new InterfazRutina();
     }
