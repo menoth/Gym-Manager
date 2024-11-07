@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 
 import java.awt.Component;
@@ -59,7 +60,6 @@ public class PrincipalWindow extends JFrame {
 	
 	private JTextField campo_busqueda;
     private JButton boton_buscar;
-    private JList<String> lista_resultados;
     private DefaultListModel<String> lista;
     private JPopupMenu popUpMenu;
 
@@ -67,8 +67,6 @@ public class PrincipalWindow extends JFrame {
     private List<String> datos = new ArrayList<>();
 	private static final long serialVersionUID = 1L;
 
-	private JFrame previous;
-	
 	public PrincipalWindow() {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
@@ -241,7 +239,7 @@ public class PrincipalWindow extends JFrame {
 		campo_busqueda = new JTextField(20);
 		boton_buscar = new JButton("Buscar");
 		lista = new DefaultListModel<>();
-		lista_resultados = new JList<>(lista);
+		new JList<>(lista);
 		
 		 JPanel panelBusqueda = new JPanel();
 		 panelBusqueda.add(Box.createVerticalStrut(150));
@@ -387,23 +385,7 @@ public class PrincipalWindow extends JFrame {
     	 inicioSesion.setVisible(true);
 	}
 
-	// Método para realizar la búsqueda
-     private void buscar() {
-         String textoBusqueda = campo_busqueda.getText().toLowerCase();
-         lista.clear(); // Limpiar los resultados previos
 
-         for (String dato : datos) {
-             if (dato.toLowerCase().contains(textoBusqueda)) {
-                 lista.addElement(dato); // Agregar coincidencias a la lista
-             }
-         }
-
-         // Si no hay resultados, mostrar un mensaje
-         if (lista.isEmpty()) {
-             lista.addElement("No se encontraron resultados");
-         }
-     }
-     
      //Metodo para añadir todos los usuarios a el PopUpMenu
      private void datosUsuario(ArrayList<String> datos) {
     	 File f = new File("baseDeDatos.csv");
