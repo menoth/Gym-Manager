@@ -47,9 +47,29 @@ public class CatalogoEjercicio extends JFrame {
     private JPopupMenu popUpMenu;
 
     // Lista con los datos a buscar
-    private List<String> datos = new ArrayList<>();
+
+	
+		List<String> datos = List.of(
+        	    "Stair Climbing", "Elliptical Trainer", "Rowing Machine", "Stairmaster", "Stationary Bicycle",
+        	    "Treadmill", "Cycling", "Inline Skating", "Jogging", "Nordic Walking", "Squat", "Leg Press",
+        	    "Lunge", "Calf Raise", "Leg Extension", "Deadlift", "Leg Curl", "Bench Press", "Fly", "Push Up",
+        	    "Bent-over Row", "Chin-up", "Pulldown", "Pullup", "Shoulder Shrug", "Front Raise", 
+        	    "Handstand Pushup", "Lateral Raise", "Military Press", "Shoulder Press", "Upright Row", 
+        	    "Rear Delt Raise", "Biceps Curl", "Dip", "Pushdown", "Triceps Extension", "Crunch", "Sit-up", 
+        	    "Leg Raise", "Back Extension", "Hyperextension", "Basketball", "Baseball", "Football", "Hockey", 
+        	    "Golf", "Water Polo", "Swimming", "Skiing", "Skateboarding", "Hang Gliding", "Snowboarding", 
+        	    "Fishing", "Hunting", "Paintball", "Kayaking", "Hiking", "Tennis", "Canoeing", "Kitesurfing", 
+        	    "Gymnastics", "Bowling", "Boxing", "Auto racing", "Skating", "Squash", "Rodeo", "Volleyball", 
+        	    "Soccer", "Darts", "Table Tennis", "Cricket", "Skydiving", "Aquafit", "Belly Dancing", 
+        	    "Bootcamp Conditioning", "Cardio Jam", "Cycle Zone", "Hip Hop", "Kickbox Cardio", "Club Boxing", 
+        	    "Mat Pilates", "Senior Fit", "Step plus Abs", "Step II plus Abs", "Step Circuit", "Step Sculpt", 
+        	    "Striding", "Yoga", "Yoga Basics"
+        	);
+    
 
 	public CatalogoEjercicio() {
+		
+		
 		
 		//Detalles de la ventana
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -85,7 +105,7 @@ public class CatalogoEjercicio extends JFrame {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					new formularioAdmin();
+					new formularioAdmin(datos);
 					
 				}
 			});
@@ -93,24 +113,6 @@ public class CatalogoEjercicio extends JFrame {
         
         
       //------------------------BUSCADOR----------------------------------------------------------------------------
-		
-        List<String> datos = List.of(
-        	    "Stair Climbing", "Elliptical Trainer", "Rowing Machine", "Stairmaster", "Stationary Bicycle",
-        	    "Treadmill", "Cycling", "Inline Skating", "Jogging", "Nordic Walking", "Squat", "Leg Press",
-        	    "Lunge", "Calf Raise", "Leg Extension", "Deadlift", "Leg Curl", "Bench Press", "Fly", "Push Up",
-        	    "Bent-over Row", "Chin-up", "Pulldown", "Pullup", "Shoulder Shrug", "Front Raise", 
-        	    "Handstand Pushup", "Lateral Raise", "Military Press", "Shoulder Press", "Upright Row", 
-        	    "Rear Delt Raise", "Biceps Curl", "Dip", "Pushdown", "Triceps Extension", "Crunch", "Sit-up", 
-        	    "Leg Raise", "Back Extension", "Hyperextension", "Basketball", "Baseball", "Football", "Hockey", 
-        	    "Golf", "Water Polo", "Swimming", "Skiing", "Skateboarding", "Hang Gliding", "Snowboarding", 
-        	    "Fishing", "Hunting", "Paintball", "Kayaking", "Hiking", "Tennis", "Canoeing", "Kitesurfing", 
-        	    "Gymnastics", "Bowling", "Boxing", "Auto racing", "Skating", "Squash", "Rodeo", "Volleyball", 
-        	    "Soccer", "Darts", "Table Tennis", "Cricket", "Skydiving", "Aquafit", "Belly Dancing", 
-        	    "Bootcamp Conditioning", "Cardio Jam", "Cycle Zone", "Hip Hop", "Kickbox Cardio", "Club Boxing", 
-        	    "Mat Pilates", "Senior Fit", "Step plus Abs", "Step II plus Abs", "Step Circuit", "Step Sculpt", 
-        	    "Striding", "Yoga", "Yoga Basics"
-        	);
-
         
       	campo_busqueda = new JTextField();
       	campo_busqueda.setPreferredSize(new Dimension(500, 30));
@@ -259,10 +261,7 @@ public class CatalogoEjercicio extends JFrame {
 				popUpMenu.setVisible(false); 
 		    }
 		}
-		
-		
 
-	
 	public static void main(String[] args) {
 		new CatalogoEjercicio();
 	}
