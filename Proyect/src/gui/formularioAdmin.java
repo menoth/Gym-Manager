@@ -29,6 +29,8 @@ public class formularioAdmin extends JFrame{
 	
 	public formularioAdmin(List<String> datos){
 		
+		
+		
 		//Detalles de la ventana
 		setSize(new Dimension(600, 300));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -75,12 +77,12 @@ public class formularioAdmin extends JFrame{
         
         JLabel introduceNombre = new JLabel("Introduce el nombre del ejericio");
         JTextField campoNombre = new JTextField(10);
-        JButton botonAceptar = new JButton("Confirmar");
+        JButton botonAñadir = new JButton("Confirmar");
 
         
         
         //Action listener para el botonAceptar
-        botonAceptar.addActionListener(new ActionListener() {
+        botonAñadir.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -91,15 +93,16 @@ public class formularioAdmin extends JFrame{
 						JOptionPane.showMessageDialog
 						(formularioAdmin.this, "Este ejercicio ya se encuentra registrado");
 					}else {
-						datos.add("texto");
+						//
 					}
 				}
 				}
 		});
         
+        //Añadimos al panel
         panelElementosAñadir.add(introduceNombre);
         panelElementosAñadir.add(campoNombre);
-        panelElementosAñadir.add(botonAceptar);
+        panelElementosAñadir.add(botonAñadir);
  
         panelAnadir.add(panelElementosAñadir, BorderLayout.CENTER);
        

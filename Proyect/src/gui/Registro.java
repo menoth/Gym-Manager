@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class Registro extends JFrame{
@@ -63,7 +64,7 @@ public class Registro extends JFrame{
         JLabel labelCorreo = new JLabel("Correo electrónico:");
         
         // Etiqueta "Contraseña" con su caja de texto
-        JTextField textFieldContrasena = new JTextField();
+        JPasswordField textFieldContraseña = new JPasswordField();
         JLabel labelContrasena = new JLabel("Contraseña:");
         
         // Añadimos las etiquetas y las cajas de texto al Panel1 en el orden correspondiente
@@ -80,7 +81,7 @@ public class Registro extends JFrame{
         panel1.add(textFieldCorreo);
         
         panel1.add(labelContrasena);
-        panel1.add(textFieldContrasena); 
+        panel1.add(textFieldContraseña); 
         
         // Creamos los botones Cancelar y registrarse
         botonCancel = new JButton("Cancelar");
@@ -135,7 +136,7 @@ public class Registro extends JFrame{
                 textFieldApellido.setText("");
                 textFieldUsuario.setText("");
                 textFieldCorreo.setText("");
-                textFieldContrasena.setText("");
+                textFieldContraseña.setText("");
                
             }
         });
@@ -148,7 +149,21 @@ public class Registro extends JFrame{
 				String apellidos = textFieldApellido.getText();
 				String usuario = textFieldUsuario.getText();
 				String correo = textFieldCorreo.getText();
-				String contraseña = textFieldContrasena.getText();
+				String contraseña = new String(textFieldContraseña.getPassword());
+				
+				//Verificar que ningún campo está vacío
+		        if (nombre.isEmpty() || apellidos.isEmpty() || usuario.isEmpty() || correo.isEmpty() || contraseña.isEmpty()) {
+		            JOptionPane.showMessageDialog(Registro.this, 
+		                    "Todos los campos deben estar completos.");
+		            return;
+		        }
+		        
+		        //Verificar que la contraseña tiene entre 8 y 12 carácteres y sin espacios
+				if (contraseña.length() < 8 || contraseña.length() > 12 || contraseña.contains(" ")) {
+		            JOptionPane.showMessageDialog(Registro.this, 
+		                    "La contraseña debe tener entre 8 y 12 caracteres y no debe contener espacios.");
+		            return;
+		        }
 				
 				//Antes de comenzar con el registro buscamos en nuestro CSV
 				//si el correo ya está registrado o si el usuario está en uso.
@@ -159,6 +174,7 @@ public class Registro extends JFrame{
 					JOptionPane.showMessageDialog(Registro.this, 
 							"Este nombre de usuario ya está en uso");
 				}else {
+					
 					completarRegistro(nombre, apellidos, usuario, correo, contraseña);
 					nuevoPrincipal();
 				}
@@ -205,9 +221,10 @@ public class Registro extends JFrame{
 	
 	//Metodo para cambiar a la ventana principal después del registro
 	protected void nuevoPrincipal() {
-		PrincipalWindow principal = new PrincipalWindow();
+		
 		dispose();
 		JOptionPane.showMessageDialog(Registro.this, "Registro exitoso");
+		PrincipalWindow principal = new PrincipalWindow();
 	   	principal.setVisible(true);
 	   	
 	}

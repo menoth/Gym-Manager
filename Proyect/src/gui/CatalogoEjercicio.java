@@ -65,8 +65,7 @@ public class CatalogoEjercicio extends JFrame {
         	    "Mat Pilates", "Senior Fit", "Step plus Abs", "Step II plus Abs", "Step Circuit", "Step Sculpt", 
         	    "Striding", "Yoga", "Yoga Basics"
         	);
-    
-
+   
 	public CatalogoEjercicio() {
 		
 		
