@@ -1,22 +1,33 @@
-package domain;
+	package domain;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 
-public class Rutina {
+public class Rutina extends Entrenamiento{
 	
+	private int id;
 	private String nombre;
 	private ArrayList<Entrenamiento> entrenamientos;
-	private String objetivo;
-	private int duracionSemanas;
-	private int diasPorSemana;
+	private String descripcionRutina;
 	
-	public Rutina(String nombre, ArrayList<Entrenamiento> entrenamientos, String objetivo, int duracionSemanas,
-			int diasPorSemana) {
-		this.nombre = nombre;
+	public Rutina(int reps, float peso, Esfuerzo esfuerzo, String nombre, int id, String musc_principal,
+			String musc_secundario, ArrayList<Serie> series, String nombre2, String descripcionEntrenamiento,
+			DayOfWeek día, ArrayList<Ejercicio> ejercicios, int id2, String nombre3,
+			ArrayList<Entrenamiento> entrenamientos, String descripcionRutina) {
+		super(reps, peso, esfuerzo, nombre, id, musc_principal, musc_secundario, series, nombre2,
+				descripcionEntrenamiento, día, ejercicios);
+		id = id2;
+		nombre = nombre3;
 		this.entrenamientos = entrenamientos;
-		this.objetivo = objetivo;
-		this.duracionSemanas = duracionSemanas;
-		this.diasPorSemana = diasPorSemana;
+		this.descripcionRutina = descripcionRutina;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNombre() {
@@ -35,34 +46,24 @@ public class Rutina {
 		this.entrenamientos = entrenamientos;
 	}
 
-	public String getObjetivo() {
-		return objetivo;
+	public String getDescripcionRutina() {
+		return descripcionRutina;
 	}
 
-	public void setObjetivo(String objetivo) {
-		this.objetivo = objetivo;
+	public void setDescripcionRutina(String descripcionRutina) {
+		this.descripcionRutina = descripcionRutina;
 	}
 
-	public int getDuracionSemanas() {
-		return duracionSemanas;
+	@Override
+	public String toString() {
+		return "Rutina [id=" + id + ", nombre=" + nombre + ", entrenamientos=" + entrenamientos + ", descripcionRutina="
+				+ descripcionRutina + ", getDescripcionEntrenamiento()=" + getDescripcionEntrenamiento() + ", getDía()="
+				+ getDía() + ", getEjercicios()=" + getEjercicios() + ", toString()=" + super.toString()
+				+ ", getMusc_principal()=" + getMusc_principal() + ", getMusc_secundario()=" + getMusc_secundario()
+				+ ", getSeries()=" + getSeries() + ", getReps()=" + getReps() + ", getPeso()=" + getPeso()
+				+ ", getEsfuerzo()=" + getEsfuerzo() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ "]";
 	}
-
-	public void setDuracionSemanas(int duracionSemanas) {
-		this.duracionSemanas = duracionSemanas;
-	}
-
-	public int getDiasPorSemana() {
-		return diasPorSemana;
-	}
-
-	public void setDiasPorSemana(int diasPorSemana) {
-		this.diasPorSemana = diasPorSemana;
-	}
-
-	
-	
-	
-	
-	
+		
 }
 	

@@ -1,88 +1,56 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 
-public class Entrenamiento extends Rutina {
+public class Entrenamiento extends Ejercicio {
+		private String nombre;
+		private String descripcionEntrenamiento;
+		private DayOfWeek día;
+		private ArrayList<Ejercicio> ejercicios;
+		public Entrenamiento(int reps, float peso, Esfuerzo esfuerzo, String nombre, int id, String musc_principal,
+				String musc_secundario, ArrayList<Serie> series, String nombre2, String descripcionEntrenamiento,
+				DayOfWeek día, ArrayList<Ejercicio> ejercicios) {
+			super(reps, peso, esfuerzo, nombre, id, musc_principal, musc_secundario, series);
+			nombre = nombre2;
+			this.descripcionEntrenamiento = descripcionEntrenamiento;
+			this.día = día;
+			this.ejercicios = ejercicios;
+		}
+		public String getNombre() {
+			return nombre;
+		}
+		public void setNombre(String nombre) {
+			this.nombre = nombre;
+		}
+		public String getDescripcionEntrenamiento() {
+			return descripcionEntrenamiento;
+		}
+		public void setDescripcionEntrenamiento(String descripcionEntrenamiento) {
+			this.descripcionEntrenamiento = descripcionEntrenamiento;
+		}
+		public DayOfWeek getDía() {
+			return día;
+		}
+		public void setDía(DayOfWeek día) {
+			this.día = día;
+		}
+		public ArrayList<Ejercicio> getEjercicios() {
+			return ejercicios;
+		}
+		public void setEjercicios(ArrayList<Ejercicio> ejercicios) {
+			this.ejercicios = ejercicios;
+		}
+		@Override
+		public String toString() {
+			return "Entrenamiento [nombre=" + nombre + ", descripcionEntrenamiento=" + descripcionEntrenamiento
+					+ ", día=" + día + ", ejercicios=" + ejercicios + ", getId()=" + getId() + ", getMusc_principal()="
+					+ getMusc_principal() + ", getMusc_secundario()=" + getMusc_secundario() + ", getSeries()="
+					+ getSeries() + ", toString()=" + super.toString() + ", getReps()=" + getReps() + ", getPeso()="
+					+ getPeso() + ", getEsfuerzo()=" + getEsfuerzo() + ", getClass()=" + getClass() + ", hashCode()="
+					+ hashCode() + "]";
+		}
 		
-	
-	private String nombre;
-	private int duracionMinutos;
-    private String diaSemana;
-    private int numeroEjercicios;
-    private String tipoEntrenamiento;
-    private int duracionDescanso;
-    private String instrucciones;
-    
-	public Entrenamiento(String nombre, ArrayList<Entrenamiento> entrenamientos, String objetivo, int duracionSemanas,
-			int diasPorSemana, String nombre2, int duracionMinutos, String diaSemana, int numeroEjercicios,
-			String tipoEntrenamiento, int duracionDescanso, String instrucciones) {
-		super(nombre, entrenamientos, objetivo, duracionSemanas, diasPorSemana);
-		nombre = nombre2;
-		this.duracionMinutos = duracionMinutos;
-		this.diaSemana = diaSemana;
-		this.numeroEjercicios = numeroEjercicios;
-		this.tipoEntrenamiento = tipoEntrenamiento;
-		this.duracionDescanso = duracionDescanso;
-		this.instrucciones = instrucciones;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public int getDuracionMinutos() {
-		return duracionMinutos;
-	}
-
-	public void setDuracionMinutos(int duracionMinutos) {
-		this.duracionMinutos = duracionMinutos;
-	}
-
-	public String getDiaSemana() {
-		return diaSemana;
-	}
-
-	public void setDiaSemana(String diaSemana) {
-		this.diaSemana = diaSemana;
-	}
-
-	public int getNumeroEjercicios() {
-		return numeroEjercicios;
-	}
-
-	public void setNumeroEjercicios(int numeroEjercicios) {
-		this.numeroEjercicios = numeroEjercicios;
-	}
-
-	public String getTipoEntrenamiento() {
-		return tipoEntrenamiento;
-	}
-
-	public void setTipoEntrenamiento(String tipoEntrenamiento) {
-		this.tipoEntrenamiento = tipoEntrenamiento;
-	}
-
-	public int getDuracionDescanso() {
-		return duracionDescanso;
-	}
-
-	public void setDuracionDescanso(int duracionDescanso) {
-		this.duracionDescanso = duracionDescanso;
-	}
-
-	public String getInstrucciones() {
-		return instrucciones;
-	}
-
-	public void setInstrucciones(String instrucciones) {
-		this.instrucciones = instrucciones;
-	}
-
-	
 }
 	
 	

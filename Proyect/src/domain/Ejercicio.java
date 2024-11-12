@@ -3,92 +3,83 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ejercicio extends Entrenamiento {
+public class Ejercicio extends Serie {
+	private String nombre;
+	private int id;
+	private String musc_principal;
+	private String musc_secundario;
+	private ArrayList<Serie> series;
 	
-	private String nombre;	// Nombre del ejercicio
-	private String desc;
-    private int repeticiones; // Número de repeticiones
-    private int series; // Número de series
-    private double peso; // En kg
-    private int rir; // Repeticiones en reserva
-    
 	
-	public Ejercicio(String nombre, ArrayList<Entrenamiento> entrenamientos, String objetivo, int duracionSemanas,
-			int diasPorSemana, String nombre2, int duracionMinutos, String diaSemana, int numeroEjercicios,
-			String tipoEntrenamiento, int duracionDescanso, String instrucciones, String nombre3, String desc,
-			int repeticiones, int series, double peso, int rir) {
-		super(nombre, entrenamientos, objetivo, duracionSemanas, diasPorSemana, nombre2, duracionMinutos, diaSemana,
-				numeroEjercicios, tipoEntrenamiento, duracionDescanso, instrucciones);
-		nombre = nombre3;
-		this.desc = desc;
-		this.repeticiones = repeticiones;
+	public Ejercicio(int reps, float peso, Esfuerzo esfuerzo, String nombre, int id, String musc_principal,
+			String musc_secundario, ArrayList<Serie> series) {
+		super(reps, peso, esfuerzo);
+		this.nombre = nombre;
+		this.id = id;
+		this.musc_principal = musc_principal;
+		this.musc_secundario = musc_secundario;
 		this.series = series;
-		this.peso = peso;
-		this.rir = rir;
 	}
+
 
 	public String getNombre() {
 		return nombre;
 	}
 
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 
-	public int getRepeticiones() {
-		return repeticiones;
+
+	public int getId() {
+		return id;
 	}
 
-	public void setRepeticiones(int repeticiones) {
-		this.repeticiones = repeticiones;
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public int getSeries() {
+
+	public String getMusc_principal() {
+		return musc_principal;
+	}
+
+
+	public void setMusc_principal(String musc_principal) {
+		this.musc_principal = musc_principal;
+	}
+
+
+	public String getMusc_secundario() {
+		return musc_secundario;
+	}
+
+
+	public void setMusc_secundario(String musc_secundario) {
+		this.musc_secundario = musc_secundario;
+	}
+
+
+	public ArrayList<Serie> getSeries() {
 		return series;
 	}
 
-	public void setSeries(int series) {
+
+	public void setSeries(ArrayList<Serie> series) {
 		this.series = series;
 	}
 
-	public double getPeso() {
-		return peso;
-	}
-
-	public void setPeso(double peso) {
-		this.peso = peso;
-	}
-
-	public int getRir() {
-		return rir;
-	}
-
-	public void setRir(int rir) {
-		this.rir = rir;
-	}
-
-	
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
 
 	@Override
 	public String toString() {
-		return "Ejercicio [nombre=" + nombre + ", desc=" + desc + ", repeticiones=" + repeticiones + ", series="
-				+ series + ", peso=" + peso + ", rir=" + rir + ", getDuracionMinutos()=" + getDuracionMinutos()
-				+ ", getDiaSemana()=" + getDiaSemana() + ", getNumeroEjercicios()=" + getNumeroEjercicios()
-				+ ", getTipoEntrenamiento()=" + getTipoEntrenamiento() + ", getDuracionDescanso()="
-				+ getDuracionDescanso() + ", getInstrucciones()=" + getInstrucciones() + ", getEntrenamientos()="
-				+ getEntrenamientos() + ", getObjetivo()=" + getObjetivo() + ", getDuracionSemanas()="
-				+ getDuracionSemanas() + ", getDiasPorSemana()=" + getDiasPorSemana() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+		return "Ejercicio [nombre=" + nombre + ", id=" + id + ", musc_principal=" + musc_principal
+				+ ", musc_secundario=" + musc_secundario + ", series=" + series + ", getReps()=" + getReps()
+				+ ", getPeso()=" + getPeso() + ", getEsfuerzo()=" + getEsfuerzo() + ", toString()=" + super.toString()
+				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + "]";
 	}
 	
 	
-    
-    
+	
 }
