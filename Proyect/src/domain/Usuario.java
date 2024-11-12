@@ -55,6 +55,12 @@ public class Usuario {
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
+
+	@Override
+	public String toString() {
+		return "Usuario [nombre=" + nombre + ", apellidos=" + apellidos + ", usuario=" + usuario
+				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + "]";
+	}
 	
 	
 	

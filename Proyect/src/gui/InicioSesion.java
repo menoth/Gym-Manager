@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.*;
 
+import domain.Usuario;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +11,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class InicioSesion extends JFrame {
@@ -120,35 +124,16 @@ public class InicioSesion extends JFrame {
 			}); 
     }
     
-    // Leer el fichero CSV para verificar el log in
+    // Leer la BD para verificar el log in
     private boolean validarLogin(String username, String password) {
     	Boolean sesion = false;
-    		
-    	File f = new File("baseDeDatos.csv");
-    	
-    	try {
-			Scanner sc = new Scanner (f);
-			while(sc.hasNextLine()) {
-				String linea = sc.nextLine();
-				String[] campos = linea.split(";");
-				String nombre = campos[0];
-				String apellidos = campos[1];
-				String usuario = campos[2];
-				String correoElectronico = campos[3];
-				String contraseña = campos[4];
-				
-				// El inicio de sesión se puede hacer mediante 
-				// "correo + contraseña" 
-				// "usuario + contraseña"
-				if ((username.equals(usuario) || password.equals(contraseña)) && 
-						(username.equals(correoElectronico) || password.equals(contraseña))) {
-					sesion = true;
-					break;
-				}
+    	List<Usuario> usuarios = new ArrayList<>();
+    	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
+    	for(Usuario u : usuarios) {
+    		if (((username.equals(u.getUsuario())) && password.equals(u.getContraseña())) || ((username.equals(u.getCorreoElectronico())) && password.equals(u.getContraseña()))) {
+				sesion = true;
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+    	}
 		return sesion;
     	
     }
@@ -171,5 +156,5 @@ public class InicioSesion extends JFrame {
   			System.exit(0);
   		}
   	}
-  
+  	
 }

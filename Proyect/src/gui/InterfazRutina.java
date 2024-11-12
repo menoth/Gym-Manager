@@ -9,12 +9,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class InterfazRutina extends JFrame {
+	
     private static final long serialVersionUID = 1L;
 
     InterfazRutina() {
     	
-    	
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         ModeloJTable modelo = new ModeloJTable();
@@ -57,8 +59,4 @@ public class InterfazRutina extends JFrame {
 			new PrincipalWindow();
 		}
 	}
-    
-    public static void main(String[] args) {
-        new InterfazRutina();
-    }
 }

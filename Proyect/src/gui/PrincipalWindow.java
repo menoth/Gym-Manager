@@ -1,20 +1,18 @@
 package gui;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 
-import java.awt.Component;
-import java.awt.Composite;
+
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.PopupMenu;
-import java.awt.GridLayout;
+
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Scanner;
 import java.awt.Toolkit;
@@ -23,35 +21,35 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
+
 
 import javax.swing.DefaultListModel;
 
 import javax.swing.JButton;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+
 import javax.swing.JList;
 
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import main.MainProyecto;
+import domain.Rutina;
 
 import javax.swing.JPopupMenu;
-import javax.swing.ScrollPaneLayout;
+
 import javax.swing.SwingConstants;
 
 
@@ -59,7 +57,6 @@ public class PrincipalWindow extends JFrame {
 	
 	private JTextField campo_busqueda;
     private JButton boton_buscar;
-    private JList<String> lista_resultados;
     private DefaultListModel<String> lista;
     private JPopupMenu popUpMenu;
 
@@ -67,8 +64,6 @@ public class PrincipalWindow extends JFrame {
     private List<String> datos = new ArrayList<>();
 	private static final long serialVersionUID = 1L;
 
-	private JFrame previous;
-	
 	public PrincipalWindow() {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
@@ -241,7 +236,7 @@ public class PrincipalWindow extends JFrame {
 		campo_busqueda = new JTextField(20);
 		boton_buscar = new JButton("Buscar");
 		lista = new DefaultListModel<>();
-		lista_resultados = new JList<>(lista);
+		new JList<>(lista);
 		
 		 JPanel panelBusqueda = new JPanel();
 		 panelBusqueda.add(Box.createVerticalStrut(150));
@@ -351,8 +346,8 @@ public class PrincipalWindow extends JFrame {
 		//Ocultar si no hay texto de búsqueda
 		else {
         popUpMenu.setVisible(false); 
-    }
-}
+		}
+	}
 	
 
 	//Dialogo para salir mediante el botón x
@@ -387,23 +382,7 @@ public class PrincipalWindow extends JFrame {
     	 inicioSesion.setVisible(true);
 	}
 
-	// Método para realizar la búsqueda
-     private void buscar() {
-         String textoBusqueda = campo_busqueda.getText().toLowerCase();
-         lista.clear(); // Limpiar los resultados previos
 
-         for (String dato : datos) {
-             if (dato.toLowerCase().contains(textoBusqueda)) {
-                 lista.addElement(dato); // Agregar coincidencias a la lista
-             }
-         }
-
-         // Si no hay resultados, mostrar un mensaje
-         if (lista.isEmpty()) {
-             lista.addElement("No se encontraron resultados");
-         }
-     }
-     
      //Metodo para añadir todos los usuarios a el PopUpMenu
      private void datosUsuario(ArrayList<String> datos) {
     	 File f = new File("baseDeDatos.csv");
