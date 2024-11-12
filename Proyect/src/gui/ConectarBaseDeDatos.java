@@ -11,9 +11,12 @@ import java.util.List;
 
 import domain.Usuario;
 
-// Lo usaremos para conectar la base de datos
+// Lo usaremos para conectar la base de datos con una lista de usuarios
 public class ConectarBaseDeDatos {
 	public static void main(String[] args) {
+		
+	}
+	public static void ConectarBaseDeDatos(List<Usuario> usuarios) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
@@ -24,7 +27,6 @@ public class ConectarBaseDeDatos {
 				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 	
 			Statement stmt = conn.createStatement();
-			List<Usuario> usuarios = new ArrayList<>();
 			String sql = "SELECT * FROM Usuario";
 			PreparedStatement queryStmt = conn.prepareStatement(sql);
 			ResultSet rs = queryStmt.executeQuery();
@@ -39,13 +41,10 @@ public class ConectarBaseDeDatos {
 			}
 			stmt.close();
 			conn.close();
-			for(Usuario u : usuarios) {
-				System.out.println(u);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			// TODO: handle exception
-		}
+		}		
 	}
 }
 
