@@ -10,6 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -20,6 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import domain.Usuario;
 
 public class Registro extends JFrame{
 	
@@ -184,36 +194,22 @@ public class Registro extends JFrame{
         
 	}
 	
-	//Este metodo lee el CSV y si encuentra el correo en la base de datos
+	//Este metodo lee la BD y si encuentra el correo en la base de datos
 	//devuelve 1 y si encuentra el usuario devuelve 2. Teniendo preferencia
 	//la busqueda del correo electrónico mediante un break.
 	protected int buscarCoincidencia(String correo, String usuario) {
 		Integer coincidencia = 0;
-		
-		File f = new File("baseDeDatos.csv");
-		
-		try {
-			Scanner sc = new Scanner(f);
-			while(sc.hasNextLine()) {
-				String linea = sc.nextLine();
-				String[] campos = linea.split(";");
-				String nombreBase = campos[0];
-				String apellidosBase = campos[1];
-				String usuarioBase = campos[2];
-				String correoElectronicoBase = campos[3];
-				String contrasenaBase = campos[4];
-				
-				if(correo.equals(correoElectronicoBase)) {
-					coincidencia = 1;
-					break;
-				}
-				if(usuario.equals(usuarioBase)) {
-					coincidencia = 2;
-				}
+		List<Usuario> usuarios = new ArrayList<>();
+    	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
+    	for(Usuario u : usuarios) {
+    		if (correo.equals(u.getCorreoElectronico())) {
+				coincidencia = 1;
+				break;
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+    		if (usuario.equals(u.getUsuario())) {
+				coincidencia = 2;
+			}
+    	}
 		
 		return coincidencia;
 		
@@ -229,23 +225,37 @@ public class Registro extends JFrame{
 	   	
 	}
 	
-	//Metodo que escribe en el CSV el registro
+	//Metodo que escribe en la BD el registro
 	protected void completarRegistro(String nombre, String apellidos, String usuario, String correo,
 			String contrasena) {
-		
-			try {
-				PrintWriter pw = new PrintWriter(new FileWriter("baseDeDatos.csv", true));
-				
-				
-					pw.println(nombre + ";" + apellidos + ";" + usuario + ";" + correo + ";" + contrasena + ";");
-				
-				
-				pw.close();
-			} catch (IOException e) {
-				System.out.println("Error: no se ha podido abrir el fichero ");
-			} 
-		
-		
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "INSERT INTO Usuario VALUES(?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			queryStmt.setString(1, nombre);
+			queryStmt.setString(2, apellidos);
+			queryStmt.setString(3, usuario);
+			queryStmt.setString(4, correo);
+			queryStmt.setString(5, contrasena);
+			queryStmt.setString(6, "NULL");
+			queryStmt.setString(7, "NULL");
+			queryStmt.executeUpdate();
+			
+			queryStmt.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}	
 	}
 
 }
