@@ -90,6 +90,17 @@ public class CatalogoEjercicio extends JFrame {
         botonVolver.setPreferredSize(new Dimension(140, 10));
         panelSuperior.add(botonVolver, BorderLayout.WEST);
         
+        //
+        botonVolver.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				new InterfazRutina();
+				
+			}
+		});
+        
 //-------------------------------------Boton de administrador----------------------------------------
         Usuario usuario = new Usuario("admin", "admin", "admin", "admin", "admin");
         

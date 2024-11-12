@@ -13,6 +13,7 @@ public class InterfazRutina extends JFrame {
     	
     	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         ModeloJTable modelo = new ModeloJTable();

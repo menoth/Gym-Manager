@@ -170,7 +170,7 @@ public class Registro extends JFrame{
 				if(buscarCoincidencia(correo, usuario) == 1) {
 					JOptionPane.showMessageDialog(Registro.this, 
 							"Este correo electrónico ya está asociado a una cuenta");
-				}else if(buscarCoincidencia(correo, usuario) == 2) {
+				}if(buscarCoincidencia(correo, usuario) == 2) {
 					JOptionPane.showMessageDialog(Registro.this, 
 							"Este nombre de usuario ya está en uso");
 				}else {
