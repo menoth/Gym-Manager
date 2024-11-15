@@ -91,7 +91,7 @@ public class InicioSesion extends JFrame {
                 if (validarLogin(username, password)) {
                     JOptionPane.showMessageDialog(InicioSesion.this, "Inicio de sesión exitoso");
                     dispose();
-                    PrincipalWindow pw = new PrincipalWindow();
+                    PrincipalWindow pw = new PrincipalWindow(username);
                     
             		pw.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 } else {
@@ -130,7 +130,7 @@ public class InicioSesion extends JFrame {
     	List<Usuario> usuarios = new ArrayList<>();
     	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
     	for(Usuario u : usuarios) {
-    		if (((username.equals(u.getUsuario())) && password.equals(u.getContraseña())) || ((username.equals(u.getCorreoElectronico())) && password.equals(u.getContraseña()))) {
+    		if (((username.equals(u.getUsuario())) && password.equals(u.getContraseña()))) {
 				sesion = true;
 			}
     	}

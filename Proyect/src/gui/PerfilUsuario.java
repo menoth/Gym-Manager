@@ -11,6 +11,13 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Flow;
 
 import javax.swing.BorderFactory;
@@ -29,16 +36,59 @@ public class PerfilUsuario extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public PerfilUsuario() {
+	
+	
+	
+	public PerfilUsuario(String usuario) {
+		
+		List<Usuario> usuarios = new ArrayList<>();
+		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
+		//Carga del driver de JDBC para SQLITE
+				try {
+					Class.forName("org.sqlite.JDBC");
+				} catch (ClassNotFoundException e) {
+					System.out.println("No se ha podido cargar el driver de la BD");
+				}
+				
+				//Conectar a la BD
+				try {
+					Connection conn = DriverManager.getConnection
+							("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+					
+					Statement stmt = conn.createStatement();
+					
+					
+					
+					
+					ResultSet rs = stmt.executeQuery
+							("SELECT * FROM Usuario");
+					
+					while (rs.next()) {
+						
+						
+						String usuarioDB = rs.getString("Usuario");
+						if(usuarioDB.equals(usuario)) {
+							String nombre = rs.getString("Nombre");
+							String apellidos = rs.getString("Apellidos");
+							String correo = rs.getString("Correo");
+							String contraseña = rs.getString("Contraseña");
+							String descripcion = rs.getString("Descripcion");
+							String fotoPerfil = rs.getString("FotoDePerfil");
+							uElegido = new Usuario(nombre, apellidos, usuarioDB, correo, contraseña, descripcion, fotoPerfil);
+							usuarios.add(uElegido);
+						}
+					}
+				
+					stmt.close();
+					conn.close(); 
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}	
 		
 		// Detalles ventana
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setTitle("Perfil");
-		
-		Usuario ejemploUsuario = new Usuario
-				("Nombre", "Apellido 1 Apellido 2", "admin12", "ejemplo@gmail.com", "1234");
 		
 		// Primer layout
 		setLayout(new BorderLayout());
@@ -62,9 +112,9 @@ public class PerfilUsuario extends JFrame {
 		panelNorte.add(fotoPerfil);
 		
 		// Label del nombre y apellidos hecho con HTML para poder hacerlo en dos lineas
-		String texto = "<html><b>" + ejemploUsuario.getNombre() + "</b><br>"
-                + ejemploUsuario.getApellidos() + "</b><br>"
-                + "@<b>" + ejemploUsuario.getUsuario() + "</b></html>";
+		String texto = "<html><b>" + uElegido.getNombre() + "</b><br>"
+                + uElegido.getApellidos() + "</b><br>"
+                + "@<b>" + uElegido.getUsuario() + "</b></html>";
 			 
 		JLabel nombreApellidos = new JLabel(texto);
 		
@@ -95,12 +145,7 @@ public class PerfilUsuario extends JFrame {
 		
 		
 		// Creamos un jTextArea que será la descripción del usuario
-		JTextArea desc = new JTextArea("Steam es una plataforma de distribución digital"
-				+ " de videojuegos desarrollada por Valve Corporation. "
-				+ "Fue lanzada en septiembre de 2003 como una forma para"
-				+ " Valve de proveer actualizaciones automáticas a sus juegos,"
-				+ " pero finalmente se amplió para incluir"
-				+ " juegos de terceros.");
+		JTextArea desc = new JTextArea(uElegido.getDescripcion());
 		
 		// Detalles del JTextArea
 		desc.setWrapStyleWord(true); // Ajusta palabras completas en la línea siguiente
@@ -150,11 +195,12 @@ public class PerfilUsuario extends JFrame {
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
+		String user3 = uElegido.getUsuario();
 		botonPrincipal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-                PrincipalWindow principal = new PrincipalWindow();
+                PrincipalWindow principal = new PrincipalWindow(user3);
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });

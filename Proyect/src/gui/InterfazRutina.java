@@ -11,7 +11,6 @@ public class InterfazRutina extends JFrame {
 
     InterfazRutina() {
     	
-    	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);

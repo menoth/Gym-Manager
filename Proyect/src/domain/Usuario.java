@@ -6,14 +6,19 @@ public class Usuario {
 	protected String usuario;
 	protected String correoElectronico;
 	protected String contraseña;
+	protected String descripcion;
+	protected String fotoPerfil;
 	
-	public Usuario(String nombre, String apellidos, String usuario, String correoElectronico, String contraseña) {
+	public Usuario(String nombre, String apellidos, String usuario, String correoElectronico, String contraseña,
+			String descripcion, String fotoPerfil) {
 		super();
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.usuario = usuario;
 		this.correoElectronico = correoElectronico;
 		this.contraseña = contraseña;
+		this.descripcion = descripcion;
+		this.fotoPerfil = fotoPerfil;
 	}
 
 	public String getNombre() {
@@ -56,12 +61,29 @@ public class Usuario {
 		this.contraseña = contraseña;
 	}
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getFotoPerfil() {
+		return fotoPerfil;
+	}
+
+	public void setFotoPerfil(String fotoPerfil) {
+		this.fotoPerfil = fotoPerfil;
+	}
+
 	@Override
 	public String toString() {
 		return "Usuario [nombre=" + nombre + ", apellidos=" + apellidos + ", usuario=" + usuario
-				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + "]";
+				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + ", descripcion="
+				+ descripcion + ", fotoPerfil=" + fotoPerfil + "]";
 	}
 	
-	
+
 	
 }
