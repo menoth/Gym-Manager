@@ -4,18 +4,15 @@ import java.awt.BorderLayout;
 
 import java.awt.Color;
 
-import java.awt.Component;
-import java.awt.Composite;
+
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.PopupMenu;
-import java.awt.GridLayout;
+
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Scanner;
 import java.awt.Toolkit;
@@ -24,36 +21,38 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
+
 
 import javax.swing.DefaultListModel;
 
 import javax.swing.JButton;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+
 import javax.swing.JList;
 
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 
 import domain.Usuario;
 import main.MainProyecto;
 
+
 import javax.swing.JPopupMenu;
-import javax.swing.ScrollPaneLayout;
+
 import javax.swing.SwingConstants;
 
 
@@ -192,7 +191,7 @@ public class PrincipalWindow extends JFrame {
 		// Añadimos todo a la ventana
 		general.add(pNorth, BorderLayout.NORTH);
 		
-		//----------------------------PANEL CON EL BOTÓN DE AÑADIR ENTRENAMIENTIOS------------------------------------------------------------------------
+		//----------------------------PANEL CON EL BOTÓN DE AÑADIR RUTINA------------------------------------------------------------------------
 		
 		// Creamos el panel donde irá el botón para añadir entrenamientos
 		JPanel panelAñadirEntrenamientos = new JPanel();
@@ -200,20 +199,22 @@ public class PrincipalWindow extends JFrame {
 		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
 		
 		// Creamos el botón que va a contener el panel añadirEntrenamientos y lo configuramos
-		JButton añadirEntreno = new JButton("AÑADIR ENTRENAMIENTO");
+		JButton añadirEntreno = new JButton("AÑADIR RUTINA");
 		añadirEntreno.setFont(new Font("Serif", Font.PLAIN, 24));
 		añadirEntreno.setPreferredSize(new Dimension(400, 70));
 		panelAñadirEntrenamientos.add(añadirEntreno, BorderLayout.CENTER);
 		
-		// Añadir action listener para abrir la ventana de creacion de rutinas
+		
+		//Interfaz para pedir nombre y descripción de la rutina
 		añadirEntreno.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	dispose();
-                InterfazRutina ir = new InterfazRutina();
-                ir.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            }
-        });
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new nombreRutinaInterfaz(usuario);
+				
+			}
+			
+		});
 		
 		// Añadimos el panel que va a contener el botón de añadir entrenamientos
 		general.add(panelAñadirEntrenamientos, BorderLayout.SOUTH);
@@ -350,8 +351,8 @@ public class PrincipalWindow extends JFrame {
 		//Ocultar si no hay texto de búsqueda
 		else {
         popUpMenu.setVisible(false); 
-    }
-}
+		}
+	}
 	
 
 	//Dialogo para salir mediante el botón x
