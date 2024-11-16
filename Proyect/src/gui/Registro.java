@@ -179,17 +179,23 @@ public class Registro extends JFrame{
 				
 				//Antes de comenzar con el registro buscamos en nuestro CSV
 				//si el correo ya está registrado o si el usuario está en uso.
-				if(buscarCoincidencia(correo, usuario) == 1) {
-					JOptionPane.showMessageDialog(Registro.this, 
-							"Este correo electrónico ya está asociado a una cuenta");
-				}if(buscarCoincidencia(correo, usuario) == 2) {
-					JOptionPane.showMessageDialog(Registro.this, 
-							"Este nombre de usuario ya está en uso");
-				}else {
-					
-					completarRegistro(nombre, apellidos, usuario, correo, contraseña);
-					nuevoPrincipal(usuario);
+				List<Usuario> usuarios = new ArrayList<>();
+		    	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
+				for(Usuario u : usuarios) {
+					if(buscarCoincidencia(correo, u.getCorreoElectronico())) {
+						JOptionPane.showMessageDialog(Registro.this, 
+								"Este correo electrónico ya está asociado a una cuenta");
+						return;
+					}else if(buscarCoincidencia(usuario, u.getUsuario())) {
+						JOptionPane.showMessageDialog(Registro.this, 
+								"Este nombre de usuario ya está en uso");
+						return;
+					}
 				}
+				
+				completarRegistro(nombre, apellidos, usuario, correo, contraseña);
+				nuevoPrincipal(usuario);
+				
 			}	
 			
         });
@@ -199,20 +205,11 @@ public class Registro extends JFrame{
 	//Este metodo lee la BD y si encuentra el correo en la base de datos
 	//devuelve 1 y si encuentra el usuario devuelve 2. Teniendo preferencia
 	//la busqueda del correo electrónico mediante un break.
-	protected int buscarCoincidencia(String correo, String usuario) {
-		Integer coincidencia = 0;
-		List<Usuario> usuarios = new ArrayList<>();
-    	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
-    	for(Usuario u : usuarios) {
-    		if (correo.equals(u.getCorreoElectronico())) {
-				coincidencia = 1;
-				break;
-			}
-    		if (usuario.equals(u.getUsuario())) {
-				coincidencia = 2;
-			}
+	protected boolean buscarCoincidencia(String dato1, String dato2) {
+		Boolean coincidencia = false;
+    	if(dato1.equals(dato2)) {
+    		coincidencia = true;
     	}
-		
 		return coincidencia;
 		
 	}
