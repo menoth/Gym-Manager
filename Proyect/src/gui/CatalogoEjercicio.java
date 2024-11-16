@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -17,11 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import domain.Usuario;
+
 
 
 
@@ -56,7 +54,7 @@ public class CatalogoEjercicio extends JFrame {
         	    "Striding", "Yoga", "Yoga Basics"
         	);
    
-	public CatalogoEjercicio() {
+	public CatalogoEjercicio(String usuario) {
 		
 		
 		
@@ -90,13 +88,12 @@ public class CatalogoEjercicio extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				new InterfazRutina();
+				new InterfazRutina(usuario);
 				
 			}
 		});
         
 //-------------------------------------Boton de administrador----------------------------------------
-        Usuario usuario = new Usuario("admin", "admin", "admin", "admin", "admin", "a", "a");
         
         //Detalles del botón
         JButton botonAdmin = new JButton("Administrador");
@@ -106,7 +103,7 @@ public class CatalogoEjercicio extends JFrame {
         panelSuperior.add(botonAdmin, BorderLayout.EAST);
         
         //Action listener del boton
-        if(usuario.getUsuario().equals("admin")) {
+        if(usuario.equals("admin")) {
         	botonAdmin.addActionListener(new ActionListener() {
 				
 				@Override
@@ -246,14 +243,5 @@ public class CatalogoEjercicio extends JFrame {
         setVisible(true);
 
 	}
-	
-	//-----------------------------------MÉTODOS-------------------------------------------------------------------------------------------
-	
-		
 
-		
-
-	public static void main(String[] args) {
-		new CatalogoEjercicio();
-	}
 }
