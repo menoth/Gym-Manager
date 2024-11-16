@@ -1,45 +1,83 @@
 package domain;
 
+import java.util.Objects;
+
 public class Serie {
 	
-	private int reps;
-	private float peso;
-	private Esfuerzo esfuerzo;
+	public enum Esfuerzo {
+		APROXIMACION, ESTANDAR, TOPSET
+	}
 	
-	public Serie(int reps, float peso, Esfuerzo esfuerzo) {
+	
+	private int repeticiones;
+	private float peso;
+	Esfuerzo esfuerzo;
+	
+	
+	//CONSTRUCTOR
+	public Serie(int repeticiones, float peso, Esfuerzo esfuerzo) {
 		super();
-		this.reps = reps;
+		this.repeticiones = repeticiones;
 		this.peso = peso;
 		this.esfuerzo = esfuerzo;
 	}
-
-	public int getReps() {
-		return reps;
+	
+	
+	
+	//GETTERS Y SETTERS
+	public int getRepeticiones() {
+		return repeticiones;
 	}
-
-	public void setReps(int reps) {
-		this.reps = reps;
+	public void setRepeticiones(int repeticiones) {
+		this.repeticiones = repeticiones;
 	}
-
 	public float getPeso() {
 		return peso;
 	}
-
 	public void setPeso(float peso) {
 		this.peso = peso;
 	}
-
 	public Esfuerzo getEsfuerzo() {
 		return esfuerzo;
 	}
-
 	public void setEsfuerzo(Esfuerzo esfuerzo) {
 		this.esfuerzo = esfuerzo;
 	}
-
+	
+	
+	
+	//TOSTRING
 	@Override
 	public String toString() {
-		return "Serie [reps=" + reps + ", peso=" + peso + ", esfuerzo=" + esfuerzo + "]";
+		return "Serie [repeticiones=" + repeticiones + ", peso=" + peso + ", esfuerzo=" + esfuerzo + "]";
 	}
+	
+	
+	
+	//HASHCODE Y EQUALS
+	@Override
+	public int hashCode() {
+		return Objects.hash(esfuerzo, peso, repeticiones);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Serie other = (Serie) obj;
+		return esfuerzo == other.esfuerzo && Float.floatToIntBits(peso) == Float.floatToIntBits(other.peso)
+				&& repeticiones == other.repeticiones;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

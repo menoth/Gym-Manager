@@ -46,7 +46,6 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import domain.Rutina;
 
 import javax.swing.JPopupMenu;
 
@@ -201,15 +200,17 @@ public class PrincipalWindow extends JFrame {
 		añadirEntreno.setPreferredSize(new Dimension(400, 70));
 		panelAñadirEntrenamientos.add(añadirEntreno, BorderLayout.CENTER);
 		
-		// Añadir action listener para abrir la ventana de creacion de rutinas
+		
+		//Interfaz para pedir nombre y descripción de la rutina
 		añadirEntreno.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	dispose();
-                InterfazRutina ir = new InterfazRutina();
-                ir.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            }
-        });
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new nombreRutinaInterfaz();
+				
+			}
+			
+		});
 		
 		// Añadimos el panel que va a contener el botón de añadir entrenamientos
 		general.add(panelAñadirEntrenamientos, BorderLayout.SOUTH);

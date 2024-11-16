@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Objects;
+
 public class Usuario {
 	protected String nombre;
 	protected String apellidos;
@@ -7,6 +9,8 @@ public class Usuario {
 	protected String correoElectronico;
 	protected String contraseña;
 	
+	
+	//CONSTRUCTOR
 	public Usuario(String nombre, String apellidos, String usuario, String correoElectronico, String contraseña) {
 		super();
 		this.nombre = nombre;
@@ -15,7 +19,9 @@ public class Usuario {
 		this.correoElectronico = correoElectronico;
 		this.contraseña = contraseña;
 	}
-
+	
+	
+	//GETTERS Y SETTERS
 	public String getNombre() {
 		return nombre;
 	}
@@ -55,11 +61,36 @@ public class Usuario {
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
-
+	
+	
+	//TOSTRING
 	@Override
 	public String toString() {
 		return "Usuario [nombre=" + nombre + ", apellidos=" + apellidos + ", usuario=" + usuario
 				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + "]";
+	}
+
+	
+	
+	//HASHCODE Y EQUALS
+	@Override
+	public int hashCode() {
+		return Objects.hash(apellidos, contraseña, correoElectronico, nombre, usuario);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(apellidos, other.apellidos) && Objects.equals(contraseña, other.contraseña)
+				&& Objects.equals(correoElectronico, other.correoElectronico) && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(usuario, other.usuario);
 	}
 	
 	

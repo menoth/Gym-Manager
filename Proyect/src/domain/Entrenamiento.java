@@ -2,21 +2,30 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-public class Entrenamiento extends Ejercicio {
+public class Entrenamiento{
+		
 		private String nombre;
 		private String descripcionEntrenamiento;
 		private DayOfWeek día;
-		private ArrayList<Ejercicio> ejercicios;
-		public Entrenamiento(int reps, float peso, Esfuerzo esfuerzo, String nombre, int id, String musc_principal,
-				String musc_secundario, ArrayList<Serie> series, String nombre2, String descripcionEntrenamiento,
-				DayOfWeek día, ArrayList<Ejercicio> ejercicios) {
-			super(reps, peso, esfuerzo, nombre, id, musc_principal, musc_secundario, series);
-			nombre = nombre2;
+		private List<Ejercicio> ejercicios;
+		
+		
+		
+		//CONSTRUCTOR
+		public Entrenamiento(String nombre, String descripcionEntrenamiento, DayOfWeek día,
+				ArrayList<Ejercicio> ejercicios) {
+			super();
+			this.nombre = nombre;
 			this.descripcionEntrenamiento = descripcionEntrenamiento;
 			this.día = día;
 			this.ejercicios = ejercicios;
 		}
+		
+		
+		//GETTERS AND SETTERS
 		public String getNombre() {
 			return nombre;
 		}
@@ -35,21 +44,35 @@ public class Entrenamiento extends Ejercicio {
 		public void setDía(DayOfWeek día) {
 			this.día = día;
 		}
-		public ArrayList<Ejercicio> getEjercicios() {
+		public List<Ejercicio> getEjercicios() {
 			return ejercicios;
 		}
 		public void setEjercicios(ArrayList<Ejercicio> ejercicios) {
 			this.ejercicios = ejercicios;
 		}
+		
+		
+		
+		//HASHCODE Y EQUALS
 		@Override
-		public String toString() {
-			return "Entrenamiento [nombre=" + nombre + ", descripcionEntrenamiento=" + descripcionEntrenamiento
-					+ ", día=" + día + ", ejercicios=" + ejercicios + ", getId()=" + getId() + ", getMusc_principal()="
-					+ getMusc_principal() + ", getMusc_secundario()=" + getMusc_secundario() + ", getSeries()="
-					+ getSeries() + ", toString()=" + super.toString() + ", getReps()=" + getReps() + ", getPeso()="
-					+ getPeso() + ", getEsfuerzo()=" + getEsfuerzo() + ", getClass()=" + getClass() + ", hashCode()="
-					+ hashCode() + "]";
+		public int hashCode() {
+			return Objects.hash(descripcionEntrenamiento, día, ejercicios, nombre);
 		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Entrenamiento other = (Entrenamiento) obj;
+			return Objects.equals(descripcionEntrenamiento, other.descripcionEntrenamiento) && día == other.día
+					&& Objects.equals(ejercicios, other.ejercicios) && Objects.equals(nombre, other.nombre);
+		}
+		
+		
+		
 		
 }
 	
