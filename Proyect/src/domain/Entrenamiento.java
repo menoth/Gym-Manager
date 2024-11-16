@@ -8,6 +8,8 @@ public class Entrenamiento extends Ejercicio {
 		private String descripcionEntrenamiento;
 		private DayOfWeek día;
 		private ArrayList<Ejercicio> ejercicios;
+		
+	
 		public Entrenamiento(int reps, float peso, Esfuerzo esfuerzo, String nombre, int id, String musc_principal,
 				String musc_secundario, ArrayList<Serie> series, String nombre2, String descripcionEntrenamiento,
 				DayOfWeek día, ArrayList<Ejercicio> ejercicios) {

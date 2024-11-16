@@ -8,9 +8,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,9 +26,12 @@ import java.util.List;
 import java.util.concurrent.Flow;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
@@ -56,10 +64,6 @@ public class PerfilUsuario extends JFrame {
 							("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 					
 					Statement stmt = conn.createStatement();
-					
-					
-					
-					
 					ResultSet rs = stmt.executeQuery
 							("SELECT * FROM Usuario");
 					
@@ -105,11 +109,21 @@ public class PerfilUsuario extends JFrame {
 		botonPrincipal.setPreferredSize(new Dimension(100, 40));
 		panelNorte.add(botonPrincipal);
 		
-		// Label que simula la foto de perfil
-		JLabel fotoPerfil = new JLabel("");
-		fotoPerfil.setPreferredSize(new Dimension(130, 130));
-		fotoPerfil.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		panelNorte.add(fotoPerfil);
+		// Label que simula la foto de perfil	
+		ImageIcon fotoPerfil = new ImageIcon("Sources/imagenes/"+uElegido.getFotoPerfil());
+		Image image = fotoPerfil.getImage(); // Obtener el objeto Image
+	    Image newImg = image.getScaledInstance(160, 160, Image.SCALE_SMOOTH); // Ajustar tamaño
+	    fotoPerfil = new ImageIcon(newImg); // Crear un nuevo ImageIcon con la imagen redimensionada
+
+	    // Crear el JLabel y agregar la imagen
+	    JLabel label = new JLabel(fotoPerfil);
+		
+		panelNorte.add(label);
+		
+		//Boton para editar foto de perfil
+		JButton botonCambiarFoto = new JButton("Editar foto");
+		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
+		panelNorte.add(botonCambiarFoto);
 		
 		// Label del nombre y apellidos hecho con HTML para poder hacerlo en dos lineas
 		String texto = "<html><b>" + uElegido.getNombre() + "</b><br>"
@@ -193,6 +207,47 @@ public class PerfilUsuario extends JFrame {
 		// Añadimos el panelOeste
 		add(panelOeste, BorderLayout.WEST);		
 		
+		 // Acción del botón cambiar foto
+        botonCambiarFoto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Crear JFileChooser para seleccionar imagen
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                // Filtro para permitir solo imágenes
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                        "Imágenes (JPG, PNG, GIF)", "jpg", "png", "gif"));
+
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String nuevoNombreFoto = usuario + "_fotoPerfil" + getExtension(selectedFile.getName());
+                    File destino = new File("Sources/imagenes/" + nuevoNombreFoto);
+
+                    try {
+                        // Copiar la imagen a la carpeta del proyecto
+                    	
+                    	//Files.copy hecho con ChatGPT4
+                        Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                        // Actualizar la foto de perfil en la interfaz
+                        ImageIcon nuevaFoto = new ImageIcon(destino.getAbsolutePath());
+                        Image nuevaImagen = nuevaFoto.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+                        label.setIcon(new ImageIcon(nuevaImagen));
+
+                        // Actualizar la base de datos con el nuevo nombre
+                        actualizarFotoEnBaseDeDatos(usuario, nuevoNombreFoto);
+
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al copiar la imagen", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
 		String user3 = uElegido.getUsuario();
@@ -208,6 +263,35 @@ public class PerfilUsuario extends JFrame {
 		// Detalles ventana
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
+		
+	}
+
+
+
+	protected void actualizarFotoEnBaseDeDatos(String usuario, String nuevoNombreFoto) {
+		 try {
+	            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	            Statement stmt = conn.createStatement();
+
+	            // Actualizar el nombre de la foto en la base de datos
+	            String query = "UPDATE Usuario SET FotoDePerfil = '" + nuevoNombreFoto + "' WHERE Usuario = '" + usuario + "'";
+	            stmt.executeUpdate(query);
+
+	            stmt.close();
+	            conn.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Error al actualizar la foto en la base de datos", "Error",
+	                    JOptionPane.ERROR_MESSAGE);
+	        }
+		
+	}
+
+
+	//Generado con ChatGPT4
+	protected String getExtension(String filename) {
+		int lastIndex = filename.lastIndexOf('.');
+        return lastIndex == -1 ? "" : filename.substring(lastIndex);
 		
 	}
 	
