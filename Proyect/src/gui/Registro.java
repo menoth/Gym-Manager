@@ -151,6 +151,8 @@ public class Registro extends JFrame{
             }
         });
         
+        String usuario2 = "";
+        
         //Action listener del boton registrarse
         botonRegistrarse.addActionListener(new ActionListener() {
 			@Override
@@ -186,7 +188,7 @@ public class Registro extends JFrame{
 				}else {
 					
 					completarRegistro(nombre, apellidos, usuario, correo, contraseña);
-					nuevoPrincipal();
+					nuevoPrincipal(usuario);
 				}
 			}	
 			
@@ -216,11 +218,11 @@ public class Registro extends JFrame{
 	}
 	
 	//Metodo para cambiar a la ventana principal después del registro
-	protected void nuevoPrincipal() {
+	protected void nuevoPrincipal(String usuario) {
 		
 		dispose();
 		JOptionPane.showMessageDialog(Registro.this, "Registro exitoso");
-		PrincipalWindow principal = new PrincipalWindow();
+		PrincipalWindow principal = new PrincipalWindow(usuario);
 	   	principal.setVisible(true);
 	   	
 	}

@@ -8,16 +8,23 @@ public class Usuario {
 	protected String usuario;
 	protected String correoElectronico;
 	protected String contraseña;
+	protected String descripcion;
+	protected String fotoPerfil;
 	
 	
 	//CONSTRUCTOR
-	public Usuario(String nombre, String apellidos, String usuario, String correoElectronico, String contraseña) {
+
+	public Usuario(String nombre, String apellidos, String usuario, String correoElectronico, String contraseña,
+			String descripcion, String fotoPerfil) {
+
 		super();
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.usuario = usuario;
 		this.correoElectronico = correoElectronico;
 		this.contraseña = contraseña;
+		this.descripcion = descripcion;
+		this.fotoPerfil = fotoPerfil;
 	}
 	
 	
@@ -61,13 +68,31 @@ public class Usuario {
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
 	}
-	
+
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getFotoPerfil() {
+		return fotoPerfil;
+	}
+
+	public void setFotoPerfil(String fotoPerfil) {
+		this.fotoPerfil = fotoPerfil;
+	}
+
 	
 	//TOSTRING
 	@Override
 	public String toString() {
 		return "Usuario [nombre=" + nombre + ", apellidos=" + apellidos + ", usuario=" + usuario
-				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + "]";
+				+ ", correoElectronico=" + correoElectronico + ", contraseña=" + contraseña + ", descripcion="
+				+ descripcion + ", fotoPerfil=" + fotoPerfil + "]";
 	}
 
 	
@@ -93,6 +118,6 @@ public class Usuario {
 				&& Objects.equals(usuario, other.usuario);
 	}
 	
-	
+
 	
 }

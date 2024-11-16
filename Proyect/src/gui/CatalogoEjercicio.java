@@ -96,7 +96,7 @@ public class CatalogoEjercicio extends JFrame {
 		});
         
 //-------------------------------------Boton de administrador----------------------------------------
-        Usuario usuario = new Usuario("admin", "admin", "admin", "admin", "admin");
+        Usuario usuario = new Usuario("admin", "admin", "admin", "admin", "admin", "a", "a");
         
         //Detalles del botón
         JButton botonAdmin = new JButton("Administrador");

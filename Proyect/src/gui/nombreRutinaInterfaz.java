@@ -23,7 +23,7 @@ public class nombreRutinaInterfaz extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	nombreRutinaInterfaz(){
+	nombreRutinaInterfaz(String usuario){
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setLocationRelativeTo(null);
@@ -55,7 +55,7 @@ public class nombreRutinaInterfaz extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-                InterfazRutina ir = new InterfazRutina();
+                InterfazRutina ir = new InterfazRutina(usuario);
                 ir.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			}
 	    	

@@ -47,6 +47,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 
+import domain.Usuario;
+import main.MainProyecto;
+
+
 import javax.swing.JPopupMenu;
 
 import javax.swing.SwingConstants;
@@ -63,7 +67,7 @@ public class PrincipalWindow extends JFrame {
     private List<String> datos = new ArrayList<>();
 	private static final long serialVersionUID = 1L;
 
-	public PrincipalWindow() {
+	public PrincipalWindow(String usuario) {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		// Ahora el cierre pasa por un menú antes de cerrarse
@@ -105,7 +109,7 @@ public class PrincipalWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Hacemos que la ventana principal no se vea
 				setVisible(false);
-				PerfilUsuario perfilUsuario = new PerfilUsuario();
+				PerfilUsuario perfilUsuario = new PerfilUsuario(usuario);
 				// Cuando se abra la interfaz ocupará toda la pantalla
 				perfilUsuario.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				//Hacemos que la ventana del perfil se vea
@@ -187,7 +191,7 @@ public class PrincipalWindow extends JFrame {
 		// Añadimos todo a la ventana
 		general.add(pNorth, BorderLayout.NORTH);
 		
-		//----------------------------PANEL CON EL BOTÓN DE AÑADIR ENTRENAMIENTIOS------------------------------------------------------------------------
+		//----------------------------PANEL CON EL BOTÓN DE AÑADIR RUTINA------------------------------------------------------------------------
 		
 		// Creamos el panel donde irá el botón para añadir entrenamientos
 		JPanel panelAñadirEntrenamientos = new JPanel();
@@ -206,7 +210,7 @@ public class PrincipalWindow extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new nombreRutinaInterfaz();
+				new nombreRutinaInterfaz(usuario);
 				
 			}
 			
@@ -402,7 +406,9 @@ public class PrincipalWindow extends JFrame {
 	 }
 
      public static void main(String[] args) {
-         PrincipalWindow pw = new PrincipalWindow();
+    	 Usuario user = new Usuario("Prueba", "Prueba", "Prueba", "Prueba", "Prueba", "Prueba", "Prueba");
+    	
+         PrincipalWindow pw = new PrincipalWindow(user.getUsuario());
          pw.setExtendedState(JFrame.MAXIMIZED_BOTH);
      }
      

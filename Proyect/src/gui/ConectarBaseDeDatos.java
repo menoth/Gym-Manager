@@ -37,7 +37,9 @@ public class ConectarBaseDeDatos {
 				String usuario = rs.getString("Usuario");
 				String correoElectronico = rs.getString("Correo");
 				String contraseña = rs.getString("Contraseña");
-				usuarios.add(new Usuario(nombre, apellidos, usuario, correoElectronico, contraseña));
+				String descripcion = rs.getString("Descripcion");
+				String fotoDePerfil = rs.getString("FotoDePerfil");
+				usuarios.add(new Usuario(nombre, apellidos, usuario, correoElectronico, contraseña, descripcion, fotoDePerfil));
 			}
 			stmt.close();
 			conn.close();
