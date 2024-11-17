@@ -206,15 +206,8 @@ public class PrincipalWindow extends JFrame {
 		
 		
 		//Interfaz para pedir nombre y descripción de la rutina
-		añadirEntreno.addActionListener(new ActionListener() {
+		añadirEntreno.addActionListener(e -> new nombreRutinaInterfaz(PrincipalWindow.this, usuario));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new nombreRutinaInterfaz(usuario);
-				
-			}
-			
-		});
 		
 		// Añadimos el panel que va a contener el botón de añadir entrenamientos
 		general.add(panelAñadirEntrenamientos, BorderLayout.SOUTH);

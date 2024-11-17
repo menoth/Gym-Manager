@@ -1,41 +1,56 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.util.Map;
+
 import javax.swing.table.AbstractTableModel;
 
 public class ModeloJTable extends AbstractTableModel {
-    private static final long serialVersionUID = 1L;
 
-    //Añadimos el nombre y cantidad de columnas de la tabla
-    private String[] diasColumnas = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"};
-    private String[][] filas = {{"AÑADIR", "AÑADIR", "AÑADIR", "AÑADIR", "AÑADIR", "AÑADIR", "AÑADIR"}};
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private DayOfWeek dias;
+	private Map<DayOfWeek, Entrenamiento> mapaRutina;
+	
+	public ModeloJTable(DayOfWeek dias) {
+		this.dias = dias;
+	}
 
-    //Número de filas que tiene la tabla
-    @Override
-    public int getRowCount() {
-        return 1;
-    }
-    
-    //Número de columnas que tiene la tabla
-    @Override
-    public int getColumnCount() {
-        return diasColumnas.length;
-    }
+	@Override
+	public int getRowCount() {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+	
+	
 
-    //Información de una celda específica
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        return filas[rowIndex][columnIndex];
-    }
+	@Override
+	public int getColumnCount() {
+		return DayOfWeek.values().length;
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return DayOfWeek.of(column + 1).toString();
+	}
 
-    //Nombre de la columna para que aparezcan los días
-    @Override
-    public String getColumnName(int column) {
-        return diasColumnas[column];
-    }
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		
+		if (rowIndex == 0) {
+			return "Añadir ejercicio";	
+		}
+		return "";
+	}
 
-    //Para poder hacer que el botón funcione
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return true;
-    }
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		// TODO Auto-generated method stub
+		if (rowIndex == 0) {return true;}
+		return false;
+	}
+  
 }

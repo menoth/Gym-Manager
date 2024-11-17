@@ -23,7 +23,7 @@ public class nombreRutinaInterfaz extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	nombreRutinaInterfaz(String usuario){
+	nombreRutinaInterfaz(JFrame mainWindow, String usuario){
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setLocationRelativeTo(null);
@@ -33,6 +33,7 @@ public class nombreRutinaInterfaz extends JFrame{
 	    dialog.setLayout(new BorderLayout());
 	    dialog.setSize(300, 200);
 	    dialog.setLocation(620, 350);
+	    dialog.setTitle("Nueva rutina");
 		
 	    // Crear el panel principal del diálogo
 	    JPanel panelContenido = new JPanel();
@@ -40,8 +41,9 @@ public class nombreRutinaInterfaz extends JFrame{
 	    panelContenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 	    // Crear los componentes
-	    JLabel label = new JLabel("Inserte el nombre de la rutina:");
+	    JLabel labelNombre = new JLabel("Inserte el nombre de la rutina:");
 	    JTextField nombreRutina = new JTextField(10);
+	    JLabel labelDescripcion= new JLabel("Inserte la descripción de la rutina");
 	    JTextField descripcionRutina = new JTextField(10);
 
 	    // Botones de acción
@@ -55,8 +57,9 @@ public class nombreRutinaInterfaz extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-                InterfazRutina ir = new InterfazRutina(usuario);
-                ir.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				dialog.dispose();
+				mainWindow.dispose();
+                new InterfazRutina(usuario, nombreRutina.getText());
 			}
 	    	
 	    });
@@ -65,15 +68,16 @@ public class nombreRutinaInterfaz extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				dialog.dispose();
 				
 			}
 	    	
 	    });
 
 	    // Añadir componentes al panel principal
-	    panelContenido.add(label);
+	    panelContenido.add(labelNombre);
 	    panelContenido.add(nombreRutina);
+	    panelContenido.add(labelDescripcion);
 	    panelContenido.add(descripcionRutina);
 
 	    // Añadir botones al panel de botones
