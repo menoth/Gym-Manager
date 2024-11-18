@@ -26,7 +26,7 @@ public class nombreRutinaInterfaz extends JFrame{
 	nombreRutinaInterfaz(JFrame mainWindow, String usuario){
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 	    
 	    // Crear el diálogo
 	    JDialog dialog = new JDialog();
@@ -90,7 +90,6 @@ public class nombreRutinaInterfaz extends JFrame{
 
 	    // Mostrar el diálogo
 	    dialog.setVisible(true);
-		
 		
 		
 	}

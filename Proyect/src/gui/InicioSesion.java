@@ -130,7 +130,7 @@ public class InicioSesion extends JFrame {
     	List<Usuario> usuarios = new ArrayList<>();
     	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
     	for(Usuario u : usuarios) {
-    		if (((username.equals(u.getUsuario())) && password.equals(u.getContraseña()))) {
+    		if (((username.equals(u.getUsuario()) || (username.equals(u.getCorreoElectronico()))) && password.equals(u.getContraseña()))) {
 				sesion = true;
 			}
     	}
