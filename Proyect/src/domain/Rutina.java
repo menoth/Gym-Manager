@@ -1,6 +1,8 @@
 	package domain;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 public class Rutina{
@@ -9,6 +11,8 @@ public class Rutina{
 	private String nombre;
 	private String descripcionRutina;
 	private ArrayList<Entrenamiento> entrenamientos;
+	private Map<DayOfWeek, Entrenamiento > mapaRutina; //HACER DENUEVO LOS CONSTRUCTORES ETC...
+
 	
 	
 	//CONSTRUCTOR

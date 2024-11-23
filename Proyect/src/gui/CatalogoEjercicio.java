@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import domain.Usuario;
+
 
 
 
@@ -54,7 +56,7 @@ public class CatalogoEjercicio extends JFrame {
         	    "Striding", "Yoga", "Yoga Basics"
         	);
    
-	public CatalogoEjercicio(String usuario) {
+	public CatalogoEjercicio(String usuario, String nombreRutina) {
 		
 		
 		
@@ -88,7 +90,6 @@ public class CatalogoEjercicio extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				new InterfazRutina(usuario);
 				
 			}
 		});
@@ -246,6 +247,4 @@ public class CatalogoEjercicio extends JFrame {
 	}
 	
 	//-----------------------------------MÉTODOS-------------------------------------------------------------------------------------------
-	
-
 }
