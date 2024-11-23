@@ -8,6 +8,7 @@ public class Rutina{
 	private int id;
 	private String nombre;
 	private String descripcionRutina;
+	private ArrayList<Entrenamiento> entrenamientos;
 	
 	
 	//CONSTRUCTOR
@@ -18,8 +19,7 @@ public class Rutina{
 		this.descripcionRutina = descripcionRutina;
 		this.entrenamientos = entrenamientos;
 	}
-	
-	
+
 	
 	//GETTERS Y SETTERS
 	public int getId() {
@@ -46,7 +46,7 @@ public class Rutina{
 	public void setEntrenamientos(ArrayList<Entrenamiento> entrenamientos) {
 		this.entrenamientos = entrenamientos;
 	}
-	private ArrayList<Entrenamiento> entrenamientos;
+	
 
 	
 	

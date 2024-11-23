@@ -109,7 +109,7 @@ public class PerfilUsuario extends JFrame {
 		botonPrincipal.setPreferredSize(new Dimension(100, 40));
 		panelNorte.add(botonPrincipal);
 		
-		// Label que simula la foto de perfil	
+		// Label para la foto de perfil
 		ImageIcon fotoPerfil = new ImageIcon("Sources/imagenes/"+uElegido.getFotoPerfil());
 		Image image = fotoPerfil.getImage(); // Obtener el objeto Image
 	    Image newImg = image.getScaledInstance(160, 160, Image.SCALE_SMOOTH); // Ajustar tamaño
@@ -120,10 +120,7 @@ public class PerfilUsuario extends JFrame {
 		
 		panelNorte.add(label);
 		
-		//Boton para editar foto de perfil
-		JButton botonCambiarFoto = new JButton("Editar foto");
-		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
-		panelNorte.add(botonCambiarFoto);
+		
 		
 		// Label del nombre y apellidos hecho con HTML para poder hacerlo en dos lineas
 		String texto = "<html><b>" + uElegido.getNombre() + "</b><br>"
@@ -136,8 +133,30 @@ public class PerfilUsuario extends JFrame {
 		nombreApellidos.setFont(new Font("Arial",Font.PLAIN ,18));
 		panelNorte.add(nombreApellidos);
 		
+		//Boton para editar datos
+		JButton editarDatos = new JButton("Editar");
+		editarDatos.setPreferredSize(new Dimension(100, 50));
+		panelNorte.add(editarDatos);
+		
+		//Boton para editar foto de perfil
+		JButton botonCambiarFoto = new JButton("Editar foto");
+		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
+		
+		//Action listener que cuando editas el perfil te lleva a la ventana editarPerfil
+		editarDatos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new EditarPerfil();
+				
+			}
+		});
+		
+		
 		// Añadimos el panelNorte
 		add(panelNorte, BorderLayout.NORTH);
+		
+		
 		
 		//-------------------------------------------------------
 		
@@ -183,12 +202,31 @@ public class PerfilUsuario extends JFrame {
 		JPanel vitrina = new JPanel();
 		vitrina.setLayout(new GridLayout(2,3));
 		
-		JLabel prueba1 = new JLabel("aa");
+		//FotoVitrina1
+		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina1 = fotoVitrina1.getImage(); // Obtener el objeto Image
+	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
+	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
+		JLabel prueba1 = new JLabel(fotoVitrina1);
 		vitrina.add(prueba1);
-		JLabel prueba2 = new JLabel("aa");
+		
+		//FotoVitrina2
+		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina2 = fotoVitrina2.getImage(); // Obtener el objeto Image
+	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
+	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
+		JLabel prueba2 = new JLabel(fotoVitrina2);
 		vitrina.add(prueba2);
-		JLabel prueba3 = new JLabel("aa");
+		
+		//FotoVitrina3
+		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina3 = fotoVitrina3.getImage(); // Obtener el objeto Image
+	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH) ; // Ajustar tamaño
+		fotoVitrina3 = new ImageIcon(nuevaImagen3);
+		JLabel prueba3 = new JLabel(fotoVitrina3);
 		vitrina.add(prueba3);
+		
+		
 		JLabel prueba4 = new JLabel("aa");
 		vitrina.add(prueba4);
 		JLabel prueba5 = new JLabel("aa");
@@ -290,7 +328,7 @@ public class PerfilUsuario extends JFrame {
 
 	//Generado con ChatGPT4
 	protected String getExtension(String filename) {
-		int lastIndex = filename.lastIndexOf('.');
+		int lastIndex = filename.lastIndexOf('.');	
         return lastIndex == -1 ? "" : filename.substring(lastIndex);
 		
 	}
