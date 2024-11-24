@@ -97,8 +97,10 @@ public class PerfilUsuario extends JFrame {
 		// Primer layout
 		setLayout(new BorderLayout());
 		
-		// Añadimos el panel en el norte y lo dividimos en 1 fila y 6 columnas
+		
+		// Añadimos el panel en el norte
 		JPanel panelNorte = new JPanel();
+		panelNorte.setBackground(new Color(176,224,230));
 		panelNorte.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 10));
 		
 		// Margenes para el panelNorte
@@ -142,12 +144,17 @@ public class PerfilUsuario extends JFrame {
 		JButton botonCambiarFoto = new JButton("Editar foto");
 		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
 		
+		//Para que no de errores el action listener
+		Usuario uFinal = uElegido;
+		
 		//Action listener que cuando editas el perfil te lleva a la ventana editarPerfil
 		editarDatos.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				new EditarPerfil();
+			public void actionPerformed(ActionEvent e) {				
+				new EditarPerfil(uFinal);
+				dispose();
+				
 				
 			}
 		});
@@ -162,6 +169,7 @@ public class PerfilUsuario extends JFrame {
 		
 		// Nuevo panel en la izquierda
 		JPanel panelOeste = new JPanel();
+		panelOeste.setBackground(new Color(176,224,230));
 		
 		// Tendrá una columna y tres filas, una para la descripción del perfil
 		// y 2 para la vitrina de logros.
@@ -245,46 +253,6 @@ public class PerfilUsuario extends JFrame {
 		// Añadimos el panelOeste
 		add(panelOeste, BorderLayout.WEST);		
 		
-		 // Acción del botón cambiar foto
-        botonCambiarFoto.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Crear JFileChooser para seleccionar imagen
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-                // Filtro para permitir solo imágenes
-                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                        "Imágenes (JPG, PNG, GIF)", "jpg", "png", "gif"));
-
-                int result = fileChooser.showOpenDialog(null);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    String nuevoNombreFoto = usuario + "_fotoPerfil" + getExtension(selectedFile.getName());
-                    File destino = new File("Sources/imagenes/" + nuevoNombreFoto);
-
-                    try {
-                        // Copiar la imagen a la carpeta del proyecto
-                    	
-                    	//Files.copy hecho con ChatGPT4
-                        Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                        // Actualizar la foto de perfil en la interfaz
-                        ImageIcon nuevaFoto = new ImageIcon(destino.getAbsolutePath());
-                        Image nuevaImagen = nuevaFoto.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-                        label.setIcon(new ImageIcon(nuevaImagen));
-
-                        // Actualizar la base de datos con el nuevo nombre
-                        actualizarFotoEnBaseDeDatos(usuario, nuevoNombreFoto);
-
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Error al copiar la imagen", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
@@ -302,35 +270,5 @@ public class PerfilUsuario extends JFrame {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 		
-	}
-
-
-
-	protected void actualizarFotoEnBaseDeDatos(String usuario, String nuevoNombreFoto) {
-		 try {
-	            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
-	            Statement stmt = conn.createStatement();
-
-	            // Actualizar el nombre de la foto en la base de datos
-	            String query = "UPDATE Usuario SET FotoDePerfil = '" + nuevoNombreFoto + "' WHERE Usuario = '" + usuario + "'";
-	            stmt.executeUpdate(query);
-
-	            stmt.close();
-	            conn.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Error al actualizar la foto en la base de datos", "Error",
-	                    JOptionPane.ERROR_MESSAGE);
-	        }
-		
-	}
-
-
-	//Generado con ChatGPT4
-	protected String getExtension(String filename) {
-		int lastIndex = filename.lastIndexOf('.');	
-        return lastIndex == -1 ? "" : filename.substring(lastIndex);
-		
-	}
-	
+	}	
 }
