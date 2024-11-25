@@ -94,22 +94,34 @@ public class PerfilUsuario extends JFrame {
 		setLocationRelativeTo(null);
 		setTitle("Perfil");
 		
-		// Primer layout
-		setLayout(new BorderLayout());
+		// Primer layout que divide en dos la ventana del Perfil
+		setLayout(new GridLayout(1, 2));
 		
+		//El panel izquierda tendrá nombre, apellidos, vitrina... y 
+		//el pane derecha tendrá las rutinas con sus estad´sticas
+		JPanel pIzquierda = new JPanel();
+		pIzquierda.setBackground(new Color(176,224,230));
+		pIzquierda.setLayout(new GridLayout(3,1));
 		
-		// Añadimos el panel en el norte
-		JPanel panelNorte = new JPanel();
-		panelNorte.setBackground(new Color(176,224,230));
-		panelNorte.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 10));
+		// Margenes para el panelIzquierda
+		pIzquierda.setBorder(new EmptyBorder(60, 50, 50, 50)); 		
 		
-		// Margenes para el panelNorte
-		panelNorte.setBorder(new EmptyBorder(60, 20, 10, 10)); 		
+		//El panel izquierda se divide en 3 paneles
+		JPanel panelIz1 = new JPanel();
+		panelIz1.setLayout(new FlowLayout(FlowLayout.CENTER ,50, 30));
+		panelIz1.setBackground(new Color(176,224,230));
+		
+		JPanel panelIz2 = new JPanel();
+		panelIz2.setBackground(new Color(176,224,230));
+		
+		JPanel panelIz3 = new JPanel();
+		panelIz3.setLayout(new GridLayout(2, 3));
 		
 		// Botón para volver a la ventana principal
+		
 		JButton botonPrincipal = new JButton("VOLVER");
 		botonPrincipal.setPreferredSize(new Dimension(100, 40));
-		panelNorte.add(botonPrincipal);
+		panelIz1.add(botonPrincipal);
 		
 		// Label para la foto de perfil
 		ImageIcon fotoPerfil = new ImageIcon("Sources/imagenes/"+uElegido.getFotoPerfil());
@@ -120,9 +132,7 @@ public class PerfilUsuario extends JFrame {
 	    // Crear el JLabel y agregar la imagen
 	    JLabel label = new JLabel(fotoPerfil);
 		
-		panelNorte.add(label);
-		
-		
+		panelIz1.add(label);
 		
 		// Label del nombre y apellidos hecho con HTML para poder hacerlo en dos lineas
 		String texto = "<html><b>" + uElegido.getNombre() + "</b><br>"
@@ -133,12 +143,12 @@ public class PerfilUsuario extends JFrame {
 		
 		// Cambiamos el tamaño de la fuente
 		nombreApellidos.setFont(new Font("Arial",Font.PLAIN ,18));
-		panelNorte.add(nombreApellidos);
+		panelIz1.add(nombreApellidos);
 		
 		//Boton para editar datos
-		JButton editarDatos = new JButton("Editar");
+		JButton editarDatos = new JButton("EDITAR");
 		editarDatos.setPreferredSize(new Dimension(100, 50));
-		panelNorte.add(editarDatos);
+		panelIz1.add(editarDatos);
 		
 		//Boton para editar foto de perfil
 		JButton botonCambiarFoto = new JButton("Editar foto");
@@ -159,32 +169,7 @@ public class PerfilUsuario extends JFrame {
 			}
 		});
 		
-		
-		// Añadimos el panelNorte
-		add(panelNorte, BorderLayout.NORTH);
-		
-		
-		
-		//-------------------------------------------------------
-		
-		// Nuevo panel en la izquierda
-		JPanel panelOeste = new JPanel();
-		panelOeste.setBackground(new Color(176,224,230));
-		
-		// Tendrá una columna y tres filas, una para la descripción del perfil
-		// y 2 para la vitrina de logros.
-		panelOeste.setLayout(new GridLayout(2, 1));
-		
-		
-		// Margenes para el panelNorte
-		panelOeste.setBorder(new EmptyBorder(60, 80, 10, 10)); 	
-		
-		// Creamos otro panel que irá en la posicion (1,1) del gridLayout
-		// con el fin de ajustar el tamaño del JTextArea
-		JPanel panelSubOeste1 = new JPanel();
-		panelSubOeste1.setLayout(new FlowLayout());
-		
-		
+
 		// Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
 		
@@ -196,27 +181,15 @@ public class PerfilUsuario extends JFrame {
 		desc.setPreferredSize(new Dimension(400, 200));
 		
 		// Añadimos la descripcion a panelSubOeste1
-		panelSubOeste1.add(desc);
+		panelIz2.add(desc);
 			
-		// Nuevo panelSubOeste2 para el label vitrina
-		JPanel panelSubOeste2 = new JPanel();
-		panelSubOeste2.setLayout(new BorderLayout());
-		
-		JLabel labelVitrina = new JLabel("Vitrina");
-		
-		panelSubOeste2.add(labelVitrina, BorderLayout.NORTH);
-		
-		// Un panel de (2,3) para la vitrina
-		JPanel vitrina = new JPanel();
-		vitrina.setLayout(new GridLayout(2,3));
-		
 		//FotoVitrina1
 		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
 		Image imagenVitrina1 = fotoVitrina1.getImage(); // Obtener el objeto Image
 	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
 	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
 		JLabel prueba1 = new JLabel(fotoVitrina1);
-		vitrina.add(prueba1);
+		panelIz3.add(prueba1);
 		
 		//FotoVitrina2
 		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
@@ -224,7 +197,7 @@ public class PerfilUsuario extends JFrame {
 	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
 	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
 		JLabel prueba2 = new JLabel(fotoVitrina2);
-		vitrina.add(prueba2);
+		panelIz3.add(prueba2);
 		
 		//FotoVitrina3
 		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
@@ -232,27 +205,15 @@ public class PerfilUsuario extends JFrame {
 	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH) ; // Ajustar tamaño
 		fotoVitrina3 = new ImageIcon(nuevaImagen3);
 		JLabel prueba3 = new JLabel(fotoVitrina3);
-		vitrina.add(prueba3);
+		panelIz3.add(prueba3);
 		
 		
-		JLabel prueba4 = new JLabel("aa");
-		vitrina.add(prueba4);
-		JLabel prueba5 = new JLabel("aa");
-		vitrina.add(prueba5);
-		JLabel prueba6 = new JLabel("aa");
-		vitrina.add(prueba6);
-		
-		panelSubOeste2.add(vitrina);
-		
-		// Añadimos el panelSubOeste1 a panelOeste
-		panelOeste.add(panelSubOeste1);
-		
-		// Añadimos el panelSubOeste2 a panelOeste
-		panelOeste.add(panelSubOeste2);
-		
-		// Añadimos el panelOeste
-		add(panelOeste, BorderLayout.WEST);		
-		
+		JLabel prueba4 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba4);
+		JLabel prueba5 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba5);
+		JLabel prueba6 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba6);		
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
@@ -265,7 +226,21 @@ public class PerfilUsuario extends JFrame {
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
-				
+		
+		setBackground(Color.black);
+		
+		// Añadimos	los paneles
+		add(pIzquierda);
+		pIzquierda.add(panelIz1);
+		pIzquierda.add(panelIz2);
+		pIzquierda.add(panelIz3);
+		
+//------------------------LADO DERECHO------------------------------
+		JPanel pDerecha = new JPanel();
+		add(pDerecha);
+		
+		 	
+		
 		// Detalles ventana
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
