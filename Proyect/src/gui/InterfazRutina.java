@@ -24,12 +24,13 @@ public class InterfazRutina extends JFrame {
 
     InterfazRutina(String usuario, String nombreRutina) {
     	
+    	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     	
     	
     	JPanel panelGeneral = new JPanel();
     	panelGeneral.setLayout(new BorderLayout());
     	
-    	JTable rutina = new JTable(new ModeloJTable(dias));
+    	JTable rutina = new JTable(new ModeloJTable(null, null, null));
     	rutina.setDefaultRenderer(Object.class, new RendererTabla(usuario, nombreRutina));
     	
     	for (int i = 0; i < rutina.getColumnCount(); i++) {
@@ -57,7 +58,7 @@ public class InterfazRutina extends JFrame {
     	panelAbajoIzquierda.add(cancelarBtn);
     	panelAbajoIzquierda.add(new JButton("ELIMINAR EJERCICIO"));
     	panelAbajoIzquierda.add(new JButton("GUARDAR"));
-    	
+    		
     	panelAbajo.add(panelAbajoIzquierda);
     	
     	panelGeneral.add(jsp, BorderLayout.CENTER);

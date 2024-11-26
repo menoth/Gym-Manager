@@ -1,6 +1,7 @@
 package domain;
 
 
+
 import java.util.List;
 import java.util.Objects;
 
@@ -104,15 +105,7 @@ public class Ejercicio{
 		return id == other.id && musculoPrincipal == other.musculoPrincipal
 				&& musculoSecundario == other.musculoSecundario && musculoSecundario2 == other.musculoSecundario2
 				&& Objects.equals(nombre, other.nombre) && Objects.equals(series, other.series);
-	}
-	
-	
-	
-	
-
-
-	
-	
+	}	
 	
 	
 }

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -16,10 +18,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import domain.Ejercicio;
+import domain.Serie;
 import domain.Usuario;
 
 
@@ -90,6 +96,7 @@ public class CatalogoEjercicio extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
+				new InterfazRutina(usuario, nombreRutina);
 				
 			}
 		});
@@ -179,6 +186,21 @@ public class CatalogoEjercicio extends JFrame {
 				    // Crear los componentes
 				    JLabel label = new JLabel("Ingrese cuantas repeticiones:");
 				    JTextField textField = new JTextField(10);
+				    JLabel label2 = new JLabel("Ingrese el esfuerzo que se va a realizar:");
+				    
+				    JRadioButton radioButton1 = new JRadioButton("Aprox.");
+			        JRadioButton radioButton2 = new JRadioButton("Estandar");
+			        JRadioButton radioButton3 = new JRadioButton("Topset");
+
+			        ButtonGroup radioButtonGroup = new ButtonGroup();
+			        radioButtonGroup.add(radioButton1);
+			        radioButtonGroup.add(radioButton2);
+			        radioButtonGroup.add(radioButton3);
+			        
+			        JPanel radioButtonPanel = new JPanel();
+			        radioButtonPanel.add(radioButton1);
+			        radioButtonPanel.add(radioButton2);
+			        radioButtonPanel.add(radioButton3);
 
 				    // Botones de acción
 				    JPanel panelBotones = new JPanel();
@@ -189,6 +211,7 @@ public class CatalogoEjercicio extends JFrame {
 
 						@Override
 						public void actionPerformed(ActionEvent e) {
+							dialog.dispose();
 							
 						}
 				    	
@@ -203,10 +226,18 @@ public class CatalogoEjercicio extends JFrame {
 						}
 				    	
 				    });
+				    
+				    label.setAlignmentX(Component.CENTER_ALIGNMENT);
+				    textField.setAlignmentX(Component.CENTER_ALIGNMENT);
+				    label2.setAlignmentX(Component.CENTER_ALIGNMENT);
+				    radioButtonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 
 				    // Añadir componentes al panel principal
 				    panelContenido.add(label);
 				    panelContenido.add(textField);
+				    panelContenido.add(label2);
+				    panelContenido.add(radioButtonPanel);
 
 				    // Añadir botones al panel de botones
 				    panelBotones.add(btnAceptar);

@@ -1,27 +1,46 @@
 package domain;
 
 import java.time.DayOfWeek;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
 public class ModeloJTable extends AbstractTableModel {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DayOfWeek dias;
+	private List<Entrenamiento> entrenamientos;
 	private Map<DayOfWeek, Entrenamiento> mapaRutina;
 	
-	public ModeloJTable(DayOfWeek dias) {
-		this.dias = dias;
+	public ModeloJTable(DayOfWeek dias, Map<DayOfWeek, Entrenamiento> mapaRutina, List<Entrenamiento> entrenamientos) {
+		this.mapaRutina = mapaRutina;
+		//this.entrenamientos = entrenamientos;
+		
+		/**
+		mapaRutina = new HashMap<DayOfWeek, Entrenamiento>();
+		
+		for (Entrenamiento e : entrenamientos) {
+			if(!mapaRutina.containsKey(e.getDía())) {
+				mapaRutina.put(e.getDía(), e);
+			}
+			
+		}
+		**/
+
+		
 	}
 
 	@Override
 	public int getRowCount() {
-		// TODO Auto-generated method stub
+		
+		if(this.mapaRutina != null) {
+			return mapaRutina.keySet().size();
+		}
 		return 1;
 	}
 	
