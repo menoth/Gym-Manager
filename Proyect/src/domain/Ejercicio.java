@@ -12,85 +12,95 @@ public class Ejercicio{
 		GLUTEO, CARDIO
 	}
 	
-	private String nombre;
 	private int id;
+	private String nombre;
+	private int ID_Entrenamiento;
 	private Musculo musculoPrincipal;
 	private Musculo musculoSecundario;
-	private Musculo musculoSecundario2;
 	private List<Serie> series;
+	private int OrdenEnEntrenamiento;
 	
-	
-	
-	//CONSTRUCTOR
-	public Ejercicio(String nombre, int id, Musculo musculoPrincipal, Musculo musculoSecundario,
-			Musculo musculoSecundario2, List<Serie> series) {
+
+	public Ejercicio(int id, String nombre, int iD_Entrenamiento, Musculo musculoPrincipal, Musculo musculoSecundario,
+			List<Serie> series, int ordenEnEntrenamiento) {
 		super();
-		this.nombre = nombre;
 		this.id = id;
+		this.nombre = nombre;
+		ID_Entrenamiento = iD_Entrenamiento;
 		this.musculoPrincipal = musculoPrincipal;
 		this.musculoSecundario = musculoSecundario;
-		this.musculoSecundario2 = musculoSecundario2;
 		this.series = series;
+		OrdenEnEntrenamiento = ordenEnEntrenamiento;
 	}
-	
-	
-	
-	//GETTERS Y SETTERS
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public int getID_Entrenamiento() {
+		return ID_Entrenamiento;
+	}
+
+	public void setID_Entrenamiento(int iD_Entrenamiento) {
+		ID_Entrenamiento = iD_Entrenamiento;
+	}
+
 	public Musculo getMusculoPrincipal() {
 		return musculoPrincipal;
 	}
+
 	public void setMusculoPrincipal(Musculo musculoPrincipal) {
 		this.musculoPrincipal = musculoPrincipal;
 	}
+
 	public Musculo getMusculoSecundario() {
 		return musculoSecundario;
 	}
+
 	public void setMusculoSecundario(Musculo musculoSecundario) {
 		this.musculoSecundario = musculoSecundario;
 	}
-	public Musculo getMusculoSecundario2() {
-		return musculoSecundario2;
-	}
-	public void setMusculoSecundario2(Musculo musculoSecundario2) {
-		this.musculoSecundario2 = musculoSecundario2;
-	}
+
 	public List<Serie> getSeries() {
 		return series;
 	}
+
 	public void setSeries(List<Serie> series) {
 		this.series = series;
 	}
 
-		
-	
-	//TOSTRING
+	public int getOrdenEnEntrenamiento() {
+		return OrdenEnEntrenamiento;
+	}
+
+	public void setOrdenEnEntrenamiento(int ordenEnEntrenamiento) {
+		OrdenEnEntrenamiento = ordenEnEntrenamiento;
+	}
+
 	@Override
 	public String toString() {
-		return "Ejercicio [nombre=" + nombre + ", id=" + id + ", musculoPrincipal=" + musculoPrincipal
-				+ ", musculoSecundario=" + musculoSecundario + ", musculoSecundario2=" + musculoSecundario2
-				+ ", series=" + series + "]";
+		return "Ejercicio [id=" + id + ", nombre=" + nombre + ", ID_Entrenamiento=" + ID_Entrenamiento
+				+ ", musculoPrincipal=" + musculoPrincipal + ", musculoSecundario=" + musculoSecundario + ", series="
+				+ series + ", OrdenEnEntrenamiento=" + OrdenEnEntrenamiento + "]";
 	}
 
-	
-	
-	//HASHCODE Y EQUALS
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, musculoPrincipal, musculoSecundario, musculoSecundario2, nombre, series);
+		return Objects.hash(ID_Entrenamiento, OrdenEnEntrenamiento, id, musculoPrincipal, musculoSecundario, nombre,
+				series);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,16 +111,12 @@ public class Ejercicio{
 		if (getClass() != obj.getClass())
 			return false;
 		Ejercicio other = (Ejercicio) obj;
-		return id == other.id && musculoPrincipal == other.musculoPrincipal
-				&& musculoSecundario == other.musculoSecundario && musculoSecundario2 == other.musculoSecundario2
-				&& Objects.equals(nombre, other.nombre) && Objects.equals(series, other.series);
+		return ID_Entrenamiento == other.ID_Entrenamiento && OrdenEnEntrenamiento == other.OrdenEnEntrenamiento
+				&& id == other.id && musculoPrincipal == other.musculoPrincipal
+				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(series, other.series);
 	}
 	
-	
-	
-	
-
-
 	
 	
 	
