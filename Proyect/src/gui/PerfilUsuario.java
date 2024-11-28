@@ -270,28 +270,33 @@ public class PerfilUsuario extends JFrame {
 		
 		//Lista en la que se meten las rutinas del usuario
 		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
-//		for (Rutina rutina : listaRutinas) {
-//			if(rutina.getUsuario()) {
-//				rutinasUsuario.add(rutina);	
-//			}
-//		}
+		for (Rutina rutina : listaRutinas) {
+			if(rutina.getUsuario().equals(usuario)) {
+				rutinasUsuario.add(rutina);	
+			}
+		}
 		
 		
 		JTable table = new JTable(new RutinaModel());
-		table.getColumnModel().getColumn(2).setCellRenderer(new RendererBoton());
-		table.getColumnModel().getColumn(2).setCellEditor(new EditorBoton());
+		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
+		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario));
 		
 		//Ajustar el tamaño de Nombre
-		table.getColumnModel().getColumn(0).setWidth(170);
-		table.getColumnModel().getColumn(0).setMinWidth(170);
-		table.getColumnModel().getColumn(0).setMaxWidth(170); 
+		table.getColumnModel().getColumn(1).setWidth(170);
+		table.getColumnModel().getColumn(1).setMinWidth(170);
+		table.getColumnModel().getColumn(1).setMaxWidth(170); 
 		
 		//Ajustar el tamaño de descripcion
-		table.getColumnModel().getColumn(1).setWidth(340);
-		table.getColumnModel().getColumn(1).setMinWidth(340);
-		table.getColumnModel().getColumn(1).setMaxWidth(340); 
+		table.getColumnModel().getColumn(2).setWidth(340);
+		table.getColumnModel().getColumn(2).setMinWidth(340);
+		table.getColumnModel().getColumn(2).setMaxWidth(340);
 		
-		table.setRowHeight(70);
+		// Oculta la columna "id" (primera columna en el modelo original)
+		table.getColumnModel().getColumn(0).setMinWidth(0);
+		table.getColumnModel().getColumn(0).setMaxWidth(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(0);
+		
+		table.setRowHeight(120);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		pDerecha.add(scrollPane, BorderLayout.CENTER);	
@@ -308,36 +313,26 @@ public class PerfilUsuario extends JFrame {
 		 */
 		private static final long serialVersionUID = -857471165146589501L;
 
-		private String[] nombreDatos = {"Nombre", "Descripción", "Acciones"};
+		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
 	    
 	    //Cambiar esta lista por rutinasUsuario
 	    private Object[][] data = {
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            
-	            {"Rutina C", "Descripción C", "Botones"}
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"2", "Rutina B", "Descripción B", "Botones"}
+	           
 	    };
 
 	    @Override
@@ -347,6 +342,7 @@ public class PerfilUsuario extends JFrame {
 
 	    @Override
 	    public int getColumnCount() {
+	    	//Para mantener la columna id oculta
 	        return nombreDatos.length;
 	    }
 
@@ -363,7 +359,7 @@ public class PerfilUsuario extends JFrame {
 	    //Necesario poder editar la columna 2 para poder implementar los botones
 	    @Override
 	    public boolean isCellEditable(int rowIndex, int columnIndex) {
-	        return columnIndex == 2; // Sólo la columna de botones es editable
+	        return columnIndex == 3; // Sólo la columna de botones es editable
 	    }
 
 	    @Override
@@ -389,11 +385,36 @@ public class PerfilUsuario extends JFrame {
 	        // Limpia el panel para cada renderizado
 	        this.removeAll();
 
+	        //Icono editar
+	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
+	        Image img = iconoLapiz.getImage();
+	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoLapiz = new ImageIcon(imgEscalada);
+	        
+	        //Icono expandir
+	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
+	        Image img2 = iconoExpandir.getImage();
+	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoExpandir = new ImageIcon(img2Escalada);
+	        
+	        
+	        //Icono eliminar
+	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
+	        Image img3 = iconoEliminar.getImage();
+	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEliminar = new ImageIcon(img3Escalada);
+	        
+	        //Icono estadisticas
+	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
+	        Image img4 = iconoEstadisticas.getImage();
+	        Image img4Escalada = img4.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEstadisticas = new ImageIcon(img4Escalada);
+	        
 	        // Añade los botones necesarios
-	        this.add(new JButton("Editar"));
-	        this.add(new JButton("Expandir"));
-	        this.add(new JButton("Eliminar"));
-	        this.add(new JButton("Estadísticas"));
+	        this.add(new JButton(iconoLapiz));
+	        this.add(new JButton(iconoExpandir));
+	        this.add(new JButton(iconoEliminar));
+	        this.add(new JButton(iconoEstadisticas));
 
 	        return this;
 	    }
@@ -407,29 +428,121 @@ public class PerfilUsuario extends JFrame {
 		private static final long serialVersionUID = -3543889255680517811L;
 		
 		private JPanel panel;
-	    private JTable table;
-	    private int editingRow = -1;
-
-	    public EditorBoton() {
+		private JTable table;
+		private int editingRow = -1;
+		
+	    public EditorBoton(String usuario) {
 	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	        JButton editButton = new JButton(new ImageIcon("Sources/imagenes/lapiz.png"));
-	        JButton expandButton = new JButton(new ImageIcon("Sources/imagenes/expandir.png"));
-	        JButton deleteButton = new JButton(new ImageIcon("Sources/imagenes/eliminar.png"));
-	        JButton statsButton = new JButton(new ImageIcon("Sources/imagenes/estadisticas.png"));
-
-	       //Aquí tienen que ir los action listener para los botones
-
+	      //Icono editar
+	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
+	        Image img = iconoLapiz.getImage();
+	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoLapiz = new ImageIcon(imgEscalada);
+	        
+	        //Icono expandir
+	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
+	        Image img2 = iconoExpandir.getImage();
+	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoExpandir = new ImageIcon(img2Escalada);
+	        
+	        
+	        //Icono eliminar
+	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
+	        Image img3 = iconoEliminar.getImage();
+	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEliminar = new ImageIcon(img3Escalada);
+	        
+	        //Icono estadisticas
+	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
+	        Image img4 = iconoEstadisticas.getImage();
+	        Image img4Escalada = img4.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEstadisticas = new ImageIcon(img4Escalada);
+	        
+	        JButton editButton = new JButton(iconoLapiz);
+	        JButton expandButton = new JButton(iconoExpandir);
+	        JButton deleteButton = new JButton(iconoEliminar);
+	        JButton statsButton = new JButton(iconoEstadisticas);
+	        
+	        //Action listener para editar
+	        editButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
+	        //Action listener expandir
+	        expandButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
+	        //Action listener eliminar
+	        deleteButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int row = table.getEditingRow();
+					if (row != -1) {
+						Object id = table.getModel().getValueAt(row, 0);
+						eliminarRutina((int) id);
+					}
+				}
+			});
+	        
+	        //Action listener estadísticas
+	        statsButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
 	        panel.add(editButton);
 	        panel.add(expandButton);
 	        panel.add(deleteButton);
 	        panel.add(statsButton);
 	    }
 
-	    @Override
+	    protected void eliminarRutina(int id) {
+	    	try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				System.out.println("No se ha podido cargar el driver de la BD");
+			}
+			
+			//Conectar a la BD
+			try {
+				Connection conn = DriverManager.getConnection
+						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+				
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery
+						("DELETE FROM Rutinas WHERE id ="+id);
+				
+				
+			
+				stmt.close();
+				conn.close(); 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			
+			}
+	    }
+
+		@Override
 	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-	        this.table = table;
-	        this.editingRow = row; // Guarda la fila actual
 	        return panel;
 	    }
 
