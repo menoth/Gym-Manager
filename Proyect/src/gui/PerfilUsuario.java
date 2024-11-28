@@ -413,10 +413,10 @@ public class PerfilUsuario extends JFrame {
 	    public EditorBoton() {
 	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	        JButton editButton = new JButton("Editar");
-	        JButton expandButton = new JButton("Expandir");
-	        JButton deleteButton = new JButton("Eliminar");
-	        JButton statsButton = new JButton("Estadísticas");
+	        JButton editButton = new JButton(new ImageIcon("Sources/imagenes/lapiz.png"));
+	        JButton expandButton = new JButton(new ImageIcon("Sources/imagenes/expandir.png"));
+	        JButton deleteButton = new JButton(new ImageIcon("Sources/imagenes/eliminar.png"));
+	        JButton statsButton = new JButton(new ImageIcon("Sources/imagenes/estadisticas.png"));
 
 	       //Aquí tienen que ir los action listener para los botones
 
