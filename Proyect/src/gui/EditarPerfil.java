@@ -31,6 +31,12 @@ import domain.Usuario;
 
 public class EditarPerfil extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public EditarPerfil(Usuario usuario) {
 		
 		setSize(new Dimension(500, 650));

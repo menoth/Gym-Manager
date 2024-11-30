@@ -183,13 +183,14 @@ public class PerfilUsuario extends JFrame {
 		});
 		
 
-		// Creamos un jTextArea que será la descripción del usuario
+		//Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
+		desc.setBackground(new Color(195,248,255));
 		
 		// Detalles del JTextArea
-		desc.setWrapStyleWord(true); // Ajusta palabras completas en la línea siguiente
-		desc.setLineWrap(true); // Habilita el ajuste de línea
-		desc.setEditable(false); // No editable
+		desc.setWrapStyleWord(true);
+		desc.setLineWrap(true);
+		desc.setEditable(false);
 		desc.setFont(new Font("Arial", Font.PLAIN, 18));
 		desc.setPreferredSize(new Dimension(400, 200));
 		
@@ -198,24 +199,24 @@ public class PerfilUsuario extends JFrame {
 			
 		//FotoVitrina1
 		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina1 = fotoVitrina1.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
+		Image imagenVitrina1 = fotoVitrina1.getImage();
+	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
 	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
 		JLabel prueba1 = new JLabel(fotoVitrina1);
 		panelIz3.add(prueba1);
 		
 		//FotoVitrina2
 		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina2 = fotoVitrina2.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
+		Image imagenVitrina2 = fotoVitrina2.getImage();
+	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
 	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
 		JLabel prueba2 = new JLabel(fotoVitrina2);
 		panelIz3.add(prueba2);
 		
 		//FotoVitrina3
 		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina3 = fotoVitrina3.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH) ; // Ajustar tamaño
+		Image imagenVitrina3 = fotoVitrina3.getImage();
+	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
 		fotoVitrina3 = new ImageIcon(nuevaImagen3);
 		JLabel prueba3 = new JLabel(fotoVitrina3);
 		panelIz3.add(prueba3);
