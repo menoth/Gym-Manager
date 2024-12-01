@@ -18,11 +18,15 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Flow;
 
 import javax.swing.AbstractCellEditor;
@@ -45,6 +49,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import domain.Logro;
 import domain.Rutina;
 import domain.Usuario;
 
@@ -55,11 +60,49 @@ public class PerfilUsuario extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	
+	public class LogrosUsuarioLoader {
+
+	    public static Map<String, List<String>> cargarLogrosPorUsuario() {
+	        // Mapa que almacena los logros seleccionados por cada usuario
+	        Map<String, List<String>> logrosPorUsuario = new HashMap<>();
+	        
+	        // Conexión a la base de datos
+	        String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
+
+	        String query = """
+	            SELECT U.Usuario AS Usuario, L.Nombre AS Logro
+	            FROM ConsigueLogro CL
+	            JOIN Usuario U ON CL.Usuario = U.Usuario
+	            JOIN Logro L ON CL.Logro = L.ID_Logro
+	            """;
+
+	        try (Connection conn = DriverManager.getConnection(url);
+	             PreparedStatement stmt = conn.prepareStatement(query);
+	             ResultSet rs = stmt.executeQuery()) {
+	            
+	            // Recorrer los resultados
+	            while (rs.next()) {
+	                String usuario = rs.getString("Usuario");
+	                String logro = rs.getString("Logro");
+	                
+	                // Si el usuario no está en el mapa, inicializamos su lista de logros
+	                logrosPorUsuario.putIfAbsent(usuario, new ArrayList<>());
+	                
+	                // Añadimos el logro a la lista del usuario
+	                logrosPorUsuario.get(usuario).add(logro);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        return logrosPorUsuario;
+	    }
+	}
 	
 	public PerfilUsuario(String usuario) {
 		
 //----------------------------------------------BD-------------------------------------------------------------------		
+	
 		List<Usuario> usuarios = new ArrayList<>();
 		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
 		//Carga del driver de JDBC para SQLITE
@@ -98,7 +141,10 @@ public class PerfilUsuario extends JFrame {
 					conn.close(); 
 				} catch (SQLException e) {
 					e.printStackTrace();
-				}	
+				}
+
+		
+				
 
 				
 //-----------------------------JFRAME------------------------------------------------------------
@@ -128,7 +174,7 @@ public class PerfilUsuario extends JFrame {
 		panelIz2.setBackground(new Color(176,224,230));
 		
 		JPanel panelIz3 = new JPanel();
-		panelIz3.setLayout(new GridLayout(2, 3));
+		panelIz3.setLayout(new GridLayout(1, 3));
 		
 		// Botón para volver a la ventana principal
 		
@@ -196,37 +242,8 @@ public class PerfilUsuario extends JFrame {
 		// Añadimos la descripcion a panelSubOeste1
 		panelIz2.add(desc);
 			
-		//FotoVitrina1
-		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina1 = fotoVitrina1.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
-	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
-		JLabel prueba1 = new JLabel(fotoVitrina1);
-		panelIz3.add(prueba1);
 		
-		//FotoVitrina2
-		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina2 = fotoVitrina2.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH); // Ajustar tamaño
-	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
-		JLabel prueba2 = new JLabel(fotoVitrina2);
-		panelIz3.add(prueba2);
-		
-		//FotoVitrina3
-		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina3 = fotoVitrina3.getImage(); // Obtener el objeto Image
-	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH) ; // Ajustar tamaño
-		fotoVitrina3 = new ImageIcon(nuevaImagen3);
-		JLabel prueba3 = new JLabel(fotoVitrina3);
-		panelIz3.add(prueba3);
-		
-		
-		JLabel prueba4 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba4);
-		JLabel prueba5 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba5);
-		JLabel prueba6 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba6);		
+
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
@@ -438,4 +455,6 @@ public class PerfilUsuario extends JFrame {
 	        return null;
 	    }
 	}
+	
+	
 }
