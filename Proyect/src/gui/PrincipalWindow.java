@@ -77,7 +77,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Panel donde va a ir el perfil, el buscador y el menu desplegable
 		JPanel pNorth = new JPanel();
-		pNorth.setBackground(new Color(176,224,230));
+		pNorth.setBackground(Color.GRAY);
 		
 		// Editar el tamaño vertical del panel de arriba
 		pNorth.setPreferredSize(new Dimension(0, 150));
@@ -94,7 +94,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Editar el tamaño horizontal del panel del perfil
 		profile.setPreferredSize(new Dimension(200, 0));
-		profile.setBackground(new Color(176,224,230));
+		profile.setBackground(Color.GRAY);
 		
 		// Añadimos el button al panel del perfil
 		profile.add(Box.createVerticalStrut(150));
@@ -156,7 +156,7 @@ public class PrincipalWindow extends JFrame {
         opcion6.addActionListener(e -> confirmarSalidaSesion());
         
         // Editar el menu desplegable
-        menuDesplegable.setBackground(new Color(176,224,230));
+        menuDesplegable.setBackground(Color.GRAY);
         menuDesplegable.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
         
         // Obtener el tamaño de la pantalla
@@ -176,7 +176,7 @@ public class PrincipalWindow extends JFrame {
         
         // Editar el tamaño horizontal del panel de la derecha del menú
 		otherThings.setPreferredSize(new Dimension(200, 0));
-		otherThings.setBackground(new Color(176,224,230));
+		otherThings.setBackground(Color.GRAY);
 		
         // Añadimos al panel el button del menú desplegable
         otherThings.add(menuButton, BorderLayout.CENTER);
@@ -192,7 +192,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Creamos el panel donde irá el botón para añadir entrenamientos
 		JPanel panelAñadirEntrenamientos = new JPanel();
-		panelAñadirEntrenamientos.setBackground(new Color(176,224,230));
+		panelAñadirEntrenamientos.setBackground(Color.LIGHT_GRAY);
 		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
 		
 		// Creamos el botón que va a contener el panel añadirEntrenamientos y lo configuramos
@@ -213,7 +213,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Creamos el panel donde van a ir los entrenamientos que hemos creado
 		JPanel entrenamientos = new JPanel();
-		entrenamientos.setBackground(new Color(176,224,230) );
+		entrenamientos.setBackground(Color.LIGHT_GRAY);
 		
 		// El jsp que va a tener los entrenamientos
 		JScrollPane jsp = new JScrollPane();
