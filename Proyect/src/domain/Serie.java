@@ -8,57 +8,82 @@ public class Serie {
 		APROXIMACION, ESTANDAR, TOPSET
 	}
 	
-	
-	private int repeticiones;
+	private int id;
 	private float peso;
-	Esfuerzo esfuerzo;
+	private int repeticiones;
+	private int ID_Ejercicio;
+	private int ID_rpe;
+	private int OrdenEnEjercicio;
 	
-	
-	//CONSTRUCTOR
-	public Serie(int repeticiones, float peso, Esfuerzo esfuerzo) {
+	public Serie(int id, float peso, int repeticiones, int iD_Ejercicio, int iD_rpe, int ordenEnEjercicio) {
 		super();
-		this.repeticiones = repeticiones;
+		this.id = id;
 		this.peso = peso;
-		this.esfuerzo = esfuerzo;
-	}
-	
-	
-	
-	//GETTERS Y SETTERS
-	public int getRepeticiones() {
-		return repeticiones;
-	}
-	public void setRepeticiones(int repeticiones) {
 		this.repeticiones = repeticiones;
+		ID_Ejercicio = iD_Ejercicio;
+		ID_rpe = iD_rpe;
+		OrdenEnEjercicio = ordenEnEjercicio;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public float getPeso() {
 		return peso;
 	}
+
 	public void setPeso(float peso) {
 		this.peso = peso;
 	}
-	public Esfuerzo getEsfuerzo() {
-		return esfuerzo;
+
+	public int getRepeticiones() {
+		return repeticiones;
 	}
-	public void setEsfuerzo(Esfuerzo esfuerzo) {
-		this.esfuerzo = esfuerzo;
+
+	public void setRepeticiones(int repeticiones) {
+		this.repeticiones = repeticiones;
 	}
-	
-	
-	
-	//TOSTRING
+
+	public int getID_Ejercicio() {
+		return ID_Ejercicio;
+	}
+
+	public void setID_Ejercicio(int iD_Ejercicio) {
+		ID_Ejercicio = iD_Ejercicio;
+	}
+
+	public int getID_rpe() {
+		return ID_rpe;
+	}
+
+	public void setID_rpe(int iD_rpe) {
+		ID_rpe = iD_rpe;
+	}
+
+	public int getOrdenEnEjercicio() {
+		return OrdenEnEjercicio;
+	}
+
+	public void setOrdenEnEjercicio(int ordenEnEjercicio) {
+		OrdenEnEjercicio = ordenEnEjercicio;
+	}
+
 	@Override
 	public String toString() {
-		return "Serie [repeticiones=" + repeticiones + ", peso=" + peso + ", esfuerzo=" + esfuerzo + "]";
+		return "Serie [id=" + id + ", peso=" + peso + ", repeticiones=" + repeticiones + ", ID_Ejercicio="
+				+ ID_Ejercicio + ", ID_rpe=" + ID_rpe + ", OrdenEnEjercicio=" + OrdenEnEjercicio + "]";
 	}
-	
-	
-	
-	//HASHCODE Y EQUALS
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(esfuerzo, peso, repeticiones);
+		return Objects.hash(ID_Ejercicio, ID_rpe, OrdenEnEjercicio, id, peso, repeticiones);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -68,16 +93,13 @@ public class Serie {
 		if (getClass() != obj.getClass())
 			return false;
 		Serie other = (Serie) obj;
-		return esfuerzo == other.esfuerzo && Float.floatToIntBits(peso) == Float.floatToIntBits(other.peso)
-				&& repeticiones == other.repeticiones;
+		return ID_Ejercicio == other.ID_Ejercicio && ID_rpe == other.ID_rpe
+				&& OrdenEnEjercicio == other.OrdenEnEjercicio && id == other.id
+				&& Float.floatToIntBits(peso) == Float.floatToIntBits(other.peso) && repeticiones == other.repeticiones;
 	}
 	
 	
 	
 	
-	
-	
-	
-	
-	
+		
 }

@@ -3,19 +3,13 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,19 +17,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Flow;
-
-import javax.swing.BorderFactory;
+import javax.swing.AbstractCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
+import domain.Rutina;
 import domain.Usuario;
 
 public class PerfilUsuario extends JFrame {
@@ -49,6 +45,7 @@ public class PerfilUsuario extends JFrame {
 	
 	public PerfilUsuario(String usuario) {
 		
+//----------------------------------------------BD-------------------------------------------------------------------		
 		List<Usuario> usuarios = new ArrayList<>();
 		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
 		//Carga del driver de JDBC para SQLITE
@@ -88,7 +85,9 @@ public class PerfilUsuario extends JFrame {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}	
-		
+
+				
+//-----------------------------JFRAME------------------------------------------------------------
 		// Detalles ventana
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -148,7 +147,7 @@ public class PerfilUsuario extends JFrame {
 		//Boton para editar datos
 		JButton editarDatos = new JButton("EDITAR");
 		editarDatos.setPreferredSize(new Dimension(100, 50));
-		panelIz1.add(editarDatos);
+		panelIz1.add(editarDatos); 
 		
 		//Boton para editar foto de perfil
 		JButton botonCambiarFoto = new JButton("Editar foto");
@@ -230,20 +229,199 @@ public class PerfilUsuario extends JFrame {
 		setBackground(Color.black);
 		
 		// Añadimos	los paneles
-		add(pIzquierda);
+		add(pIzquierda, BorderLayout.WEST);
 		pIzquierda.add(panelIz1);
 		pIzquierda.add(panelIz2);
 		pIzquierda.add(panelIz3);
 		
 //------------------------LADO DERECHO------------------------------
 		JPanel pDerecha = new JPanel();
+		pDerecha.setBackground(new Color(176,224,230));
 		add(pDerecha);
+		pDerecha.setLayout(new BorderLayout());
 		
-		 	
+		//Label rutinas
+		JLabel rutinas = new JLabel("RUTINAS");
+		rutinas.setFont(new Font("Arial", Font.PLAIN, 25));
+		pDerecha.add(rutinas, BorderLayout.NORTH);
+		pDerecha.setBorder(new EmptyBorder(40,40,0,0));
+		
+		//Panel con las rutinas
+		JPanel pRutina = new JPanel();
+		pRutina.setBackground(Color.green);
+		
+		//Lista para importar todas las rutinas de la bd
+		ArrayList<Rutina> listaRutinas = new ArrayList<>();
+		//ConectarBaseDeDatosRutina(listaRutinas);
+		
+		//Lista en la que se meten las rutinas del usuario
+		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
+//		for (Rutina rutina : listaRutinas) {
+//			if(rutina.getUsuario()) {
+//				rutinasUsuario.add(rutina);	
+//			}
+//		}
+		
+		
+		JTable table = new JTable(new RutinaModel());
+		table.getColumnModel().getColumn(2).setCellRenderer(new RendererBoton());
+		table.getColumnModel().getColumn(2).setCellEditor(new EditorBoton());
+		
+		//Ajustar el tamaño de Nombre
+		table.getColumnModel().getColumn(0).setWidth(170);
+		table.getColumnModel().getColumn(0).setMinWidth(170);
+		table.getColumnModel().getColumn(0).setMaxWidth(170); 
+		
+		//Ajustar el tamaño de descripcion
+		table.getColumnModel().getColumn(1).setWidth(340);
+		table.getColumnModel().getColumn(1).setMinWidth(340);
+		table.getColumnModel().getColumn(1).setMaxWidth(340); 
+		
+		table.setRowHeight(70);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		pDerecha.add(scrollPane, BorderLayout.CENTER);	
 		
 		// Detalles ventana
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 		
 	}	
+	
+	class RutinaModel extends AbstractTableModel {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -857471165146589501L;
+
+		private String[] nombreDatos = {"Nombre", "Descripción", "Acciones"};
+	    
+	    //Cambiar esta lista por rutinasUsuario
+	    private Object[][] data = {
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            {"Push", "Hola", "Botones"},
+	            {"Rutina B", "Descripción B", "Botones"},
+	            
+	            {"Rutina C", "Descripción C", "Botones"}
+	    };
+
+	    @Override
+	    public int getRowCount() {
+	        return data.length;
+	    }
+
+	    @Override
+	    public int getColumnCount() {
+	        return nombreDatos.length;
+	    }
+
+	    @Override
+	    public String getColumnName(int column) {
+	        return nombreDatos[column];
+	    }
+
+	    @Override
+	    public Object getValueAt(int rowIndex, int columnIndex) {
+	        return data[rowIndex][columnIndex];
+	    }
+	    
+	    //Necesario poder editar la columna 2 para poder implementar los botones
+	    @Override
+	    public boolean isCellEditable(int rowIndex, int columnIndex) {
+	        return columnIndex == 2; // Sólo la columna de botones es editable
+	    }
+
+	    @Override
+	    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+	        data[rowIndex][columnIndex] = aValue;
+	    }
+	}
+
+	// Renderizador de celdas con botones
+	class RendererBoton extends JPanel implements TableCellRenderer {
+
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public RendererBoton() {
+	        setLayout(new FlowLayout(FlowLayout.LEFT));
+	    }
+
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	        // Limpia el panel para cada renderizado
+	        this.removeAll();
+
+	        // Añade los botones necesarios
+	        this.add(new JButton("Editar"));
+	        this.add(new JButton("Expandir"));
+	        this.add(new JButton("Eliminar"));
+	        this.add(new JButton("Estadísticas"));
+
+	        return this;
+	    }
+	}
+
+	// Editor de celdas con botones
+	class EditorBoton extends AbstractCellEditor implements TableCellEditor {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -3543889255680517811L;
+		
+		private JPanel panel;
+	    private JTable table;
+	    private int editingRow = -1;
+
+	    public EditorBoton() {
+	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+	        JButton editButton = new JButton("Editar");
+	        JButton expandButton = new JButton("Expandir");
+	        JButton deleteButton = new JButton("Eliminar");
+	        JButton statsButton = new JButton("Estadísticas");
+
+	       //Aquí tienen que ir los action listener para los botones
+
+	        panel.add(editButton);
+	        panel.add(expandButton);
+	        panel.add(deleteButton);
+	        panel.add(statsButton);
+	    }
+
+	    @Override
+	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+	        this.table = table;
+	        this.editingRow = row; // Guarda la fila actual
+	        return panel;
+	    }
+
+	    @Override
+	    public Object getCellEditorValue() {
+	        return null;
+	    }
+	}
 }
