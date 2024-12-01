@@ -1,4 +1,4 @@
-package gui;
+	package gui;
 
 import java.awt.BorderLayout;
 
@@ -80,7 +80,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Panel donde va a ir el perfil, el buscador y el menu desplegable
 		JPanel pNorth = new JPanel();
-		pNorth.setBackground(Color.black);
+		pNorth.setBackground(new Color(176,224,230));
 		
 		// Editar el tamaño vertical del panel de arriba
 		pNorth.setPreferredSize(new Dimension(0, 150));
@@ -97,7 +97,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Editar el tamaño horizontal del panel del perfil
 		profile.setPreferredSize(new Dimension(200, 0));
-		profile.setBackground(Color.DARK_GRAY);
+		profile.setBackground(new Color(176,224,230));
 		
 		// Añadimos el button al panel del perfil
 		profile.add(Box.createVerticalStrut(150));
@@ -133,18 +133,18 @@ public class PrincipalWindow extends JFrame {
         
         // Crear las opciones del menú
         JMenuItem opcion1 = new JMenuItem("ACCEDE COMO ADMINISTRADOR");
-        opcion1.setBackground(Color.LIGHT_GRAY);
+        opcion1.setBackground(new Color(176,224,230));
         opcion1.setHorizontalTextPosition(SwingConstants.CENTER);
         JMenuItem opcion2 = new JMenuItem("RUTINAS GUARDADAS");
-        opcion2.setBackground(Color.LIGHT_GRAY);
+        opcion2.setBackground(new Color(176,224,230));
         JMenuItem opcion3 = new JMenuItem("SEGUIMIENTO PROPIO");
-        opcion3.setBackground(Color.LIGHT_GRAY);
+        opcion3.setBackground(new Color(176,224,230));
         JMenuItem opcion4 = new JMenuItem("MIS AMIGOS");
-        opcion4.setBackground(Color.LIGHT_GRAY);
+        opcion4.setBackground(new Color(176,224,230));
         JMenuItem opcion5 = new JMenuItem("AJUSTES");
-        opcion5.setBackground(Color.LIGHT_GRAY);
+        opcion5.setBackground(new Color(176,224,230));
         JMenuItem opcion6 = new JMenuItem("CERRAR SESIÓN");
-        opcion6.setBackground(Color.LIGHT_GRAY);
+        opcion6.setBackground(new Color(176,224,230));
         
         // Añadir las opciones al menú
         menuDesplegable.add(opcion1);
@@ -159,7 +159,7 @@ public class PrincipalWindow extends JFrame {
         opcion6.addActionListener(e -> confirmarSalidaSesion());
         
         // Editar el menu desplegable
-        menuDesplegable.setBackground(Color.GRAY);
+        menuDesplegable.setBackground(new Color(176,224,230));
         menuDesplegable.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
         
         // Obtener el tamaño de la pantalla
@@ -179,7 +179,7 @@ public class PrincipalWindow extends JFrame {
         
         // Editar el tamaño horizontal del panel de la derecha del menú
 		otherThings.setPreferredSize(new Dimension(200, 0));
-		otherThings.setBackground(Color.DARK_GRAY);
+		otherThings.setBackground(new Color(176,224,230));
 		
         // Añadimos al panel el button del menú desplegable
         otherThings.add(menuButton, BorderLayout.CENTER);
@@ -195,7 +195,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Creamos el panel donde irá el botón para añadir entrenamientos
 		JPanel panelAñadirEntrenamientos = new JPanel();
-		panelAñadirEntrenamientos.setBackground(Color.LIGHT_GRAY);
+		panelAñadirEntrenamientos.setBackground(new Color(176,224,230));
 		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
 		
 		// Creamos el botón que va a contener el panel añadirEntrenamientos y lo configuramos
@@ -216,7 +216,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Creamos el panel donde van a ir los entrenamientos que hemos creado
 		JPanel entrenamientos = new JPanel();
-		entrenamientos.setBackground(Color.LIGHT_GRAY);
+		entrenamientos.setBackground(new Color(176,224,230) );
 		
 		// El jsp que va a tener los entrenamientos
 		JScrollPane jsp = new JScrollPane();

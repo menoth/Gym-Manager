@@ -11,10 +11,10 @@ public class Entrenamiento{
 		private String descripcionEntrenamiento;
 		private int ID_rutina;
 		private DayOfWeek día;
-		private List<Ejercicio> ejercicios;
+		private List<EjercicioEnEntrenamiento> ejercicios;
 		
 		public Entrenamiento(int id, String nombre, String descripcionEntrenamiento, int iD_rutina, DayOfWeek día,
-				List<Ejercicio> ejercicios) {
+				List<EjercicioEnEntrenamiento> ejercicios) {
 			super();
 			this.id = id;
 			this.nombre = nombre;
@@ -64,11 +64,11 @@ public class Entrenamiento{
 			this.día = día;
 		}
 
-		public List<Ejercicio> getEjercicios() {
+		public List<EjercicioEnEntrenamiento> getEjercicios() {
 			return ejercicios;
 		}
 
-		public void setEjercicios(List<Ejercicio> ejercicios) {
+		public void setEjercicios(List<EjercicioEnEntrenamiento> ejercicios) {
 			this.ejercicios = ejercicios;
 		}
 

@@ -31,6 +31,12 @@ import domain.Usuario;
 
 public class EditarPerfil extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public EditarPerfil(Usuario usuario) {
 		
 		setSize(new Dimension(500, 650));
@@ -100,6 +106,11 @@ public class EditarPerfil extends JFrame {
         //Vitrina
         JButton vitrina = new JButton("Vitrina");
         panelPrincipal.add(vitrina);
+        vitrina.addActionListener(e -> {
+        	dispose();
+        	new LogrosVentana(usuario);
+        	
+        });
         
         guardar.addActionListener(new ActionListener() {
 			

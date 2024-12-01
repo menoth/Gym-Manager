@@ -15,23 +15,15 @@ public class Ejercicio{
 	
 	private int id;
 	private String nombre;
-	private int ID_Entrenamiento;
 	private Musculo musculoPrincipal;
 	private Musculo musculoSecundario;
-	private List<Serie> series;
-	private int OrdenEnEntrenamiento;
 	
-
-	public Ejercicio(int id, String nombre, int iD_Entrenamiento, Musculo musculoPrincipal, Musculo musculoSecundario,
-			List<Serie> series, int ordenEnEntrenamiento) {
+	public Ejercicio(int id, String nombre, Musculo musculoPrincipal, Musculo musculoSecundario) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		ID_Entrenamiento = iD_Entrenamiento;
 		this.musculoPrincipal = musculoPrincipal;
 		this.musculoSecundario = musculoSecundario;
-		this.series = series;
-		OrdenEnEntrenamiento = ordenEnEntrenamiento;
 	}
 
 	public int getId() {
@@ -50,14 +42,6 @@ public class Ejercicio{
 		this.nombre = nombre;
 	}
 
-	public int getID_Entrenamiento() {
-		return ID_Entrenamiento;
-	}
-
-	public void setID_Entrenamiento(int iD_Entrenamiento) {
-		ID_Entrenamiento = iD_Entrenamiento;
-	}
-
 	public Musculo getMusculoPrincipal() {
 		return musculoPrincipal;
 	}
@@ -74,33 +58,15 @@ public class Ejercicio{
 		this.musculoSecundario = musculoSecundario;
 	}
 
-	public List<Serie> getSeries() {
-		return series;
-	}
-
-	public void setSeries(List<Serie> series) {
-		this.series = series;
-	}
-
-	public int getOrdenEnEntrenamiento() {
-		return OrdenEnEntrenamiento;
-	}
-
-	public void setOrdenEnEntrenamiento(int ordenEnEntrenamiento) {
-		OrdenEnEntrenamiento = ordenEnEntrenamiento;
-	}
-
 	@Override
 	public String toString() {
-		return "Ejercicio [id=" + id + ", nombre=" + nombre + ", ID_Entrenamiento=" + ID_Entrenamiento
-				+ ", musculoPrincipal=" + musculoPrincipal + ", musculoSecundario=" + musculoSecundario + ", series="
-				+ series + ", OrdenEnEntrenamiento=" + OrdenEnEntrenamiento + "]";
+		return "Ejercicio [id=" + id + ", nombre=" + nombre + ", musculoPrincipal=" + musculoPrincipal
+				+ ", musculoSecundario=" + musculoSecundario + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ID_Entrenamiento, OrdenEnEntrenamiento, id, musculoPrincipal, musculoSecundario, nombre,
-				series);
+		return Objects.hash(id, musculoPrincipal, musculoSecundario, nombre);
 	}
 
 	@Override
@@ -112,14 +78,23 @@ public class Ejercicio{
 		if (getClass() != obj.getClass())
 			return false;
 		Ejercicio other = (Ejercicio) obj;
+<<<<<<< HEAD
 
 		return ID_Entrenamiento == other.ID_Entrenamiento && OrdenEnEntrenamiento == other.OrdenEnEntrenamiento
 				&& id == other.id && musculoPrincipal == other.musculoPrincipal
 				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre)
 				&& Objects.equals(series, other.series);
+=======
+		return id == other.id && musculoPrincipal == other.musculoPrincipal
+				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre);
+>>>>>>> branch 'master' of https://github.com/menoth/proyecto-PROG3
 	}
 	
+<<<<<<< HEAD
 	
 	
 	
+=======
+		
+>>>>>>> branch 'master' of https://github.com/menoth/proyecto-PROG3
 }
