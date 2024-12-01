@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.Ejercicio;
+import domain.EjercicioEnEntrenamiento;
 import domain.Entrenamiento;
 import domain.Rutina;
 import domain.Serie;
@@ -53,7 +54,8 @@ public class ConectarBaseDeDatos {
 			// TODO: handle exception
 		}		
 	}
-	// cargamos desde la base de datos de rutinas, entrenamientos... en una lista que recibe la funcion ConectarBaseDeDatosRutina
+	// funcion que recibe una lista de rutinas y carga desde la bd todo lo relacionado con ella: Rutina, Usuario, Entrenamiento, 
+	// EjercicioEnEntranmiento, Serie
 	public static void ConectarBaseDeDatosRutina(List<Rutina> rutinas) {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -89,62 +91,86 @@ public class ConectarBaseDeDatos {
 					int ID_Rutina2 = rs2.getInt("ID_Rutina");
 					String dia = rs2.getString("Dia");
 					DayOfWeek diaSemanal = DayOfWeek.valueOf(dia);
-					ArrayList<Ejercicio> ejercicios = new ArrayList<Ejercicio>();
+					ArrayList<EjercicioEnEntrenamiento> ejercicios = new ArrayList<EjercicioEnEntrenamiento>();
 					
 					
 					// cargamos desde la base de datos todos los ejercicios que tengan esa ID_Entrenamiento en la lista ejercicios de el entrenamiento
-					String sql3 = "SELECT * FROM Ejercicio WHERE ID_Entrenamiento = ?";
+					String sql3 = "SELECT * FROM EjercicioEnEntrenamiento WHERE ID_Entrenamiento = ?";
 					PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
 					queryStmt3.setInt(0, ID_Entrenamiento);
 					ResultSet rs3 = queryStmt3.executeQuery();
 					while (rs3.next()) {
-						int ID_Ejercicio = rs.getInt("ID_Ejercicio");
-						String nombreEjercicio = rs3.getString("Nombre");
+						int ID_EjercicioEnEntrenamiento = rs3.getInt("ID_EjercicioEnEntrenamiento");
 						int ID_Entrenamiento2 = rs3.getInt("ID_Entrenamiento");
-						int MusculoPrincipal = rs3.getInt("Musculo_Principal");
-						int MusculoSecundario = rs3.getInt("MusculoSecundario");
+						int ID_Ejercicio = rs3.getInt("ID_Ejercicio");
 						int OrdenEnEntrenamiento = rs3.getInt("OrdenEnEntrenamiento");
 						ArrayList<Serie> series = new ArrayList<Serie>();
-						
-						// cargamos el nombre del musculo principal
-						String sql4 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
-						PreparedStatement queryStmt4 = conn.prepareStatement(sql4);
-						queryStmt4.setInt(0, MusculoPrincipal);
-						ResultSet rs4 = queryStmt4.executeQuery();
-						String nombreMusculoPrincipal = rs4.getString("Nombre");
-						
-						// cargamos el nombre del musculo secundario
-						String sql5 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
-						PreparedStatement queryStmt5 = conn.prepareStatement(sql5);
-						queryStmt5.setInt(0, MusculoSecundario);
-						ResultSet rs5 = queryStmt5.executeQuery();
-						String nombreMusculoSecundario = rs5.getString("Nombre");
-						
+							
 						// cargamos desde la base de datos todas las series que tengan ese ID_Ejercicio en la lista de series del ejercicio
-						String sql6 = "SELECT * FROM Serie WHERE ID_Ejercicio = ?";
-						PreparedStatement queryStmt6 = conn.prepareStatement(sql6);
-						queryStmt6.setInt(0, ID_Ejercicio);
-						ResultSet rs6 = queryStmt6.executeQuery();
-						while (rs6.next()) {
-							int ID_Serie = rs6.getInt("ID_Serie");
-							float Peso = rs6.getFloat("Peso");
-							int Repeticiones = rs6.getInt("Repeticiones");
-							int ID_Ejercicio2 = rs6.getInt("ID_Ejercicio");
-							int ID_RPE = rs6.getInt("ID_RPE");
-							int OrdenEnEjercicio = rs6.getInt("OrdenEnEjercicio");
+						String sql4 = "SELECT * FROM Serie WHERE ID_EjercicioEnEntrenamiento = ?";
+						PreparedStatement queryStmt4 = conn.prepareStatement(sql4);
+						queryStmt4.setInt(0, ID_Ejercicio);
+						ResultSet rs4 = queryStmt4.executeQuery();
+						while (rs4.next()) {
+							int ID_Serie = rs4.getInt("ID_Serie");
+							float Peso = rs4.getFloat("Peso");
+							int Repeticiones = rs4.getInt("Repeticiones");
+							int ID_EjercicioEnEntrenamiento2 = rs4.getInt("ID_EjercicioEnEntrenamiento");
+							int ID_RPE = rs4.getInt("ID_RPE");
+							int OrdenEnEjercicio = rs4.getInt("OrdenEnEjercicio");
 							
 							// añadimos todo a la lista de rutina que recibimos
-							series.add(new Serie(ID_Serie, Peso, Repeticiones, ID_Ejercicio2, ID_RPE, OrdenEnEjercicio));
+							series.add(new Serie(ID_Serie, Peso, Repeticiones, ID_RPE, ID_EjercicioEnEntrenamiento2, OrdenEnEjercicio));
 						}					
-						ejercicios.add(new Ejercicio(ID_Ejercicio, nombreEjercicio, ID_Entrenamiento2, Ejercicio.Musculo.valueOf(nombreMusculoPrincipal), Ejercicio.Musculo.valueOf(nombreMusculoSecundario), series, OrdenEnEntrenamiento));
-						
+						ejercicios.add(new EjercicioEnEntrenamiento(ID_EjercicioEnEntrenamiento, ID_Entrenamiento2, ID_Ejercicio, OrdenEnEntrenamiento, series));
 					}
 					entrenamientos.add(new Entrenamiento(ID_Entrenamiento, nombreEntrenamiento, descripcionEntrenamiento, ID_Rutina2, diaSemanal, ejercicios));
-					
 				}
 				rutinas.add(new Rutina(ID_Rutina, nombre, descripcion, entrenamientos, usuario));
 			}
 			
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}		
+	}
+	// funcion que recibe una lista de ejercicios y la llena de todos los ejercicios que tenemos en nuestra bd
+	public static void ConectarBaseDeDatosEjercicios(List<Ejercicio> ejercicios) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT * FROM Ejercicio";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			ResultSet rs = queryStmt.executeQuery();
+	
+			while (rs.next()) {
+				int ID_Ejercicio = rs.getInt("ID_Ejercicio");
+				String Nombre = rs.getString("Nombre");
+				int MusculoPrincipal = rs.getInt("MusculoPrincipal");
+				int MusculoSecundario = rs.getInt("MusculoSecundario");
+				
+				String sql2 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
+				PreparedStatement queryStmt2 = conn.prepareStatement(sql2);
+				queryStmt2.setInt(0, MusculoPrincipal);
+				ResultSet rs2 = queryStmt2.executeQuery();
+				String nombreMusculoPrincipal = rs2.getString("Nombre");
+				
+				String sql3 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
+				PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
+				queryStmt3.setInt(0, MusculoSecundario);
+				ResultSet rs3 = queryStmt3.executeQuery();
+				String nombreMusculoSecundario = rs3.getString("Nombre");
+				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, Ejercicio.Musculo.valueOf(nombreMusculoPrincipal), Ejercicio.Musculo.valueOf(nombreMusculoSecundario)));
+			}
 			stmt.close();
 			conn.close();
 		} catch (SQLException e) {
