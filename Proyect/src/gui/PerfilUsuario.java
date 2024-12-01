@@ -3,13 +3,19 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,29 +24,30 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-<<<<<<< HEAD
-=======
 import java.util.Map;
 import java.util.concurrent.Flow;
 
->>>>>>> branch 'master' of https://github.com/menoth/proyecto-PROG3
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import domain.Logro;
 import domain.Rutina;
 import domain.Usuario;
 
@@ -52,21 +59,18 @@ public class PerfilUsuario extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public class LogrosUsuarioLoader {
-
 	    public static Map<String, List<String>> cargarLogrosPorUsuario() {
 	        // Mapa que almacena los logros seleccionados por cada usuario
 	        Map<String, List<String>> logrosPorUsuario = new HashMap<>();
 	        
 	        // Conexión a la base de datos
 	        String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
-
 	        String query = """
 	            SELECT U.Usuario AS Usuario, L.Nombre AS Logro
 	            FROM ConsigueLogro CL
 	            JOIN Usuario U ON CL.Usuario = U.Usuario
 	            JOIN Logro L ON CL.Logro = L.ID_Logro
 	            """;
-
 	        try (Connection conn = DriverManager.getConnection(url);
 	             PreparedStatement stmt = conn.prepareStatement(query);
 	             ResultSet rs = stmt.executeQuery()) {
@@ -93,9 +97,9 @@ public class PerfilUsuario extends JFrame {
 	public PerfilUsuario(String usuario) {
 		
 //----------------------------------------------BD-------------------------------------------------------------------		
-	
 		List<Usuario> usuarios = new ArrayList<>();
 		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
+		
 		//Carga del driver de JDBC para SQLITE
 				try {
 					Class.forName("org.sqlite.JDBC");
@@ -132,10 +136,7 @@ public class PerfilUsuario extends JFrame {
 					conn.close(); 
 				} catch (SQLException e) {
 					e.printStackTrace();
-				}
-
-		
-				
+				}	
 
 				
 //-----------------------------JFRAME------------------------------------------------------------
@@ -165,7 +166,7 @@ public class PerfilUsuario extends JFrame {
 		panelIz2.setBackground(new Color(176,224,230));
 		
 		JPanel panelIz3 = new JPanel();
-		panelIz3.setLayout(new GridLayout(1, 3));
+		panelIz3.setLayout(new GridLayout(2, 3));
 		
 		// Botón para volver a la ventana principal
 		
@@ -220,21 +221,51 @@ public class PerfilUsuario extends JFrame {
 		});
 		
 
-		// Creamos un jTextArea que será la descripción del usuario
+		//Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
+		desc.setBackground(new Color(195,248,255));
 		
 		// Detalles del JTextArea
-		desc.setWrapStyleWord(true); // Ajusta palabras completas en la línea siguiente
-		desc.setLineWrap(true); // Habilita el ajuste de línea
-		desc.setEditable(false); // No editable
+		desc.setWrapStyleWord(true);
+		desc.setLineWrap(true);
+		desc.setEditable(false);
 		desc.setFont(new Font("Arial", Font.PLAIN, 18));
 		desc.setPreferredSize(new Dimension(400, 200));
 		
 		// Añadimos la descripcion a panelSubOeste1
 		panelIz2.add(desc);
 			
+		//FotoVitrina1
+		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina1 = fotoVitrina1.getImage();
+	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
+		JLabel prueba1 = new JLabel(fotoVitrina1);
+		panelIz3.add(prueba1);
 		
-
+		//FotoVitrina2
+		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina2 = fotoVitrina2.getImage();
+	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
+		JLabel prueba2 = new JLabel(fotoVitrina2);
+		panelIz3.add(prueba2);
+		
+		//FotoVitrina3
+		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
+		Image imagenVitrina3 = fotoVitrina3.getImage();
+	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+		fotoVitrina3 = new ImageIcon(nuevaImagen3);
+		JLabel prueba3 = new JLabel(fotoVitrina3);
+		panelIz3.add(prueba3);
+		
+		
+		JLabel prueba4 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba4);
+		JLabel prueba5 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba5);
+		JLabel prueba6 = new JLabel("100KG press banca", JLabel.CENTER);
+		panelIz3.add(prueba6);		
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
@@ -278,28 +309,33 @@ public class PerfilUsuario extends JFrame {
 		
 		//Lista en la que se meten las rutinas del usuario
 		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
-//		for (Rutina rutina : listaRutinas) {
-//			if(rutina.getUsuario()) {
-//				rutinasUsuario.add(rutina);	
-//			}
-//		}
+		for (Rutina rutina : listaRutinas) {
+			if(rutina.getUsuario().equals(usuario)) {
+				rutinasUsuario.add(rutina);	
+			}
+		}
 		
 		
 		JTable table = new JTable(new RutinaModel());
-		table.getColumnModel().getColumn(2).setCellRenderer(new RendererBoton());
-		table.getColumnModel().getColumn(2).setCellEditor(new EditorBoton());
+		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
+		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario));
 		
 		//Ajustar el tamaño de Nombre
-		table.getColumnModel().getColumn(0).setWidth(170);
-		table.getColumnModel().getColumn(0).setMinWidth(170);
-		table.getColumnModel().getColumn(0).setMaxWidth(170); 
+		table.getColumnModel().getColumn(1).setWidth(170);
+		table.getColumnModel().getColumn(1).setMinWidth(170);
+		table.getColumnModel().getColumn(1).setMaxWidth(170); 
 		
 		//Ajustar el tamaño de descripcion
-		table.getColumnModel().getColumn(1).setWidth(340);
-		table.getColumnModel().getColumn(1).setMinWidth(340);
-		table.getColumnModel().getColumn(1).setMaxWidth(340); 
+		table.getColumnModel().getColumn(2).setWidth(340);
+		table.getColumnModel().getColumn(2).setMinWidth(340);
+		table.getColumnModel().getColumn(2).setMaxWidth(340);
 		
-		table.setRowHeight(70);
+		// Oculta la columna "id" (primera columna en el modelo original)
+		table.getColumnModel().getColumn(0).setMinWidth(0);
+		table.getColumnModel().getColumn(0).setMaxWidth(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(0);
+		
+		table.setRowHeight(120);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		pDerecha.add(scrollPane, BorderLayout.CENTER);	
@@ -316,36 +352,26 @@ public class PerfilUsuario extends JFrame {
 		 */
 		private static final long serialVersionUID = -857471165146589501L;
 
-		private String[] nombreDatos = {"Nombre", "Descripción", "Acciones"};
+		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
 	    
 	    //Cambiar esta lista por rutinasUsuario
 	    private Object[][] data = {
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            {"Push", "Hola", "Botones"},
-	            {"Rutina B", "Descripción B", "Botones"},
-	            
-	            {"Rutina C", "Descripción C", "Botones"}
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"1", "Push", "Hola", "Botones"},
+	            {"2", "Rutina B", "Descripción B", "Botones"}
+	           
 	    };
 
 	    @Override
@@ -355,6 +381,7 @@ public class PerfilUsuario extends JFrame {
 
 	    @Override
 	    public int getColumnCount() {
+	    	//Para mantener la columna id oculta
 	        return nombreDatos.length;
 	    }
 
@@ -371,7 +398,7 @@ public class PerfilUsuario extends JFrame {
 	    //Necesario poder editar la columna 2 para poder implementar los botones
 	    @Override
 	    public boolean isCellEditable(int rowIndex, int columnIndex) {
-	        return columnIndex == 2; // Sólo la columna de botones es editable
+	        return columnIndex == 3; // Sólo la columna de botones es editable
 	    }
 
 	    @Override
@@ -397,11 +424,36 @@ public class PerfilUsuario extends JFrame {
 	        // Limpia el panel para cada renderizado
 	        this.removeAll();
 
+	        //Icono editar
+	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
+	        Image img = iconoLapiz.getImage();
+	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoLapiz = new ImageIcon(imgEscalada);
+	        
+	        //Icono expandir
+	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
+	        Image img2 = iconoExpandir.getImage();
+	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoExpandir = new ImageIcon(img2Escalada);
+	        
+	        
+	        //Icono eliminar
+	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
+	        Image img3 = iconoEliminar.getImage();
+	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEliminar = new ImageIcon(img3Escalada);
+	        
+	        //Icono estadisticas
+	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
+	        Image img4 = iconoEstadisticas.getImage();
+	        Image img4Escalada = img4.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEstadisticas = new ImageIcon(img4Escalada);
+	        
 	        // Añade los botones necesarios
-	        this.add(new JButton("Editar"));
-	        this.add(new JButton("Expandir"));
-	        this.add(new JButton("Eliminar"));
-	        this.add(new JButton("Estadísticas"));
+	        this.add(new JButton(iconoLapiz));
+	        this.add(new JButton(iconoExpandir));
+	        this.add(new JButton(iconoEliminar));
+	        this.add(new JButton(iconoEstadisticas));
 
 	        return this;
 	    }
@@ -415,29 +467,121 @@ public class PerfilUsuario extends JFrame {
 		private static final long serialVersionUID = -3543889255680517811L;
 		
 		private JPanel panel;
-	    private JTable table;
-	    private int editingRow = -1;
-
-	    public EditorBoton() {
+		private JTable table;
+		private int editingRow = -1;
+		
+	    public EditorBoton(String usuario) {
 	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	        JButton editButton = new JButton("Editar");
-	        JButton expandButton = new JButton("Expandir");
-	        JButton deleteButton = new JButton("Eliminar");
-	        JButton statsButton = new JButton("Estadísticas");
-
-	       //Aquí tienen que ir los action listener para los botones
-
+	      //Icono editar
+	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
+	        Image img = iconoLapiz.getImage();
+	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoLapiz = new ImageIcon(imgEscalada);
+	        
+	        //Icono expandir
+	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
+	        Image img2 = iconoExpandir.getImage();
+	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoExpandir = new ImageIcon(img2Escalada);
+	        
+	        
+	        //Icono eliminar
+	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
+	        Image img3 = iconoEliminar.getImage();
+	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEliminar = new ImageIcon(img3Escalada);
+	        
+	        //Icono estadisticas
+	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
+	        Image img4 = iconoEstadisticas.getImage();
+	        Image img4Escalada = img4.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoEstadisticas = new ImageIcon(img4Escalada);
+	        
+	        JButton editButton = new JButton(iconoLapiz);
+	        JButton expandButton = new JButton(iconoExpandir);
+	        JButton deleteButton = new JButton(iconoEliminar);
+	        JButton statsButton = new JButton(iconoEstadisticas);
+	        
+	        //Action listener para editar
+	        editButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
+	        //Action listener expandir
+	        expandButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
+	        //Action listener eliminar
+	        deleteButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int row = table.getEditingRow();
+					if (row != -1) {
+						Object id = table.getModel().getValueAt(row, 0);
+						eliminarRutina((int) id);
+					}
+				}
+			});
+	        
+	        //Action listener estadísticas
+	        statsButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					new PrincipalWindow(usuario);
+					
+				}
+			});
+	        
 	        panel.add(editButton);
 	        panel.add(expandButton);
 	        panel.add(deleteButton);
 	        panel.add(statsButton);
 	    }
 
-	    @Override
+	    protected void eliminarRutina(int id) {
+	    	try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				System.out.println("No se ha podido cargar el driver de la BD");
+			}
+			
+			//Conectar a la BD
+			try {
+				Connection conn = DriverManager.getConnection
+						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+				
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery
+						("DELETE FROM Rutinas WHERE id ="+id);
+				
+				
+			
+				stmt.close();
+				conn.close(); 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			
+			}
+	    }
+
+		@Override
 	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-	        this.table = table;
-	        this.editingRow = row; // Guarda la fila actual
 	        return panel;
 	    }
 
@@ -446,6 +590,4 @@ public class PerfilUsuario extends JFrame {
 	        return null;
 	    }
 	}
-	
-	
 }

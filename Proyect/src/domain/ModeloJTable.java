@@ -19,18 +19,7 @@ public class ModeloJTable extends AbstractTableModel {
 	
 	public ModeloJTable(DayOfWeek dias, Map<DayOfWeek, Entrenamiento> mapaRutina, List<Entrenamiento> entrenamientos) {
 		this.mapaRutina = mapaRutina;
-		//this.entrenamientos = entrenamientos;
-		
-		/**
-		mapaRutina = new HashMap<DayOfWeek, Entrenamiento>();
-		
-		for (Entrenamiento e : entrenamientos) {
-			if(!mapaRutina.containsKey(e.getDía())) {
-				mapaRutina.put(e.getDía(), e);
-			}
-			
-		}
-		**/
+		 
 
 		
 	}

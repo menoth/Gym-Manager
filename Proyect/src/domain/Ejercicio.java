@@ -2,7 +2,6 @@ package domain;
 
 
 
-import java.util.List;
 import java.util.Objects;
 
 public class Ejercicio{
@@ -78,23 +77,12 @@ public class Ejercicio{
 		if (getClass() != obj.getClass())
 			return false;
 		Ejercicio other = (Ejercicio) obj;
-<<<<<<< HEAD
 
-		return ID_Entrenamiento == other.ID_Entrenamiento && OrdenEnEntrenamiento == other.OrdenEnEntrenamiento
-				&& id == other.id && musculoPrincipal == other.musculoPrincipal
-				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre)
-				&& Objects.equals(series, other.series);
-=======
+
 		return id == other.id && musculoPrincipal == other.musculoPrincipal
 				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre);
->>>>>>> branch 'master' of https://github.com/menoth/proyecto-PROG3
+
 	}
 	
-<<<<<<< HEAD
-	
-	
-	
-=======
-		
->>>>>>> branch 'master' of https://github.com/menoth/proyecto-PROG3
+
 }

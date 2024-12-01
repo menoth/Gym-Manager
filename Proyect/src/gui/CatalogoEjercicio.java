@@ -21,12 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import domain.Ejercicio;
-import domain.Serie;
-import domain.Usuario;
+
 
 
 

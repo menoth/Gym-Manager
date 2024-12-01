@@ -1,6 +1,7 @@
 package domain;
 
 public class Logro {
+	
     private String nombre;
     private String imagen;
 
