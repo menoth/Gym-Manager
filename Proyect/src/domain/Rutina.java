@@ -1,8 +1,6 @@
-	package domain;
+package domain;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 
 public class Rutina{

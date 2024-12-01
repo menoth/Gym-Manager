@@ -1,16 +1,14 @@
 package gui;
 import javax.swing.*;
 
-
 import domain.Usuario;
-
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 
 public class LogrosVentana extends JFrame {
 	

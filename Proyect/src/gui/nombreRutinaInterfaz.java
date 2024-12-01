@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import domain.Rutina;
+
 
 public class nombreRutinaInterfaz extends JFrame{
 	

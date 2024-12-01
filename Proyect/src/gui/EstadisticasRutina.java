@@ -10,9 +10,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,10 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import domain.Entrenamiento;
 import domain.Rutina;
-import domain.EjercicioEnEntrenamiento;
+
 
 public class EstadisticasRutina extends JFrame {
 

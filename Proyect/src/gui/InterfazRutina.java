@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.DayOfWeek;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -19,7 +18,7 @@ public class InterfazRutina extends JFrame {
 	
     private static final long serialVersionUID = 1L;
     
-    private DayOfWeek dias;
+    //private DayOfWeek dias;
     
 
     InterfazRutina(String usuario, String nombreRutina) {

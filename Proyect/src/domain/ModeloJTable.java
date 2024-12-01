@@ -1,8 +1,6 @@
 package domain;
 
 import java.time.DayOfWeek;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ public class ModeloJTable extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private List<Entrenamiento> entrenamientos;
+	//private List<Entrenamiento> entrenamientos;
 	private Map<DayOfWeek, Entrenamiento> mapaRutina;
 	
 	public ModeloJTable(DayOfWeek dias, Map<DayOfWeek, Entrenamiento> mapaRutina, List<Entrenamiento> entrenamientos) {
