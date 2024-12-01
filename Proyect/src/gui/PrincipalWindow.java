@@ -48,9 +48,6 @@ import javax.swing.event.DocumentListener;
 
 
 import domain.Usuario;
-import main.MainProyecto;
-
-
 import javax.swing.JPopupMenu;
 
 import javax.swing.SwingConstants;
@@ -384,8 +381,7 @@ public class PrincipalWindow extends JFrame {
      //Metodo para añadir todos los usuarios a el PopUpMenu
      private void datosUsuario(ArrayList<String> datos) {
     	 File f = new File("baseDeDatos.csv");
-    	 try {
-    		 Scanner sc = new Scanner (f);
+    	 try (Scanner sc = new Scanner (f)) {
     		 while(sc.hasNextLine()) {
     			 String linea = sc.nextLine();
     			 String[] campos = linea.split(";");

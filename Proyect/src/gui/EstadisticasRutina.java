@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -19,6 +21,10 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import domain.Entrenamiento;
+import domain.Rutina;
+import domain.EjercicioEnEntrenamiento;
+
 public class EstadisticasRutina extends JFrame {
 
 	/**
@@ -26,7 +32,7 @@ public class EstadisticasRutina extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public EstadisticasRutina(){
+	public EstadisticasRutina(Rutina rutina){
 		
 		//Detalles de la ventana
 		setSize(new Dimension(1100, 700));
@@ -35,6 +41,17 @@ public class EstadisticasRutina extends JFrame {
         
         //Separamos la ventana con gridlayout en dos 
         this.setLayout(new GridLayout(1,2));
+        
+//---------------Datos para las estadísticas, de momento comentados
+        //String nombre = rutina.getNombre();
+        //Double volumenEn = 0.0;
+        //ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
+        
+        //Bucle par calcular el volumen de entrenamiento
+        //for (Entrenamiento entrenamiento : entrenamientos) {
+        	//List<EjercicioEnEntrenamiento> ejercicios = entrenamiento.getEjercicios();
+		//}
+        
         
 //------------------------------LADO IZQUIERDO-------------------------------------------------------
         
@@ -329,6 +346,7 @@ public class EstadisticasRutina extends JFrame {
     
 
 	public static void main(String[] args) {
-		new EstadisticasRutina();
+		Rutina rutinaEjemplo = null;
+		new EstadisticasRutina(rutinaEjemplo);
 	}
 }

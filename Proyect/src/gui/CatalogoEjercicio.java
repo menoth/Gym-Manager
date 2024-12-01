@@ -23,11 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-
-
-
-
-
 public class CatalogoEjercicio extends JFrame {
 
 	/**

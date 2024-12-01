@@ -3,19 +3,13 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,23 +20,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Flow;
-
 import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
@@ -305,7 +296,7 @@ public class PerfilUsuario extends JFrame {
 		
 		//Lista para importar todas las rutinas de la bd
 		ArrayList<Rutina> listaRutinas = new ArrayList<>();
-		//ConectarBaseDeDatosRutina(listaRutinas);
+		ConectarBaseDeDatos.ConectarBaseDeDatosRutina(listaRutinas); 
 		
 		//Lista en la que se meten las rutinas del usuario
 		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
@@ -318,7 +309,7 @@ public class PerfilUsuario extends JFrame {
 		
 		JTable table = new JTable(new RutinaModel());
 		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
-		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario));
+		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario));
 		
 		//Ajustar el tamaño de Nombre
 		table.getColumnModel().getColumn(1).setWidth(170);
@@ -354,7 +345,7 @@ public class PerfilUsuario extends JFrame {
 
 		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
 	    
-	    //Cambiar esta lista por rutinasUsuario
+	    //Cambiar esta lista por rutinasUsuario cuando se terminen de introducir todo a la BD
 	    private Object[][] data = {
 	            {"1", "Push", "Hola", "Botones"},
 	            {"1", "Push", "Hola", "Botones"},
@@ -470,7 +461,7 @@ public class PerfilUsuario extends JFrame {
 		private JTable table;
 		private int editingRow = -1;
 		
-	    public EditorBoton(String usuario) {
+	    public EditorBoton(String usuario, List<Rutina> rutinasUsuario) {
 	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 	      //Icono editar
@@ -529,21 +520,37 @@ public class PerfilUsuario extends JFrame {
 	        deleteButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int row = table.getEditingRow();
-					if (row != -1) {
-						Object id = table.getModel().getValueAt(row, 0);
-						eliminarRutina((int) id);
+					if (editingRow != -1) {
+						
+						Object id = table.getModel().getValueAt(editingRow, 0);
+		          
+			//------IMPORTANTE, eliminar rutina esta comentado ya que como trabajamos con datos de prueba hasta que 
+			//se terminen de introducir los datos en la BD, daria error ya que el id es inventado.
+						eliminarRutina(Integer.parseInt(id.toString()));
 					}
 				}
 			});
+	        
 	        
 	        //Action listener estadísticas
 	        statsButton.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					dispose();
-					new PrincipalWindow(usuario);
+					if (editingRow != -1) {
+						Object id = table.getModel().getValueAt(editingRow, 0);
+						Rutina rutinaSeleccionada = null;
+						
+						//Con ese id obtenemos la rutina
+						for (Rutina rutina2 : rutinasUsuario) {
+							if (rutina2.getId() == Integer.parseInt(id.toString())) {
+								rutinaSeleccionada = rutina2;
+							}
+						}
+						
+						new EstadisticasRutina(rutinaSeleccionada);
+					}
+					
 					
 				}
 			});
@@ -566,13 +573,11 @@ public class PerfilUsuario extends JFrame {
 				Connection conn = DriverManager.getConnection
 						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 				
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery
-						("DELETE FROM Rutinas WHERE id ="+id);
 				
+				String sql = "DELETE FROM Rutinas WHERE id ="+id;
+				PreparedStatement queryStmt = conn.prepareStatement(sql);
 				
-			
-				stmt.close();
+				queryStmt.close();
 				conn.close(); 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -582,7 +587,9 @@ public class PerfilUsuario extends JFrame {
 
 		@Override
 	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-	        return panel;
+	        this.table = table;
+	        this.editingRow = row;
+			return panel;
 	    }
 
 	    @Override
