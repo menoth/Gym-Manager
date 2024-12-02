@@ -155,21 +155,11 @@ public class ConectarBaseDeDatos {
 			while (rs.next()) {
 				int ID_Ejercicio = rs.getInt("ID_Ejercicio");
 				String Nombre = rs.getString("Nombre");
-				int MusculoPrincipal = rs.getInt("MusculoPrincipal");
-				int MusculoSecundario = rs.getInt("MusculoSecundario");
+				String MusculoPrincipal = rs.getString("MusculoPrincipal");
+				String MusculoSecundario = rs.getString("MusculoSecundario");
 				
-				String sql2 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
-				PreparedStatement queryStmt2 = conn.prepareStatement(sql2);
-				queryStmt2.setInt(0, MusculoPrincipal);
-				ResultSet rs2 = queryStmt2.executeQuery();
-				String nombreMusculoPrincipal = rs2.getString("Nombre");
 				
-				String sql3 = "SELECT * FROM Musculo WHERE ID_Musculo = ?";
-				PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
-				queryStmt3.setInt(0, MusculoSecundario);
-				ResultSet rs3 = queryStmt3.executeQuery();
-				String nombreMusculoSecundario = rs3.getString("Nombre");
-				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, Ejercicio.Musculo.valueOf(nombreMusculoPrincipal), Ejercicio.Musculo.valueOf(nombreMusculoSecundario)));
+				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, Ejercicio.Musculo.valueOf(MusculoPrincipal), Ejercicio.Musculo.valueOf(MusculoSecundario)));
 			}
 			stmt.close();
 			conn.close();
