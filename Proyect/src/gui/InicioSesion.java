@@ -7,6 +7,8 @@ import domain.Usuario;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -106,6 +108,31 @@ public class InicioSesion extends JFrame {
                 passwordField.setText("");
             }
         });
+        
+        
+        // KeyListener para activar el botón "Iniciar Sesión" al presionar Enter
+        KeyListener enterKeyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // No es necesario implementar
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    botonLogin.doClick(); // Simula un clic en el botón "Iniciar Sesión"
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // No es necesario implementar
+            }
+        };
+
+        // Agregar el KeyListener a los campos de texto
+        userTextField.addKeyListener(enterKeyListener);
+        passwordField.addKeyListener(enterKeyListener);
         
         // Añadimos los paneles
         panel.add(botonLogin);

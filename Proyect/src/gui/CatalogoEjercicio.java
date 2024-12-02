@@ -24,8 +24,8 @@ public class CatalogoEjercicio extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private JTextField campo_busqueda;
-    private JButton boton_buscar;
+    private JTextField campoBusqueda;
+    private JButton botonBuscar;
     private JPanel gridPrincipal; // Panel dinámico para botones
     private List<String> listaEjercicios; // Lista dinámica para filtrar
 
@@ -54,7 +54,8 @@ public class CatalogoEjercicio extends JFrame {
         });
         panelSuperior.add(botonVolver, BorderLayout.WEST);
 
-        // Botón Administrador
+        //---------------BOTÓN ADMINISTRADOR------------------------------------------------------------------------
+        
         JButton botonAdmin = new JButton("Administrador");
         botonAdmin.setPreferredSize(new Dimension(140, 10));
         if (usuario.equals("admin")) {
@@ -65,19 +66,21 @@ public class CatalogoEjercicio extends JFrame {
         // Buscador
         JPanel panelBusqueda = new JPanel();
         panelBusqueda.setBackground(Color.DARK_GRAY);
-        campo_busqueda = new JTextField();
-        campo_busqueda.setPreferredSize(new Dimension(500, 30));
-        boton_buscar = new JButton("Buscar");
-        boton_buscar.setPreferredSize(new Dimension(140, 40));
-        boton_buscar.addActionListener(e -> filtrarEjercicios());
-        panelBusqueda.add(campo_busqueda);
-        panelBusqueda.add(boton_buscar);
+        campoBusqueda = new JTextField();
+        campoBusqueda.setPreferredSize(new Dimension(500, 30));
+        botonBuscar = new JButton("Buscar");
+        botonBuscar.setPreferredSize(new Dimension(140, 40));
+        botonBuscar.addActionListener(e -> filtrarEjercicios());
+        panelBusqueda.add(campoBusqueda);
+        panelBusqueda.add(botonBuscar);
         panelSuperior.add(panelBusqueda, BorderLayout.CENTER);
-
+        
+        //-----------------------------------------------------------------------------------------------------------
+        
         // Añadir panel superior al principal
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
 
-        // Catálogo dinámico
+        //-----------------CATÁLOGO----------------------------------------------------------------------------------
         gridPrincipal = new JPanel();
         gridPrincipal.setBackground(Color.LIGHT_GRAY);
         gridPrincipal.setLayout(new GridLayout(0, 4, 20, 20)); // 4 botones por fila con espacio entre ellos
@@ -93,7 +96,10 @@ public class CatalogoEjercicio extends JFrame {
         JScrollPane scrollPane = new JScrollPane(gridPrincipal, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); //DESPLAZAMIENTO
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-
+        
+        
+        //-------------------------------------------------------------------------------------------------------------
+        
         add(panelPrincipal);
         setVisible(true);
     }
@@ -129,7 +135,7 @@ public class CatalogoEjercicio extends JFrame {
 
     // Filtrar ejercicios por el buscador
     private void filtrarEjercicios() {
-        String filtro = campo_busqueda.getText().trim().toLowerCase();
+        String filtro = campoBusqueda.getText().trim().toLowerCase();
         List<String> ejerciciosFiltrados = new ArrayList<>();
         for (String ejercicio : listaEjercicios) {
             if (ejercicio.toLowerCase().contains(filtro)) {

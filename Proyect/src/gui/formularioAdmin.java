@@ -54,6 +54,7 @@ public class formularioAdmin extends JFrame {
         panelEliminar.setBackground(Color.GRAY);
 
         // ---------------------------------LABELS SUPERIORES (AÑADIR Y ELIMINAR)--------------------------
+        
         JPanel anadirSuperior = new JPanel();
         anadirSuperior.setLayout(new FlowLayout());
         anadirSuperior.setBackground(Color.green);
@@ -67,47 +68,64 @@ public class formularioAdmin extends JFrame {
 
         JLabel eliminar = new JLabel("ELIMINAR");
         eliminarSuperior.add(eliminar);
-
-        // -------------------------CAMPO ESCRIBIR NUEVO EJERCICIO----------------------------------
+        
+        //--------------------------------------------------------------------------------------------------
+        
+        // -------------------------CAMPO ESCRIBIR NUEVO EJERCICIO------------------------------------------
+        
         JPanel panelElementosAñadir = new JPanel();
-        panelElementosAñadir.setLayout(new GridLayout(3, 1, 0, 30));
+        panelElementosAñadir.setLayout(new GridLayout(7, 1, 0, 5));
         panelElementosAñadir.setBorder(new EmptyBorder(10, 10, 10, 10));
-
+        
         JLabel introduceNombre = new JLabel("Introduce el nombre del ejercicio:");
         JTextField campoNombre = new JTextField(10);
+        JLabel introduceMusculoPrincipal = new JLabel("Introduce el músculo principal:");
+        JTextField campoMusculoPrincipal = new JTextField(10);
+        JLabel introduceMusculoSecundario = new JLabel("Introduce el músculo secundario:");
+        JTextField campoMusculoSecundario = new JTextField(10);
         JButton botonAñadir = new JButton("Confirmar");
 
         // Action listener para el botón Añadir
         botonAñadir.addActionListener(e -> {
-            String texto = campoNombre.getText().trim();
-            if (!texto.isEmpty()) {
-                if (datos.contains(texto)) {
-                    JOptionPane.showMessageDialog(this, "Este ejercicio ya se encuentra registrado.");
-                } else {
-                    try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
-                        String sql = "INSERT INTO Ejercicio (Nombre) VALUES (?)";
-                        PreparedStatement pstmt = conn.prepareStatement(sql);
-                        pstmt.setString(1, texto);
-                        pstmt.executeUpdate();
-                        datos.add(texto); // Actualiza la lista local
-                        JOptionPane.showMessageDialog(this, "Ejercicio añadido correctamente.");
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(this, "Error al añadir el ejercicio a la base de datos.");
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "El nombre del ejercicio no puede estar vacío.");
+            String nombreEjercicio = campoNombre.getText().trim();
+            String musculoPrincipal = campoMusculoPrincipal.getText().trim();
+            String musculoSecundario = campoMusculoSecundario.getText().trim();
+
+            if (nombreEjercicio.isEmpty() || musculoPrincipal.isEmpty() || musculoSecundario.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+                return;
+            }
+
+            // Generar un nuevo ID basado en el tamaño actual de los datos
+            int nuevoId = datos.size();
+
+            try {
+                // Usar el método estático para insertar el ejercicio
+                InsertarEjerciciosBD.insertarEjercicio(nuevoId, nombreEjercicio, musculoPrincipal, musculoSecundario);
+                datos.add(nombreEjercicio); // Actualiza la lista local
+                JOptionPane.showMessageDialog(this, "Ejercicio añadido correctamente.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al añadir el ejercicio.");
             }
         });
 
+            
+
+        // Añade los campos al panel
         panelElementosAñadir.add(introduceNombre);
         panelElementosAñadir.add(campoNombre);
+        panelElementosAñadir.add(introduceMusculoPrincipal);
+        panelElementosAñadir.add(campoMusculoPrincipal);
+        panelElementosAñadir.add(introduceMusculoSecundario);
+        panelElementosAñadir.add(campoMusculoSecundario);
         panelElementosAñadir.add(botonAñadir);
-
         panelAnadir.add(panelElementosAñadir, BorderLayout.CENTER);
-
+        
+        //-----------------------------------------------------------------------------------
+        
         // -------------------------CAMPO ELIMINAR EJERCICIO----------------------------------
+        
         JPanel panelElementosEliminar = new JPanel();
         panelElementosEliminar.setLayout(new GridLayout(3, 1, 0, 30));
         panelElementosEliminar.setBorder(new EmptyBorder(10, 10, 10, 10));
