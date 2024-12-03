@@ -135,6 +135,9 @@ public class PrincipalWindow extends JFrame {
         JMenuItem opcion2 = new JMenuItem("RUTINAS GUARDADAS");
         opcion2.setBackground(new Color(176,224,230));
         JMenuItem opcion3 = new JMenuItem("SEGUIMIENTO PROPIO");
+        opcion3.addActionListener(e -> {
+            new SeguimientoPersonal(usuario); // Asegúrate de pasar el usuario actual si es necesario
+        });
         opcion3.setBackground(new Color(176,224,230));
         JMenuItem opcion4 = new JMenuItem("MIS AMIGOS");
         opcion4.setBackground(new Color(176,224,230));
