@@ -13,6 +13,8 @@ import java.util.List;
 import domain.Ejercicio;
 import domain.EjercicioEnEntrenamiento;
 import domain.Entrenamiento;
+import domain.Musculo;
+import domain.Musculo.TamanoMusculo;
 import domain.Rutina;
 import domain.Serie;
 import domain.Usuario;
@@ -158,8 +160,21 @@ public class ConectarBaseDeDatos {
 				String MusculoPrincipal = rs.getString("MusculoPrincipal");
 				String MusculoSecundario = rs.getString("MusculoSecundario");
 				
+				String sql2 = "SELECT * FROM Musculo WHERE Nombre LIKE ?";
+				PreparedStatement queryStmt2 = conn.prepareStatement(sql2);
+				queryStmt2.setString(1, MusculoPrincipal);
+				ResultSet rs2 = queryStmt.executeQuery();
+				String NombreMusculoPrincipal = rs2.getString("Nombre");
+				String TamanoMusculoPrincipal = rs2.getString("TamanoMusculo");
 				
-				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, Ejercicio.Musculo.valueOf(MusculoPrincipal), Ejercicio.Musculo.valueOf(MusculoSecundario)));
+				String sql3 = "SELECT * FROM Musculo WHERE Nombre LIKE ?";
+				PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
+				queryStmt3.setString(1, MusculoSecundario);
+				ResultSet rs3 = queryStmt.executeQuery();
+				String NombreMusculoSecundario = rs3.getString("Nombre");
+				String TamanoMusculoSecundario = rs3.getString("TamanoMusculo");
+				
+				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, new Musculo(NombreMusculoPrincipal, TamanoMusculo.valueOf(TamanoMusculoPrincipal)), new Musculo(NombreMusculoSecundario, TamanoMusculo.valueOf(TamanoMusculoSecundario))));
 			}
 			stmt.close();
 			conn.close();

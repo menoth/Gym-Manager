@@ -101,7 +101,7 @@ public class formularioAdmin extends JFrame {
 
             try {
                 // Usar el método estático para insertar el ejercicio
-                InsertarEjerciciosBD.insertarEjercicio(nuevoId, nombreEjercicio, musculoPrincipal, musculoSecundario);
+                InsertarDatosBD.insertarEjercicio(nuevoId, nombreEjercicio, musculoPrincipal, musculoSecundario);
                 datos.add(nombreEjercicio); // Actualiza la lista local
                 JOptionPane.showMessageDialog(this, "Ejercicio añadido correctamente.");
             } catch (Exception ex) {
