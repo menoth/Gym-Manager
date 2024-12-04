@@ -288,7 +288,7 @@ public class EstadisticasRutina extends JFrame {
             g2.setColor(Color.BLACK);
             
             //Traza una línea desde la parte inferior izquierda (x=margenIzquierdo, y=height-margenInferio)
-            //a la parte superior izquierda (x=margenIzquierdo, y=20)
+            //a la parte superior izquierda (x=margenIzquierdo, y	=20)
             g2.drawLine(margenIzquierdo, height - margenInferior, margenIzquierdo, 20);
             
             //Traza una línea desde la parte inferior izquierda (x=margenIzquierdo, y=height-margenInferio)
