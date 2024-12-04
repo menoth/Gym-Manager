@@ -6,11 +6,7 @@ import java.util.Objects;
 
 public class Ejercicio{
 	
-	public enum Musculo{
-		PECTORAL, ANTEBRAZO, ABDOMINAL, CUADRICEPS, CUELLO, TRAPECIO, 
-		HOMBRO, BICEPS, DORSAL, ESPALDA_ALTA, FEMORAL, GEMELO, TRICEPS, 
-		GLUTEO, CARDIO
-	}
+	
 	
 	private int id;
 	private String nombre;
@@ -77,12 +73,9 @@ public class Ejercicio{
 		if (getClass() != obj.getClass())
 			return false;
 		Ejercicio other = (Ejercicio) obj;
-
-
-		return id == other.id && musculoPrincipal == other.musculoPrincipal
-				&& musculoSecundario == other.musculoSecundario && Objects.equals(nombre, other.nombre);
-
+		return id == other.id && Objects.equals(musculoPrincipal, other.musculoPrincipal)
+				&& Objects.equals(musculoSecundario, other.musculoSecundario) && Objects.equals(nombre, other.nombre);
 	}
 	
-
+	
 }

@@ -306,8 +306,9 @@ public class PerfilUsuario extends JFrame {
 			}
 		}
 		
-		
-		JTable table = new JTable(new RutinaModel());
+		RutinaModel modelo = new RutinaModel();
+		modelo.cargarDatosDesdeBD(usuario);
+		JTable table = new JTable(modelo);
 		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
 		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario));
 		
@@ -346,25 +347,35 @@ public class PerfilUsuario extends JFrame {
 		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
 	    
 	    //Cambiar esta lista por rutinasUsuario cuando se terminen de introducir todo a la BD
-	    private Object[][] data = {
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"1", "Push", "Hola", "Botones"},
-	            {"2", "Rutina B", "Descripción B", "Botones"}
-	           
-	    };
-
+	    private Object[][] data;
+	    public void cargarDatosDesdeBD(String user) {
+	    	try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				System.out.println("No se ha podido cargar el driver de la BD");
+			}
+			try {
+				Connection conn = DriverManager.getConnection
+					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+		
+				Statement stmt = conn.createStatement();
+				String sql = "SELECT * FROM Rutina WHERE Usuario LIKE ?";
+				PreparedStatement queryStmt = conn.prepareStatement(sql);
+				queryStmt.setString(1, user);
+				ResultSet rs = queryStmt.executeQuery();
+				List<Object[]> listaDatos = new ArrayList<>();
+				while (rs.next()) {
+					int ID_Rutina = rs.getInt("ID_Rutina");
+					String nombre = rs.getString("Nombre");
+					String descripcion = rs.getString("Descripción");
+	                listaDatos.add(new Object[] {ID_Rutina, nombre, descripcion, "Botones"});
+	                data = listaDatos.toArray(new Object[0][]);
+	                fireTableDataChanged(); // Notifica a la tabla que los datos han cambiado
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 	    @Override
 	    public int getRowCount() {
 	        return data.length;
