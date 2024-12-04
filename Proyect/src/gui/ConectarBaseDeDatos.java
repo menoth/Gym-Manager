@@ -76,7 +76,7 @@ public class ConectarBaseDeDatos {
 			while (rs.next()) {
 				int ID_Rutina = rs.getInt("ID_Rutina");
 				String nombre = rs.getString("Nombre");
-				String descripcion = rs.getString("Descripcion");
+				String descripcion = rs.getString("Descripción");
 				String usuario = rs.getString("Usuario");
 				ArrayList<Entrenamiento> entrenamientos = new ArrayList<Entrenamiento>();
 				
@@ -84,7 +84,7 @@ public class ConectarBaseDeDatos {
 				// cargamos desde la base de datos todos los entrenamientos que tengan esa ID_Rutina en la lista de entrenamientos de la rutina
 				String sql2 = "SELECT * FROM Entrenamiento WHERE ID_Rutina = ?";
 				PreparedStatement queryStmt2 = conn.prepareStatement(sql2);
-				queryStmt2.setInt(0, ID_Rutina);
+				queryStmt2.setInt(1, ID_Rutina);
 				ResultSet rs2 = queryStmt2.executeQuery();
 				while (rs2.next()) {
 					int ID_Entrenamiento = rs2.getInt("ID_Entrenamiento");
@@ -99,7 +99,7 @@ public class ConectarBaseDeDatos {
 					// cargamos desde la base de datos todos los ejercicios que tengan esa ID_Entrenamiento en la lista ejercicios de el entrenamiento
 					String sql3 = "SELECT * FROM EjercicioEnEntrenamiento WHERE ID_Entrenamiento = ?";
 					PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
-					queryStmt3.setInt(0, ID_Entrenamiento);
+					queryStmt3.setInt(1, ID_Entrenamiento);
 					ResultSet rs3 = queryStmt3.executeQuery();
 					while (rs3.next()) {
 						int ID_EjercicioEnEntrenamiento = rs3.getInt("ID_EjercicioEnEntrenamiento");
@@ -111,7 +111,7 @@ public class ConectarBaseDeDatos {
 						// cargamos desde la base de datos todas las series que tengan ese ID_Ejercicio en la lista de series del ejercicio
 						String sql4 = "SELECT * FROM Serie WHERE ID_EjercicioEnEntrenamiento = ?";
 						PreparedStatement queryStmt4 = conn.prepareStatement(sql4);
-						queryStmt4.setInt(0, ID_Ejercicio);
+						queryStmt4.setInt(1, ID_Ejercicio);
 						ResultSet rs4 = queryStmt4.executeQuery();
 						while (rs4.next()) {
 							int ID_Serie = rs4.getInt("ID_Serie");
