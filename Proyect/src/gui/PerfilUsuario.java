@@ -381,6 +381,7 @@ public class PerfilUsuario extends JFrame {
 	        return data.length;
 	    }
 
+	    
 	    @Override
 	    public int getColumnCount() {
 	    	//Para mantener la columna id oculta
