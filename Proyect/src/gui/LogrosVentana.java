@@ -35,8 +35,8 @@ public class LogrosVentana extends JFrame {
 
         // Nombres de las imágenes
         String[] logrosImagenes = {
-            "100kgsBanca.png",
-            "100kgsSentadilla.png",
+            "100kgs en Press de Banca.png",
+            "100kgs en Sentadilla.png",
             "banca3SIN.png",
             "banca4SIN.png",
             "banca5SIN.png",
@@ -68,7 +68,7 @@ public class LogrosVentana extends JFrame {
             ImageIcon icon = null;
             try {
                 icon = new ImageIcon(getClass().getResource("/imagenes/" + logrosImagenes[i]));
-                Image EscalaImagen = icon.getImage().getScaledInstance(280, 350, Image.SCALE_SMOOTH); //ChatGPT
+                Image EscalaImagen = icon.getImage().getScaledInstance(200, 270, Image.SCALE_SMOOTH); //ChatGPT
                 icon = new ImageIcon(EscalaImagen);
             } catch (Exception e) {
                 System.err.println("No se encontró la imagen: " + logrosImagenes[i]); 
