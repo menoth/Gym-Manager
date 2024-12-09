@@ -10,6 +10,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,7 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import domain.Ejercicio;
+import domain.EjercicioEnEntrenamiento;
+import domain.Entrenamiento;
+import domain.Musculo;
 import domain.Rutina;
+import domain.Serie;
 
 
 public class EstadisticasRutina extends JFrame {
@@ -37,15 +48,28 @@ public class EstadisticasRutina extends JFrame {
         //Separamos la ventana con gridlayout en dos 
         this.setLayout(new GridLayout(1,2));
         
-//---------------Datos para las estadísticas, de momento comentados
-        //String nombre = rutina.getNombre();
-        //Double volumenEn = 0.0;
-        //ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
+        //Datos para las estadísticas, de momento comentados
+        String nombre = rutina.getNombre();
+        Double volumenEn = 0.0;
+        ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
+        ArrayList<Ejercicio> ejercicios = new ArrayList<Ejercicio>();
+        ConectarBaseDeDatos.ConectarBaseDeDatosEjercicios(ejercicios);
         
-        //Bucle par calcular el volumen de entrenamiento
-        //for (Entrenamiento entrenamiento : entrenamientos) {
-        	//List<EjercicioEnEntrenamiento> ejercicios = entrenamiento.getEjercicios();
-		//}
+        //Bucle para calcular el volumen de entrenamiento
+        double VolumenTotal = 0;
+        int NumeroEjercicios = 0;
+        for (Entrenamiento entrenamiento : entrenamientos) {
+        	for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
+        		for(Serie serie : ejercicio.getSeries()) {
+        			VolumenTotal+=(serie.getPeso()*serie.getRepeticiones());
+        		}
+        	}
+		}
+        for (Entrenamiento entrenamiento : entrenamientos) {
+        	for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
+        		NumeroEjercicios+=1;
+        	}
+		}
         
         
 //------------------------------LADO IZQUIERDO-------------------------------------------------------
@@ -61,7 +85,7 @@ public class EstadisticasRutina extends JFrame {
         panelNombre.setLayout(new BorderLayout());
         panelNombre.setBorder(new EmptyBorder(80,20,20,20));
         
-        JTextArea txtNombreRutina = new JTextArea("Estas son las estadísticas de tu rutina "+ "NOMBRE1"+", en la grafica inferior podrás ver la intensidad de trabajo de cada músuclo, siendo el valor más optimo el 1.");
+        JTextArea txtNombreRutina = new JTextArea("Estas son las estadísticas de tu rutina "+ nombre +", en la grafica inferior podrás ver la intensidad de trabajo de cada músuclo, siendo el valor más optimo el 1.");
         txtNombreRutina.setFont(new Font("Arial", Font.BOLD, 18));
         txtNombreRutina.setBackground(this.getBackground());
         
@@ -89,7 +113,7 @@ public class EstadisticasRutina extends JFrame {
         JLabel volumenEntrenamiento = new JLabel("VOLUMEN DE ENTRENAMIENTO");
         volumenEntrenamiento.setFont(new Font("Arial", Font.BOLD, 22));
         
-        JTextArea txtVolumen = new JTextArea("Has movido un total de 3000kg este semana dividido en 5 entrenamientos y 32 ejercicios diferentes");
+        JTextArea txtVolumen = new JTextArea("Has movido un total de " + VolumenTotal + " este semana dividido en " + rutina.getEntrenamientos().size() + " entrenamientos y "+ NumeroEjercicios + " ejercicios diferentes");
         txtVolumen.setFont(new Font("Arial", Font.PLAIN, 20));
         //txtVolumen.setBackground(this.getBackground());
         
@@ -111,7 +135,7 @@ public class EstadisticasRutina extends JFrame {
         pVolumen.add(txtVolumen, BorderLayout.CENTER);
         
 //----------------------gráfico-----------------------------
-        JPanel panelGrafico = new CustomChart();
+        JPanel panelGrafico = new CustomChart(rutina, ejercicios);
         
         pIzquierda.add(pVolumen);
         pIzquierda.add(panelGrafico);
@@ -264,10 +288,56 @@ public class EstadisticasRutina extends JFrame {
         private static final long serialVersionUID = 1L;
 
         //Datos de prueba
-        double[] datos = {0.5, 1.0, 1.2, 0.8, 1.2};
-        String[] musculos = {"Pectoral", "Espalda", "Hombro", "Gemelo", "Biceps"};
+        double[] datos = {};
+        String[] musculos = {};
 
-        @Override
+        public CustomChart(Rutina rutina, ArrayList<Ejercicio> ejercicios) {
+        	HashMap<String, Double> mapa = new HashMap<String, Double>();
+        	for(Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
+        		for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
+        			for(Serie serie : ejercicio.getSeries()) {
+        				for(Ejercicio ejercicio2 : ejercicios) {
+        					if (ejercicio.getID_Ejercicio() == ejercicio2.getId()) {
+								Double valorTamaño = 0.0;
+								Double valorTamaño2 = 0.0;
+								Double valorRPE = 0.0;
+								if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUEÑO.toString())) {
+									valorTamaño = 1.5;
+								} else if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
+									valorTamaño = 1.0;
+								} else { 
+									valorTamaño = 0.5;
+								}
+								if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUEÑO.toString())) {
+									valorTamaño2 = 1.5;
+								} else if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
+									valorTamaño2 = 1.0;
+								} else { 
+									valorTamaño2 = 0.5;
+								}
+								if (serie.getEsfuerzo().equals(Serie.Esfuerzo.TOPSET)) {
+									valorRPE = 1.5;
+								} else if (serie.getEsfuerzo().equals(Serie.Esfuerzo.ESTANDAR)) {
+									valorRPE = 1.0;
+								} else { 
+									valorRPE = 0.5;
+								}
+								if (!mapa.containsKey(ejercicio2.getMusculoPrincipal().getNombre())) {
+									mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE);
+								} else {
+									double valorPuesto = mapa.get(ejercicio2.getMusculoPrincipal().getNombre());
+									mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE+valorPuesto);
+								}
+								
+															
+							}
+        				}
+        			}
+        		}
+        	}
+        }
+
+		@Override
         protected void paintComponent(Graphics g) {
         	super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
