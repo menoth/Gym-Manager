@@ -51,6 +51,7 @@ import domain.Usuario;
 import javax.swing.JPopupMenu;
 
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 
 public class PrincipalWindow extends JFrame {
@@ -141,7 +142,7 @@ public class PrincipalWindow extends JFrame {
         opcion3.setBackground(new Color(176,224,230));
         JMenuItem opcion4 = new JMenuItem("MIS AMIGOS");
         opcion4.setBackground(new Color(176,224,230));
-        JMenuItem opcion5 = new JMenuItem("AJUSTES");
+        JMenuItem opcion5 = new JMenuItem("RETO DIARIO");
         opcion5.setBackground(new Color(176,224,230));
         JMenuItem opcion6 = new JMenuItem("CERRAR SESIÓN");
         opcion6.setBackground(new Color(176,224,230));
@@ -157,6 +158,16 @@ public class PrincipalWindow extends JFrame {
         
         //??
         opcion6.addActionListener(e -> confirmarSalidaSesion());
+        
+        //Action listener para el boton reto diario
+        opcion5.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new RetoDiario();
+				
+			}
+		});
         
         // Editar el menu desplegable
         menuDesplegable.setBackground(Color.GRAY);
@@ -181,6 +192,7 @@ public class PrincipalWindow extends JFrame {
 		otherThings.setPreferredSize(new Dimension(200, 0));
 		otherThings.setBackground(Color.GRAY);
 		
+		
         // Añadimos al panel el button del menú desplegable
         otherThings.add(menuButton, BorderLayout.CENTER);
         
@@ -191,10 +203,13 @@ public class PrincipalWindow extends JFrame {
 		// Añadimos todo a la ventana
 		general.add(pNorth, BorderLayout.NORTH);
 		
+		
+		
 		//----------------------------PANEL CON EL BOTÓN DE AÑADIR RUTINA------------------------------------------------------------------------
 		
 		// Creamos el panel donde irá el botón para añadir entrenamientos
 		JPanel panelAñadirEntrenamientos = new JPanel();
+		
 		panelAñadirEntrenamientos.setBackground(Color.LIGHT_GRAY);
 		panelAñadirEntrenamientos.setPreferredSize(new Dimension(0, 200));
 		
@@ -216,6 +231,7 @@ public class PrincipalWindow extends JFrame {
 		
 		// Creamos el panel donde van a ir los entrenamientos que hemos creado
 		JPanel entrenamientos = new JPanel();
+		
 		entrenamientos.setBackground(Color.LIGHT_GRAY);
 		
 		// El jsp que va a tener los entrenamientos

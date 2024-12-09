@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractCellEditor;
-
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -49,41 +50,8 @@ public class PerfilUsuario extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public class LogrosUsuarioLoader {
-	    public static Map<String, List<String>> cargarLogrosPorUsuario() {
-	        // Mapa que almacena los logros seleccionados por cada usuario
-	        Map<String, List<String>> logrosPorUsuario = new HashMap<>();
-	        
-	        // Conexión a la base de datos
-	        String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
-	        String query = """
-	            SELECT U.Usuario AS Usuario, L.Nombre AS Logro
-	            FROM ConsigueLogro CL
-	            JOIN Usuario U ON CL.Usuario = U.Usuario
-	            JOIN Logro L ON CL.Logro = L.ID_Logro
-	            """;
-	        try (Connection conn = DriverManager.getConnection(url);
-	             PreparedStatement stmt = conn.prepareStatement(query);
-	             ResultSet rs = stmt.executeQuery()) {
-	            
-	            // Recorrer los resultados
-	            while (rs.next()) {
-	                String usuario = rs.getString("Usuario");
-	                String logro = rs.getString("Logro");
-	                
-	                // Si el usuario no está en el mapa, inicializamos su lista de logros
-	                logrosPorUsuario.putIfAbsent(usuario, new ArrayList<>());
-	                
-	                // Añadimos el logro a la lista del usuario
-	                logrosPorUsuario.get(usuario).add(logro);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	        
-	        return logrosPorUsuario;
-	    }
-	}
+	
+
 	
 	public PerfilUsuario(String usuario) {
 		
@@ -131,6 +99,7 @@ public class PerfilUsuario extends JFrame {
 
 				
 //-----------------------------JFRAME------------------------------------------------------------
+		
 		// Detalles ventana
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -157,7 +126,62 @@ public class PerfilUsuario extends JFrame {
 		panelIz2.setBackground(new Color(176,224,230));
 		
 		JPanel panelIz3 = new JPanel();
-		panelIz3.setLayout(new GridLayout(2, 3));
+		String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
+	    String consultaSQL = "SELECT L.Nombre FROM Logro L " +
+	                         "JOIN ConsigueLogro CL ON L.ID_Logro = CL.Logro " +
+	                         "WHERE CL.Usuario = ?";
+
+	    try (Connection conn = DriverManager.getConnection(url);
+	         PreparedStatement stmt = conn.prepareStatement(consultaSQL)) {
+
+	        stmt.setString(1, usuario);
+	        var rs = stmt.executeQuery();
+
+	        // Limpiar el contenido previo de panelIz3
+	        panelIz3.removeAll();
+
+	        // Crear un panel con layout horizontal para mostrar los logros
+	        JPanel logrosPanel = new JPanel();
+	        logrosPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+	        // Agregar logros al panel
+	        while (rs.next()) {
+	            String nombreLogro = rs.getString("Nombre");
+
+	            // Asumimos que la imagen se llama igual que el logro pero con extensión .png
+	            String rutaImagen = "Sources/imagenes/" + nombreLogro + ".png";
+
+	            // Verificar si la imagen existe antes de crear el ImageIcon
+	            ImageIcon icon = null;
+	            File archivoImagen = new File(rutaImagen);
+	            if (archivoImagen.exists()) {
+	                Image img = new ImageIcon(rutaImagen).getImage().getScaledInstance(200, 270, Image.SCALE_SMOOTH);
+	                icon = new ImageIcon(img);
+	            }
+
+	            JLabel labelImagen = new JLabel(icon);
+	            labelImagen.setToolTipText(nombreLogro); // Mostrar el nombre como tooltip
+	            labelImagen.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar horizontalmente
+	            
+	            
+	            // Crear un panel individual para cada logro (imagen + texto)
+	            JPanel logroPanel = new JPanel();
+	            logroPanel.setLayout(new BoxLayout(logroPanel, BoxLayout.Y_AXIS));
+	            logroPanel.add(labelImagen);
+	            logroPanel.add(labelImagen);
+
+	            // Agregar el panel del logro al panel principal
+	            logrosPanel.add(logroPanel);
+	        }
+
+	        // Agregar el panel de logros al panelIz3
+	        panelIz3.add(logrosPanel, BorderLayout.CENTER);
+	        panelIz3.revalidate();
+	        panelIz3.repaint();
+
+	    } catch (SQLException ex) {
+	        System.err.println("Error al cargar los logros: " + ex.getMessage());
+	    }
 		
 		// Botón para volver a la ventana principal
 		
@@ -225,38 +249,7 @@ public class PerfilUsuario extends JFrame {
 		
 		// Añadimos la descripcion a panelSubOeste1
 		panelIz2.add(desc);
-			
-		//FotoVitrina1
-		ImageIcon fotoVitrina1 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina1 = fotoVitrina1.getImage();
-	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-	    fotoVitrina1 = new ImageIcon(nuevaImagen1);
-		JLabel prueba1 = new JLabel(fotoVitrina1);
-		panelIz3.add(prueba1);
 		
-		//FotoVitrina2
-		ImageIcon fotoVitrina2 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina2 = fotoVitrina2.getImage();
-	    Image nuevaImagen2 = imagenVitrina2.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-	    fotoVitrina2 = new ImageIcon(nuevaImagen2);
-		JLabel prueba2 = new JLabel(fotoVitrina2);
-		panelIz3.add(prueba2);
-		
-		//FotoVitrina3
-		ImageIcon fotoVitrina3 = new ImageIcon("Sources/imagenes/banca5SIN.png");
-		Image imagenVitrina3 = fotoVitrina3.getImage();
-	    Image nuevaImagen3 = imagenVitrina3.getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-		fotoVitrina3 = new ImageIcon(nuevaImagen3);
-		JLabel prueba3 = new JLabel(fotoVitrina3);
-		panelIz3.add(prueba3);
-		
-		
-		JLabel prueba4 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba4);
-		JLabel prueba5 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba5);
-		JLabel prueba6 = new JLabel("100KG press banca", JLabel.CENTER);
-		panelIz3.add(prueba6);		
 		
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
@@ -381,6 +374,7 @@ public class PerfilUsuario extends JFrame {
 	        return data.length;
 	    }
 
+	    
 	    @Override
 	    public int getColumnCount() {
 	    	//Para mantener la columna id oculta

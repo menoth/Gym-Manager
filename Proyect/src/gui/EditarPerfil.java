@@ -165,11 +165,6 @@ public class EditarPerfil extends JFrame {
                     	//Files.copy hecho con ChatGPT4
                         Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-//                        // Actualizar la foto de perfil en la interfaz
-//                        ImageIcon nuevaFoto = new ImageIcon(destino.getAbsolutePath());
-//                        Image nuevaImagen = nuevaFoto.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-//                        label.setIcon(new ImageIcon(nuevaImagen));
-
                         // Actualizar la base de datos con el nuevo nombre
                         actualizarFotoEnBaseDeDatos(usuario.getUsuario(), nuevoNombreFoto);
                         dispose();
