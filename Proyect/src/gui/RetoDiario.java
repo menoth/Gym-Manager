@@ -15,7 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,9 +29,11 @@ public class RetoDiario extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	 HashMap<String, Integer> retos = new HashMap<>();
 	 LinkedList<Color> listaColores = new LinkedList<>();
 	 ArrayList<JLabel> listaLabels = new ArrayList<>();
 	 ArrayList<String> listaRetos = new ArrayList<>();
+	
 
 
     public RetoDiario(String usuario) {
@@ -38,14 +43,20 @@ public class RetoDiario extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         
-        // Lista de retos
-        listaRetos.add("Correr 5KM");
-        listaRetos.add("Hacer 50 flexiones");
-        listaRetos.add("Realizar 30 minutos de yoga");
-        listaRetos.add("Hacer 100 abdominales");
-        listaRetos.add("Montar en bicicleta 20KM");
-         
         
+
+        // Agregar retos y su dificultad
+        retos.put("Correr 5km", 5);
+        retos.put("Hacer 100 flexiones", 7);
+        retos.put("Nadar 2km", 8);
+        retos.put("Caminar 10km", 4);
+        retos.put("Subir una montaña", 9);
+        retos.put("Bicicleta 50km", 6);
+        
+        // Lista de retos
+       for (String reto : retos.keySet()) {
+		listaRetos.add(reto);
+	}
        
         this.setLayout(new BorderLayout());
         
@@ -165,6 +176,7 @@ public class RetoDiario extends JFrame {
         panelDerecha.add(retosLabel, BorderLayout.NORTH);
         
         RetosModel modelo = new RetosModel(); 
+        modelo.cargarDatosDesdeBD(usuario);
         JTable table = new JTable(modelo);
         table.getColumnModel().getColumn(5).setCellRenderer(new RendererBotonReto());
         table.getColumnModel().getColumn(5).setCellEditor(new EditorBotonReto(usuario));
@@ -234,14 +246,52 @@ public class RetoDiario extends JFrame {
 						 // Después de 5 segundos, seleccionar un reto aleatorio
                         String retoSeleccionado = listaRetos.get((int) (Math.random() * listaRetos.size()));
                         txtResultado.setText("Tu reto diario es: " + retoSeleccionado);
+                        escribirReto(retoSeleccionado);
 					}
+
+					
 				}).start();
 				
 			}
 		});
         
+
+        
         setVisible(true);
     }
+    
+    private void escribirReto(String retoSeleccionado) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+			e.printStackTrace();
+		}try {
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.bd");	
+			Statement stmt = conn.createStatement();
+			
+			String nombre = retoSeleccionado;
+			
+			Date fechaActual = new Date();
+	        // Formatear la fecha en formato día-mes-año
+	        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+	        String fecha = formatoFecha.format(fechaActual);
+			
+			Integer dificultad = 0;
+			
+			//Bucle para tener su dificultad
+			for (Integer reto : retos.values()) {
+				dificultad = reto;
+			}
+			
+			//String sql = "INSERT INTO "
+			
+			//fireTableDataChanged();	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
     
     class RetosModel extends AbstractTableModel{
 
@@ -251,7 +301,7 @@ public class RetoDiario extends JFrame {
 		private static final long serialVersionUID = 1L;
 		
 		private String[] nombreDatos = {"id", "Nombre", "Fecha", "Dificultad","Completado", "Opciones"}; 
-		private Object[][] data;
+		private Object[][] data = new Object[0][0];
 		
 		public void cargarDatosDesdeBD(String user) {
 	    	try {
@@ -278,12 +328,15 @@ public class RetoDiario extends JFrame {
 	                listaDatos.add(new Object[] {ID_RetoDiario, nombre, fecha, dificultad, completado, "Botones"});
 	                data = listaDatos.toArray(new Object[0][]);
 	                //Notifica a la tabla que los datos han cambiado
-	                fireTableDataChanged();
+	                
 	            }
+				fireTableDataChanged();	
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	    }
+		
+		
 	    
 		
 		@Override
@@ -314,8 +367,17 @@ public class RetoDiario extends JFrame {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			return data[rowIndex][columnIndex];
+		    if (columnIndex == 4) { 
+		        Integer completado = (Integer) data[rowIndex][columnIndex];
+		        if (completado == 0) {
+		            return "No";
+		        } else if (completado == 1) {
+		            return "Sí";
+		        }
+		    } 
+		    return data[rowIndex][columnIndex];
 		}
+
     	
     }
     
