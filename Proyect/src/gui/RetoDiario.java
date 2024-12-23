@@ -1,17 +1,24 @@
 package gui;
 
-import javax.security.auth.login.FailedLoginException;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Stack;
+import java.util.List;
+
 
 public class RetoDiario extends JFrame {
     /**
@@ -24,7 +31,7 @@ public class RetoDiario extends JFrame {
 	 ArrayList<String> listaRetos = new ArrayList<>();
 
 
-    public RetoDiario() {
+    public RetoDiario(String usuario) {
         setTitle("Reto diario");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,14 +78,14 @@ public class RetoDiario extends JFrame {
 //-----------------------PARTE CENTRAL------------------------------------
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new GridLayout(1, 2));
-        panelCentral.setBackground(Color.yellow);
+        panelCentral.setBackground(Color.blue);
         panelCentral.setBorder(new EmptyBorder(20,20,20,20));
         
         //----------LADO IZQUIERDO CENTRAL
         JPanel panelIzquierda = new JPanel();
         panelIzquierda.setLayout(new GridLayout(3, 1));
         panelIzquierda.setBorder(new EmptyBorder(0,0,0,10));
-        panelIzquierda.setBackground(Color.red);
+        panelIzquierda.setBackground(Color.blue);
         
         //1 DE 3 partes LADO IZQUIERDO CENTRAL
         JPanel panel1 = new JPanel();
@@ -145,24 +152,61 @@ public class RetoDiario extends JFrame {
         
         panelCentral.add(panelIzquierda);
         
-        //----------LADO IZQUIERDO CENTRAL
+        //----------LADO DERECHO CENTRAL
         JPanel panelDerecha = new JPanel();
         panelDerecha.setBorder(new EmptyBorder(0,10,0,0));
-        panelDerecha.setBackground(Color.red);
+        panelDerecha.setBackground(Color.blue);
+        panelDerecha.setLayout(new BorderLayout());
         
+        //Label retos pasados
+        JLabel retosLabel = new JLabel("Registro de retos");
+        retosLabel.setFont(new Font("Arial", Font.PLAIN, 25));
         
+        panelDerecha.add(retosLabel, BorderLayout.NORTH);
+        
+        RetosModel modelo = new RetosModel(); 
+        JTable table = new JTable(modelo);
+        table.getColumnModel().getColumn(5).setCellRenderer(new RendererBotonReto());
+        table.getColumnModel().getColumn(5).setCellEditor(new EditorBotonReto(usuario));
+        
+        //Ajustar el tamaño de la fecha
+      	table.getColumnModel().getColumn(2).setWidth(70);
+      	table.getColumnModel().getColumn(2).setMinWidth(70);
+      	table.getColumnModel().getColumn(2).setMaxWidth(70);
+      	
+      	//Ajustar el tamaño de la dificultad
+      	table.getColumnModel().getColumn(3).setWidth(70);
+      	table.getColumnModel().getColumn(3).setMinWidth(70);
+      	table.getColumnModel().getColumn(3).setMaxWidth(70); 
+      	
+      	//Ajustar el tamaño de la dificultad
+      	table.getColumnModel().getColumn(4).setWidth(70);
+      	table.getColumnModel().getColumn(4).setMinWidth(70);
+      	table.getColumnModel().getColumn(4).setMaxWidth(70); 
+      	
+      	//Ajustar el tamaño de las opciones
+      	table.getColumnModel().getColumn(5).setWidth(140);
+      	table.getColumnModel().getColumn(5).setMinWidth(140);
+      	table.getColumnModel().getColumn(5).setMaxWidth(140); 
+     
+     
+        // Oculta la columna "id"
+     	table.getColumnModel().getColumn(0).setMinWidth(0);
+     	table.getColumnModel().getColumn(0).setMaxWidth(0);
+     	table.getColumnModel().getColumn(0).setPreferredWidth(0);
+     	
+     	//Cambiar el tamaño de las filas
+     	table.setRowHeight(50);
+        
+        JScrollPane scrollPane = new JScrollPane(table);   
+        panelDerecha.add(scrollPane, BorderLayout.CENTER);
         
         panelCentral.add(panelDerecha);
-        this.add(panelCentral, BorderLayout.SOUTH);
+
         
         
         this.add(panelCentral, BorderLayout.CENTER);
-        
-
-        
-      //-----------------Panel para la parte inferior------------------
-        //Detalles de la ventana
-        
+          
         
         boton.addActionListener(new ActionListener() {
 			
@@ -182,7 +226,7 @@ public class RetoDiario extends JFrame {
 								listaLabels.get(i).setBackground(listaColores.get(i));
 							}try {
 								Thread.sleep(variableTiempo);
-								variableTiempo += 5;
+								variableTiempo += 2;
 							}catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -199,8 +243,231 @@ public class RetoDiario extends JFrame {
         setVisible(true);
     }
     
+    class RetosModel extends AbstractTableModel{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		private String[] nombreDatos = {"id", "Nombre", "Fecha", "Dificultad","Completado", "Opciones"}; 
+		private Object[][] data;
+		
+		public void cargarDatosDesdeBD(String user) {
+	    	try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				System.out.println("No se ha podido cargar el driver de la BD");
+			}
+			try {
+				Connection conn = DriverManager.getConnection
+					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+		
+				Statement stmt = conn.createStatement();
+				String sql = "SELECT * FROM RetoDiario WHERE Usuario LIKE ?";
+				PreparedStatement queryStmt = conn.prepareStatement(sql);
+				queryStmt.setString(1, user);
+				ResultSet rs = queryStmt.executeQuery();
+				List<Object[]> listaDatos = new ArrayList<>();
+				while (rs.next()) {
+					int ID_RetoDiario = rs.getInt("ID_RetoDiario");
+					String nombre = rs.getString("Nombre");
+					String fecha = rs.getString("Fecha");
+					Integer dificultad = rs.getInt("Dificultad");
+					Integer completado = rs.getInt("Completado");
+	                listaDatos.add(new Object[] {ID_RetoDiario, nombre, fecha, dificultad, completado, "Botones"});
+	                data = listaDatos.toArray(new Object[0][]);
+	                //Notifica a la tabla que los datos han cambiado
+	                fireTableDataChanged();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+		
+		@Override
+		public String getColumnName(int column) {
+			return nombreDatos[column];
+		}
+
+
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			return columnIndex == 5;
+		}
+
+		@Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			data[rowIndex][columnIndex] = aValue;
+		}
+
+		@Override
+		public int getRowCount() {
+			return data.length;
+		}
+
+		@Override
+		public int getColumnCount() {
+			return nombreDatos.length;
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			return data[rowIndex][columnIndex];
+		}
+    	
+    }
+    
+    class RendererBotonReto extends JPanel implements TableCellRenderer{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public RendererBotonReto() {
+			setLayout(new FlowLayout(FlowLayout.LEFT));
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			this.removeAll();
+			
+			//Icono si
+	        ImageIcon iconoSi = new ImageIcon("Sources/imagenes/tickVerde.png");
+	        Image img1 = iconoSi.getImage();
+	        Image imgEscalada1 = img1.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoSi = new ImageIcon(imgEscalada1);
+			
+			JButton botonSi1 = new JButton(iconoSi);
+			botonSi1.setBackground(Color.white);
+			this.add(botonSi1);
+			
+			//Icono no
+			ImageIcon iconoNo = new ImageIcon("Sources/imagenes/cruzroja.png");
+	        Image img2 = iconoNo.getImage();
+	        Image imgEscalada2 = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoNo = new ImageIcon(imgEscalada2);
+			
+			JButton botonNo1 = new JButton(iconoNo);
+			botonNo1.setBackground(Color.white);
+			this.add(botonNo1);
+			
+			return this;
+		}
+    	
+    }
+    
+    class EditorBotonReto extends AbstractCellEditor implements TableCellEditor{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private JPanel panel;
+		private JTable table;
+		private int editingRow = -1;
+		
+		public EditorBotonReto(String usuario) {
+			panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			
+			//Icono si
+	        ImageIcon iconoSi = new ImageIcon("Sources/imagenes/tickVerde.png");
+	        Image img1 = iconoSi.getImage();
+	        Image imgEscalada1 = img1.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoSi = new ImageIcon(imgEscalada1);
+			
+			JButton botonSi1 = new JButton(iconoSi);
+			botonSi1.setBackground(Color.white);
+		
+			
+			//Icono no
+			ImageIcon iconoNo = new ImageIcon("Sources/imagenes/cruzroja.png");
+	        Image img2 = iconoNo.getImage();
+	        Image imgEscalada2 = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        iconoNo = new ImageIcon(imgEscalada2);
+	        
+	        JButton botonNo1 = new JButton(iconoNo);
+	        botonNo1.setBackground(Color.white);
+			
+	        
+	        //Action listener para modificar el estado del reto
+			botonSi1.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (editingRow != -1) {
+						int completado = 1;
+						Object id = table.getModel().getValueAt(editingRow, 0);
+						completadoReto(id, completado);
+						new RetoDiario(usuario);					}
+					
+				}
+			});
+			
+			botonNo1.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (editingRow != -1) {
+						int completado = 0;
+						Object id = table.getModel().getValueAt(editingRow, 0);
+						completadoReto(id, completado);
+						new RetoDiario(usuario);
+					}	
+				}
+			});
+			
+			panel.add(botonSi1);
+			panel.add(botonNo1);
+			
+		}
+
+		protected void completadoReto(Object id, int completado) {
+			try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				System.out.println("No se ha podido cargar el driver de la BD");
+			}
+			
+			//Conectar a la BD
+			try {
+				Connection conn = DriverManager.getConnection
+						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+				
+				
+				String sql = "UPDATE RetoDiario SET COMPLETADO = "+completado+" WHERE id ="+id ;
+				PreparedStatement queryStmt = conn.prepareStatement(sql);
+				
+				queryStmt.close();
+				conn.close(); 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			
+			}
+			
+		}
+
+		@Override
+		public Object getCellEditorValue() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			this.table = table;
+			this.editingRow = row;
+			return panel;
+		}
+    	
+    }
+    
     public static void main(String[] args) {
-		new RetoDiario();
+		new RetoDiario("admin");
 	}
 }
 

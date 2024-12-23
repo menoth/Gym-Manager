@@ -164,7 +164,7 @@ public class PrincipalWindow extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new RetoDiario();
+				new RetoDiario(usuario);
 				
 			}
 		});

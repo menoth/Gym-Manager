@@ -290,10 +290,6 @@ public class PerfilUsuario extends JFrame {
 		pDerecha.add(rutinas, BorderLayout.NORTH);
 		pDerecha.setBorder(new EmptyBorder(40,40,0,0));
 		
-		//Panel con las rutinas
-		JPanel pRutina = new JPanel();
-		pRutina.setBackground(Color.green);
-		
 		//Lista para importar todas las rutinas de la bd
 		ArrayList<Rutina> listaRutinas = new ArrayList<>();
 		ConectarBaseDeDatos.ConectarBaseDeDatosRutina(listaRutinas); 
@@ -370,12 +366,14 @@ public class PerfilUsuario extends JFrame {
 					String descripcion = rs.getString("Descripción");
 	                listaDatos.add(new Object[] {ID_Rutina, nombre, descripcion, "Botones"});
 	                data = listaDatos.toArray(new Object[0][]);
-	                fireTableDataChanged(); // Notifica a la tabla que los datos han cambiado
+	                //Notifica a la tabla que los datos han cambiado
+	                fireTableDataChanged();
 	            }
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	    }
+	    
 	    @Override
 	    public int getRowCount() {
 	        return data.length;
@@ -535,9 +533,6 @@ public class PerfilUsuario extends JFrame {
 					if (editingRow != -1) {
 						
 						Object id = table.getModel().getValueAt(editingRow, 0);
-		          
-			//------IMPORTANTE, eliminar rutina esta comentado ya que como trabajamos con datos de prueba hasta que 
-			//se terminen de introducir los datos en la BD, daria error ya que el id es inventado.
 						eliminarRutina(Integer.parseInt(id.toString()));
 					}
 				}
