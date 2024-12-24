@@ -334,9 +334,9 @@ public class PerfilUsuario extends JFrame {
 		private static final long serialVersionUID = -857471165146589501L;
 
 		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
-	    
-	    //Cambiar esta lista por rutinasUsuario cuando se terminen de introducir todo a la BD
+
 	    private Object[][] data = new Object[0][0];
+	    
 	    public void cargarDatosDesdeBD(String user) {
 	    	try {
 				Class.forName("org.sqlite.JDBC");
