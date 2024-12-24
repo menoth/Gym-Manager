@@ -135,7 +135,7 @@ public class EstadisticasRutina extends JFrame {
         pVolumen.add(txtVolumen, BorderLayout.CENTER);
         
 //----------------------gráfico-----------------------------
-        JPanel panelGrafico = new CustomChart(rutina, ejercicios);
+        JPanel panelGrafico = new CustomChart(CrearMapaGrafico(rutina, ejercicios));
         
         pIzquierda.add(pVolumen);
         pIzquierda.add(panelGrafico);
@@ -288,52 +288,14 @@ public class EstadisticasRutina extends JFrame {
         private static final long serialVersionUID = 1L;
 
         //Datos de prueba
-        double[] datos = {};
-        String[] musculos = {};
-
-        public CustomChart(Rutina rutina, ArrayList<Ejercicio> ejercicios) {
-        	HashMap<String, Double> mapa = new HashMap<String, Double>();
-        	for(Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
-        		for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
-        			for(Serie serie : ejercicio.getSeries()) {
-        				for(Ejercicio ejercicio2 : ejercicios) {
-        					if (ejercicio.getID_Ejercicio() == ejercicio2.getId()) {
-								Double valorTamaño = 0.0;
-								Double valorTamaño2 = 0.0;
-								Double valorRPE = 0.0;
-								if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUEÑO.toString())) {
-									valorTamaño = 1.5;
-								} else if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
-									valorTamaño = 1.0;
-								} else { 
-									valorTamaño = 0.5;
-								}
-								if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUEÑO.toString())) {
-									valorTamaño2 = 1.5;
-								} else if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
-									valorTamaño2 = 1.0;
-								} else { 
-									valorTamaño2 = 0.5;
-								}
-								if (serie.getEsfuerzo().equals(Serie.Esfuerzo.TOPSET)) {
-									valorRPE = 1.5;
-								} else if (serie.getEsfuerzo().equals(Serie.Esfuerzo.ESTANDAR)) {
-									valorRPE = 1.0;
-								} else { 
-									valorRPE = 0.5;
-								}
-								if (!mapa.containsKey(ejercicio2.getMusculoPrincipal().getNombre())) {
-									mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE);
-								} else {
-									double valorPuesto = mapa.get(ejercicio2.getMusculoPrincipal().getNombre());
-									mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE+valorPuesto);
-								}
-								
-															
-							}
-        				}
-        			}
-        		}
+        ArrayList<Double> datos = new ArrayList<Double>();
+        ArrayList<String> musculos = new ArrayList<String>();
+        
+        public CustomChart(HashMap<String, Double> mapa) {
+        	
+        	for(String musculo : mapa.keySet()) {
+            	musculos.add(musculo);
+            	datos.add(mapa.get(musculo));
         	}
         }
 
@@ -378,13 +340,13 @@ public class EstadisticasRutina extends JFrame {
             }
 
             //------------------Detalles del eje X------------------
-            int numEtiquetas = musculos.length;
+            int numEtiquetas = musculos.size();
             int anchoBarra = anchoGrafico / (numEtiquetas * 2);
             
             //Escribe los musculos 
             for (int i = 0; i < numEtiquetas; i++) {
                 int x = margenIzquierdo + i * (anchoGrafico / numEtiquetas) + anchoBarra / 2;
-                g2.drawString(musculos[i], x, height - margenInferior + 20);
+                g2.drawString(musculos.get(i), x, height - margenInferior + 20);
             }
 
             //-------------LÍNEA VERDE DEL VALOR ÓPTIMO---------------------
@@ -399,9 +361,9 @@ public class EstadisticasRutina extends JFrame {
 
             //Colocar las barras del gráfico hecho con chatGpt4
             g2.setColor(Color.BLACK);
-            for (int i = 0; i < datos.length; i++) {
+            for (int i = 0; i < datos.size(); i++) {
                 int x = margenIzquierdo + i * (anchoGrafico / numEtiquetas) + anchoBarra / 2;
-                int y = height - margenInferior - (int) (datos[i] * altoGrafico / maxY);
+                int y = height - margenInferior - (int) (datos.get(i) * altoGrafico / maxY);
                 int alturaBarra = height - margenInferior - y;
 
                 g2.fillRect(x, y, anchoBarra, alturaBarra); // Barra
@@ -413,5 +375,55 @@ public class EstadisticasRutina extends JFrame {
 	public static void main(String[] args) {
 		Rutina rutinaEjemplo = null;
 		new EstadisticasRutina(rutinaEjemplo);
+	}
+	public HashMap<String, Double> CrearMapaGrafico(Rutina rutina, ArrayList<Ejercicio> ejercicios) {
+    	HashMap<String, Double> mapa = new HashMap<String, Double>();
+    	for(Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
+    		for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
+    			for(Serie serie : ejercicio.getSeries()) {
+    				for(Ejercicio ejercicio2 : ejercicios) {
+    					if (ejercicio.getID_Ejercicio() == ejercicio2.getId()) {
+							Double valorTamaño = 0.0;
+							Double valorTamaño2 = 0.0;
+							Double valorRPE = 0.0;
+							if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUENO.toString())) {
+								valorTamaño = 1.5;
+							} else if (ejercicio2.getMusculoPrincipal().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
+								valorTamaño = 1.0;
+							} else { 
+								valorTamaño = 0.5;
+							}
+							if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUENO.toString())) {
+								valorTamaño2 = 1.5;
+							} else if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
+								valorTamaño2 = 1.0;
+							} else { 
+								valorTamaño2 = 0.5;
+							}
+							if (serie.getEsfuerzo().equals(Serie.Esfuerzo.TOPSET)) {
+								valorRPE = 1.5;
+							} else if (serie.getEsfuerzo().equals(Serie.Esfuerzo.ESTANDAR)) {
+								valorRPE = 1.0;
+							} else { 
+								valorRPE = 0.5;
+							}
+							if (!mapa.containsKey(ejercicio2.getMusculoPrincipal().getNombre())) {
+								mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE);
+							} else {
+								double valorPuesto = mapa.get(ejercicio2.getMusculoPrincipal().getNombre());
+								mapa.put(ejercicio2.getMusculoPrincipal().getNombre(), valorTamaño*valorRPE+valorPuesto);
+							}
+							if (!mapa.containsKey(ejercicio2.getMusculoSecundario().getNombre())) {
+								mapa.put(ejercicio2.getMusculoSecundario().getNombre(), valorTamaño2*valorRPE);
+							} else {
+								double valorPuesto2 = mapa.get(ejercicio2.getMusculoSecundario().getNombre());
+								mapa.put(ejercicio2.getMusculoSecundario().getNombre(), valorTamaño2*valorRPE+valorPuesto2);
+							}
+						}
+    				}
+    			}
+    		}
+    	}
+    return mapa;
 	}
 }

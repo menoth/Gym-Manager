@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Musculo {
 	public enum TamanoMusculo{
-		GRANDE, MEDIANO, PEQUEÑO
+		GRANDE, MEDIANO, PEQUENO
 	}
 	private String nombre;
 	private TamanoMusculo TamanoMusculo;

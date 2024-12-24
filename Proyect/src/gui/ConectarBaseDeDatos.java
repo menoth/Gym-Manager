@@ -162,24 +162,24 @@ public class ConectarBaseDeDatos {
 			while (rs.next()) {
 				int ID_Ejercicio = rs.getInt("ID_Ejercicio");
 				String Nombre = rs.getString("Nombre");
-				String MusculoPrincipal = rs.getString("MusculoPrincipal");
-				String MusculoSecundario = rs.getString("MusculoSecundario");
+				String MusculoPrincipal = rs.getString("Musculo_Principal");
+				String MusculoSecundario = rs.getString("Musculo_Secundario");
 				
 				String sql2 = "SELECT * FROM Musculo WHERE Nombre LIKE ?";
 				PreparedStatement queryStmt2 = conn.prepareStatement(sql2);
 				queryStmt2.setString(1, MusculoPrincipal);
-				ResultSet rs2 = queryStmt.executeQuery();
+				ResultSet rs2 = queryStmt2.executeQuery();
 				String NombreMusculoPrincipal = rs2.getString("Nombre");
 				String TamanoMusculoPrincipal = rs2.getString("TamanoMusculo");
 				
 				String sql3 = "SELECT * FROM Musculo WHERE Nombre LIKE ?";
 				PreparedStatement queryStmt3 = conn.prepareStatement(sql3);
 				queryStmt3.setString(1, MusculoSecundario);
-				ResultSet rs3 = queryStmt.executeQuery();
+				ResultSet rs3 = queryStmt3.executeQuery();
 				String NombreMusculoSecundario = rs3.getString("Nombre");
 				String TamanoMusculoSecundario = rs3.getString("TamanoMusculo");
 				
-				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, new Musculo(NombreMusculoPrincipal, TamanoMusculo.valueOf(TamanoMusculoPrincipal)), new Musculo(NombreMusculoSecundario, TamanoMusculo.valueOf(TamanoMusculoSecundario))));
+				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, new Musculo(NombreMusculoPrincipal, Musculo.TamanoMusculo.valueOf(TamanoMusculoPrincipal)), new Musculo(NombreMusculoSecundario, Musculo.TamanoMusculo.valueOf(TamanoMusculoSecundario))));
 			}
 			stmt.close();
 			conn.close();

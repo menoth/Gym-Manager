@@ -76,6 +76,38 @@ public class InsertarDatosBD {
 			System.out.println("No se ha podido cargar el musculo.");
 		}		
 	}
+	public static void insertarRetoDiario(int ID_RetoDiario, String Nombre, String Fecha, int Dificultad, int Completado, String Usuario) {
+		
+    	try {
+			Class.forName("org.sqlite.JDBC");
+			System.out.println("Se ha cargado el driver correctamente.");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		
+    	try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+			System.out.println("Se ha conectado a la base de datos.");
+			Statement stmt = conn.createStatement();
+			String sql = "INSERT INTO RetoDiario VALUES (?, ?, ?, ?, ?, ?);";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, ID_RetoDiario); // Asignar el id del reto
+	        pstmt.setString(2, Nombre); // Asignar el nombre del reto
+	        pstmt.setString(3, Fecha); // Asignar la fecha del reto
+	        pstmt.setInt(4, Dificultad); //Asignar la dificultad del reto
+	        pstmt.setInt(5, Completado); //Asignar si el reto esta completado
+	        pstmt.setString(6, Usuario); // Asignar el usuario del reto
+	
+			pstmt.executeUpdate();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("No se ha podido cargar el musculo.");
+		}		
+	}
 	
 	
 	
@@ -169,9 +201,9 @@ public class InsertarDatosBD {
                 {"ANTEBRAZO", "MEDIANO"},
                 {"ABDOMINAL", "MEDIANO"},
                 {"CUADRICEPS", "GRANDE"},
-                {"CUELLO", "PEQUEÑO"},
+                {"CUELLO", "PEQUENO"},
                 {"TRAPECIO", "MEDIANO"},
-                {"HOMBRO", "PEQUEÑO"},
+                {"HOMBRO", "PEQUENO"},
                 {"BICEPS", "MEDIANO"},
                 {"DORSAL", "GRANDE"},
                 {"ESPALDA_ALTA", "GRANDE"},
@@ -181,11 +213,9 @@ public class InsertarDatosBD {
                 {"GLUTEO", "GRANDE"},
                 {"CARDIO", "GRANDE"} // Cardio tecniacamente no tiene tamaño físico pero como lo consideramos importante le ponemos grande
             };
-
-            for (String[] musculo : musculos) {
-                insertarMusculo(musculo[0], musculo[1]);
-            }
-    	
-
+    	for (String[] musculo : musculos) {
+    		insertarMusculo(musculo[0], musculo[1]);
+    	}
+    	insertarRetoDiario(0, "Flexiones", "06/12/2024", 1, 1, "aaa");
     }
 }
