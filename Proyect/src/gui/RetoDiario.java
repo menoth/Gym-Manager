@@ -14,7 +14,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -179,7 +178,7 @@ public class RetoDiario extends JFrame {
         modelo.cargarDatosDesdeBD(usuario);
         JTable table = new JTable(modelo);
         table.getColumnModel().getColumn(5).setCellRenderer(new RendererBotonReto());
-        table.getColumnModel().getColumn(5).setCellEditor(new EditorBotonReto(usuario));
+        table.getColumnModel().getColumn(5).setCellEditor(new EditorBotonReto(usuario, modelo));
         
         //Ajustar el tamaño de la fecha
       	table.getColumnModel().getColumn(2).setWidth(70);
@@ -246,7 +245,8 @@ public class RetoDiario extends JFrame {
 						 // Después de 5 segundos, seleccionar un reto aleatorio
                         String retoSeleccionado = listaRetos.get((int) (Math.random() * listaRetos.size()));
                         txtResultado.setText("Tu reto diario es: " + retoSeleccionado);
-                        escribirReto(retoSeleccionado);
+                        escribirReto(retoSeleccionado, usuario);
+                        modelo.cargarDatosDesdeBD(usuario);
 					}
 
 					
@@ -260,15 +260,15 @@ public class RetoDiario extends JFrame {
         setVisible(true);
     }
     
-    private void escribirReto(String retoSeleccionado) {
+    private void escribirReto(String retoSeleccionado, String usuario) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
 			System.out.println("No se ha podido cargar el driver de la BD");
 			e.printStackTrace();
 		}try {
-			Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.bd");	
-			Statement stmt = conn.createStatement();
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");	
+			
 			
 			String nombre = retoSeleccionado;
 			
@@ -284,9 +284,19 @@ public class RetoDiario extends JFrame {
 				dificultad = reto;
 			}
 			
-			//String sql = "INSERT INTO "
+			String sql = "INSERT INTO RetoDiario (Nombre, Fecha, Dificultad, Completado, Usuario) VALUES (?, ?, ?, ?, ?)";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
 			
-			//fireTableDataChanged();	
+			queryStmt.setString(1, nombre);
+			queryStmt.setString(2, fecha);
+			queryStmt.setInt(3, dificultad);
+			queryStmt.setInt(4, 0);
+			queryStmt.setString(5, usuario);
+
+			int filasInsertadas = queryStmt.executeUpdate();
+            System.out.println("Filas insertadas: " + filasInsertadas);
+			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -303,6 +313,7 @@ public class RetoDiario extends JFrame {
 		private String[] nombreDatos = {"id", "Nombre", "Fecha", "Dificultad","Completado", "Opciones"}; 
 		private Object[][] data = new Object[0][0];
 		
+		
 		public void cargarDatosDesdeBD(String user) {
 	    	try {
 				Class.forName("org.sqlite.JDBC");
@@ -313,7 +324,7 @@ public class RetoDiario extends JFrame {
 				Connection conn = DriverManager.getConnection
 					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 		
-				Statement stmt = conn.createStatement();
+
 				String sql = "SELECT * FROM RetoDiario WHERE Usuario LIKE ?";
 				PreparedStatement queryStmt = conn.prepareStatement(sql);
 				queryStmt.setString(1, user);
@@ -388,7 +399,7 @@ public class RetoDiario extends JFrame {
 		 */
 		private static final long serialVersionUID = 1L;
 		public RendererBotonReto() {
-			setLayout(new FlowLayout(FlowLayout.LEFT));
+			setLayout(new FlowLayout(FlowLayout.CENTER));
 		}
 
 		@Override
@@ -432,7 +443,7 @@ public class RetoDiario extends JFrame {
 		private JTable table;
 		private int editingRow = -1;
 		
-		public EditorBotonReto(String usuario) {
+		public EditorBotonReto(String usuario, RetosModel modelo) {
 			panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			
 			//Icono si
@@ -464,7 +475,8 @@ public class RetoDiario extends JFrame {
 						int completado = 1;
 						Object id = table.getModel().getValueAt(editingRow, 0);
 						completadoReto(id, completado);
-						new RetoDiario(usuario);					}
+						modelo.cargarDatosDesdeBD(usuario);
+					}
 					
 				}
 			});
@@ -477,7 +489,7 @@ public class RetoDiario extends JFrame {
 						int completado = 0;
 						Object id = table.getModel().getValueAt(editingRow, 0);
 						completadoReto(id, completado);
-						new RetoDiario(usuario);
+						modelo.cargarDatosDesdeBD(usuario);
 					}	
 				}
 			});
@@ -500,8 +512,11 @@ public class RetoDiario extends JFrame {
 						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 				
 				
-				String sql = "UPDATE RetoDiario SET COMPLETADO = "+completado+" WHERE id ="+id ;
+				String sql = "UPDATE RetoDiario SET Completado = "+completado+" WHERE ID_RetoDiario ="+id ;
 				PreparedStatement queryStmt = conn.prepareStatement(sql);
+				
+				int filasInsertadas = queryStmt.executeUpdate();
+	            System.out.println("Filas insertadas: " + filasInsertadas);
 				
 				queryStmt.close();
 				conn.close(); 
@@ -514,7 +529,6 @@ public class RetoDiario extends JFrame {
 
 		@Override
 		public Object getCellEditorValue() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
