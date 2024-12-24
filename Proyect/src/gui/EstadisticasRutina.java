@@ -113,7 +113,7 @@ public class EstadisticasRutina extends JFrame {
         JLabel volumenEntrenamiento = new JLabel("VOLUMEN DE ENTRENAMIENTO");
         volumenEntrenamiento.setFont(new Font("Arial", Font.BOLD, 22));
         
-        JTextArea txtVolumen = new JTextArea("Has movido un total de " + VolumenTotal + " este semana dividido en " + rutina.getEntrenamientos().size() + " entrenamientos y "+ NumeroEjercicios + " ejercicios diferentes");
+        JTextArea txtVolumen = new JTextArea("Has movido un total de " + VolumenTotal + " kg este semana dividido en " + rutina.getEntrenamientos().size() + " entrenamientos y "+ NumeroEjercicios + " ejercicios diferentes");
         txtVolumen.setFont(new Font("Arial", Font.PLAIN, 20));
         //txtVolumen.setBackground(this.getBackground());
         
