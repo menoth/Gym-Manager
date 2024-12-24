@@ -124,7 +124,7 @@ public class ConectarBaseDeDatos {
 							String sql5 = "SELECT * FROM RPE WHERE ID_RPE = ?";
 							PreparedStatement queryStmt5 = conn.prepareStatement(sql5);
 							queryStmt5.setInt(1, ID_RPE);
-							ResultSet rs5 = queryStmt4.executeQuery();
+							ResultSet rs5 = queryStmt5.executeQuery();
 							String RPE = rs5.getString("Nivel_Esfuerzo");
 							// añadimos todo a la lista de rutina que recibimos
 							series.add(new Serie(ID_Serie, Peso, Repeticiones, ID_EjercicioEnEntrenamiento2,Serie.Esfuerzo.valueOf(RPE), OrdenEnEjercicio));
