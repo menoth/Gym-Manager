@@ -121,7 +121,7 @@ public class ConectarBaseDeDatos {
 							int ID_RPE = rs4.getInt("ID_RPE");
 							int OrdenEnEjercicio = rs4.getInt("OrdenEnEjercicio");
 							
-							String sql5 = "SELECT * FROM ID_RPE WHERE ID_RPE = ?";
+							String sql5 = "SELECT * FROM RPE WHERE ID_RPE = ?";
 							PreparedStatement queryStmt5 = conn.prepareStatement(sql5);
 							queryStmt5.setInt(1, ID_RPE);
 							ResultSet rs5 = queryStmt4.executeQuery();

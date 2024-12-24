@@ -497,7 +497,7 @@ public class RetoDiario extends JFrame {
 			panel.add(botonSi1);
 			panel.add(botonNo1);
 			
-		}
+		}	
 
 		protected void completadoReto(Object id, int completado) {
 			try {

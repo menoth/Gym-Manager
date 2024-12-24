@@ -336,7 +336,7 @@ public class PerfilUsuario extends JFrame {
 		private String[] nombreDatos = {"id", "Nombre", "Descripción", "Acciones"};
 	    
 	    //Cambiar esta lista por rutinasUsuario cuando se terminen de introducir todo a la BD
-	    private Object[][] data;
+	    private Object[][] data = new Object[0][0];
 	    public void cargarDatosDesdeBD(String user) {
 	    	try {
 				Class.forName("org.sqlite.JDBC");
