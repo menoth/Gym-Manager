@@ -6,15 +6,25 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
+
+import domain.Rutina;
 
 public class EditarRutina extends JFrame {
 	
@@ -23,7 +33,7 @@ public class EditarRutina extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public EditarRutina() {
+	public EditarRutina(String usuario, int idRutina, Rutina rutina) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setTitle("Perfil");
@@ -42,7 +52,7 @@ public class EditarRutina extends JFrame {
 		JButton botonVolver = new JButton("Volver");
 		botonVolver.setPreferredSize(new Dimension(120, 50));
 		
-		JTextField nombreRutina = new JTextField("Nombre rutina");
+		JTextField nombreRutina = new JTextField(rutina.getNombre());
 		nombreRutina.setPreferredSize(new Dimension(250,40));
 		nombreRutina.setFont(new Font("Arial", Font.PLAIN, 18));
 		
@@ -58,11 +68,9 @@ public class EditarRutina extends JFrame {
 		panelNorteSur.setLayout(new FlowLayout());
 		
 		//Creamos un jTextArea que será la descripción de la rutina
-		JTextField desc = new JTextField("aaaaaa adwada wd adw adw dawdawdaw dawdwdawdwa adwda awdwd");
+		JTextField desc = new JTextField(rutina.getDescripcionRutina());
 
-				
 		// Detalles del JTextArea
-
 		desc.setFont(new Font("Arial", Font.PLAIN, 18));
 		desc.setPreferredSize(new Dimension(1000, 40));
 		
@@ -70,6 +78,41 @@ public class EditarRutina extends JFrame {
 		
 		panelNorte.add(panelNorteNorte);
 		panelNorte.add(panelNorteSur);
+		
+		//Action listener para el boton guardar
+		guardarCambios.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (nombreRutina.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(EditarRutina.this, "El campo no puede estar vacío o contener solo espacios.");
+					nombreRutina.setText("");
+				}
+				else if (desc.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(EditarRutina.this, "El campo no puede estar vacío o contener solo espacios.");
+					desc.setText("");
+				}
+				
+				else if ((nombreRutina.getText().length()>30) || (desc.getText().length()> 70)) {
+							JOptionPane.showMessageDialog(EditarRutina.this, "La longitud maxima del nombre es de 30 caracteres y la de la descripción de 70");
+						}
+						else {
+							actualizarNombreDesc(nombreRutina.getText(), desc.getText(), idRutina);
+						}
+					
+			}
+		});
+		
+		//Action listener boton volver
+		botonVolver.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				new PerfilUsuario(usuario);
+				dispose();
+				
+			}
+		});
 		
 		this.add(panelNorte, BorderLayout.NORTH);
 		
@@ -95,6 +138,35 @@ public class EditarRutina extends JFrame {
 		setVisible(true);
 	}
 	
+	protected void actualizarNombreDesc(String nombre, String desc, int id) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "UPDATE Rutina SET Nombre = ?, Descripción = ? WHERE ID_Rutina = ?";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			queryStmt.setString(1, nombre);
+			queryStmt.setString(2, desc);
+			queryStmt.setInt(3, id);
+
+			queryStmt.executeUpdate();
+			
+			queryStmt.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+	}
+
 	class EditarRutinaModelo extends AbstractTableModel {
 
 		/**
@@ -131,10 +203,6 @@ public class EditarRutina extends JFrame {
 		public String getColumnName(int column) {
 			return nombreDatos[column];
 		}
-	}
-	
-	public static void main(String[] args) {
-		new EditarRutina();
 	}
 }
 	
