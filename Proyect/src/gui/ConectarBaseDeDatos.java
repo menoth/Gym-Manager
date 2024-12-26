@@ -22,7 +22,6 @@ import domain.Usuario;
 // Lo usaremos para conectar la base de datos con una lista de usuarios
 public class ConectarBaseDeDatos {
 	public static void main(String[] args) {
-		
 	}
 	public static void ConectarBaseDeDatos(List<Usuario> usuarios) {
 		try {
@@ -111,7 +110,7 @@ public class ConectarBaseDeDatos {
 						// cargamos desde la base de datos todas las series que tengan ese ID_Ejercicio en la lista de series del ejercicio
 						String sql4 = "SELECT * FROM Serie WHERE ID_EjercicioEnEntrenamiento = ?";
 						PreparedStatement queryStmt4 = conn.prepareStatement(sql4);
-						queryStmt4.setInt(1, ID_Ejercicio);
+						queryStmt4.setInt(1, ID_EjercicioEnEntrenamiento);
 						ResultSet rs4 = queryStmt4.executeQuery();
 						while (rs4.next()) {
 							int ID_Serie = rs4.getInt("ID_Serie");

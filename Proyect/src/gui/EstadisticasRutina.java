@@ -187,7 +187,7 @@ public class EstadisticasRutina extends JFrame {
         musculosOpt.setBorder(new EmptyBorder(0,30,20,20));
         
         //
-        JTextArea opt1 = new JTextArea("Entrenas de manera SUPERFICIAL los siguientes músculos: gemelo, cuadripces, abdominales");
+        JTextArea opt1 = new JTextArea("Entrenas de manera SUPERFICIAL los siguientes músculos: ");       
         opt1.setFont(new Font("Arial", Font.PLAIN, 18));
         opt1.setBackground(new Color(153,204,255));
         opt1.setLineWrap(true);          
@@ -201,7 +201,7 @@ public class EstadisticasRutina extends JFrame {
         opt1.setDisabledTextColor(Color.black);
         
         //
-        JTextArea opt2 = new JTextArea("Entrenas de manera OPTIMA los siguientes músculos: pectoral, triceps, hombro");
+        JTextArea opt2 = new JTextArea("Entrenas de manera OPTIMA los siguientes músculos: ");
         opt2.setFont(new Font("Arial", Font.PLAIN, 18));
         opt2.setBackground(new Color(153,255,153));
         opt2.setLineWrap(true);          
@@ -215,7 +215,7 @@ public class EstadisticasRutina extends JFrame {
         opt2.setDisabledTextColor(Color.black);
         
         //
-        JTextArea opt3 = new JTextArea("Estás SOBREENTRENANDO los siguientes músculos: biceps, espalda");
+        JTextArea opt3 = new JTextArea("Estás SOBREENTRENANDO los siguientes músculos: ");
         opt3.setFont(new Font("Arial", Font.PLAIN, 18));
         opt3.setBackground(new Color(255,102,102));
         opt3.setLineWrap(true);          
@@ -228,6 +228,16 @@ public class EstadisticasRutina extends JFrame {
         //el color para cuando esta desactivado
         opt3.setDisabledTextColor(Color.black);
         
+        HashMap<String, Double> mapa = CrearMapaGrafico(rutina, ejercicios);
+        for(String musculo : mapa.keySet()) {
+        	if (mapa.get(musculo) >=15) {
+				opt3.append(musculo + ", ");
+			} else if (mapa.get(musculo)<=10) {
+				opt1.append(musculo + ", ");
+			} else {
+				opt2.append(musculo + ", ");
+			}
+        }
         musculosOpt.add(opt1);
         musculosOpt.add(opt2);
         musculosOpt.add(opt3);
@@ -297,6 +307,7 @@ public class EstadisticasRutina extends JFrame {
             	musculos.add(musculo);
             	datos.add(mapa.get(musculo));
         	}
+        	
         }
 
 		@Override
@@ -328,14 +339,14 @@ public class EstadisticasRutina extends JFrame {
             g2.drawLine(margenIzquierdo, height - margenInferior, width - 20, height - margenInferior);
 
             //---------------Detalles del eje Y-------------
-            //Esto hace que el valor del eye Y sea entre 0-1'5, además hace que haya 6 puntos de referencia 
-            double maxY = 1.5;
-            for (int i = 0; i <= 6; i++) { // 6 divisiones
-                int y = height - margenInferior - (int) (i * altoGrafico / 6);
-                double valorY = i * maxY / 6;
+            //Esto hace que el valor del eye Y sea entre 0-10, además hace que haya 10 puntos de referencia 
+            double maxY = 30;
+            for (int i = 0; i <= 10; i++) { // 10 divisiones
+                int y = height - margenInferior - (int) (i * altoGrafico / 10);
+                double valorY = i * maxY / 10;
                 g2.drawLine(margenIzquierdo - 5, y, margenIzquierdo, y);
                 
-                //Hecho con chatGPT4, pone los 6 valores de referencia 
+                //Hecho con chatGPT4, pone los 10 valores de referencia 
                 g2.drawString(String.format("%.1f", valorY), margenIzquierdo - 35, y + 5);
             }
 
@@ -351,7 +362,7 @@ public class EstadisticasRutina extends JFrame {
 
             //-------------LÍNEA VERDE DEL VALOR ÓPTIMO---------------------
             //Con esto se calcula el y de la línea verde, es decir el punto 1
-            int yLineaVerde = height - margenInferior - (int) (altoGrafico * 1.0 / maxY);
+            int yLineaVerde = height - margenInferior - (int) (altoGrafico * 12.0 / maxY);
             
             g2.setColor(Color.GREEN);
             
@@ -380,9 +391,9 @@ public class EstadisticasRutina extends JFrame {
     	HashMap<String, Double> mapa = new HashMap<String, Double>();
     	for(Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
     		for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
-    			for(Serie serie : ejercicio.getSeries()) {
-    				for(Ejercicio ejercicio2 : ejercicios) {
-    					if (ejercicio.getID_Ejercicio() == ejercicio2.getId()) {
+    			for(Ejercicio ejercicio2 : ejercicios) {
+    				if (ejercicio.getID_Ejercicio()== ejercicio2.getId()) {
+    					for(Serie serie : ejercicio.getSeries()) {
 							Double valorTamaño = 0.0;
 							Double valorTamaño2 = 0.0;
 							Double valorRPE = 0.0;
@@ -394,11 +405,11 @@ public class EstadisticasRutina extends JFrame {
 								valorTamaño = 0.5;
 							}
 							if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.PEQUENO.toString())) {
-								valorTamaño2 = 1.5;
+								valorTamaño2 = 0.75;
 							} else if (ejercicio2.getMusculoSecundario().getTamanoMusculo().equals(Musculo.TamanoMusculo.MEDIANO.toString())) {
-								valorTamaño2 = 1.0;
-							} else { 
 								valorTamaño2 = 0.5;
+							} else { 
+								valorTamaño2 = 0.25;
 							}
 							if (serie.getEsfuerzo().equals(Serie.Esfuerzo.TOPSET)) {
 								valorRPE = 1.5;

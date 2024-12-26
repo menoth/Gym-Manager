@@ -287,6 +287,7 @@ public class PerfilUsuario extends JFrame {
 		ArrayList<Rutina> listaRutinas = new ArrayList<>();
 		ConectarBaseDeDatos.ConectarBaseDeDatosRutina(listaRutinas); 
 		
+		
 		//Lista en la que se meten las rutinas del usuario
 		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
 		for (Rutina rutina : listaRutinas) {
