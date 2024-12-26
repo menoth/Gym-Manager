@@ -13,17 +13,26 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.sound.sampled.spi.FormatConversionProvider;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
+import domain.Ejercicio;
+import domain.EjercicioEnEntrenamiento;
+import domain.Entrenamiento;
 import domain.Rutina;
 
 public class EditarRutina extends JFrame {
@@ -32,6 +41,8 @@ public class EditarRutina extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+
 
 	public EditarRutina(String usuario, int idRutina, Rutina rutina) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -39,7 +50,7 @@ public class EditarRutina extends JFrame {
 		setTitle("Perfil");
 		
 		this.setLayout(new BorderLayout());
-		
+			
 		//Panel norte donde va el nombre y descripcion de la rutina (editable) y boton de volver y guardar cambios
 //----------------------------------------------PANEL NORTE------------------------------------------------		
 		JPanel panelNorte = new JPanel();
@@ -102,7 +113,7 @@ public class EditarRutina extends JFrame {
 					
 			}
 		});
-		
+
 		//Action listener boton volver
 		botonVolver.addActionListener(new ActionListener() {
 			
@@ -116,20 +127,134 @@ public class EditarRutina extends JFrame {
 		
 		this.add(panelNorte, BorderLayout.NORTH);
 		
-//-------------------------------------PANEL CENTRAL(RENDERER)-----------------------------------------------------		
+//-------------------------------------PANEL CENTRAL-----------------------------------------------------	
+		ArrayList<Integer> entrenamientosSemana = new ArrayList<>();
+		cargarEntrenamientos(rutina, entrenamientosSemana);
+		
+		System.out.println(entrenamientosSemana);
+		
+		ArrayList<String> listaDias = new ArrayList<>();
+		listaDias.add("Lunes");
+	    listaDias.add("Martes");
+	    listaDias.add("Miércoles");
+	    listaDias.add("Jueves");
+	    listaDias.add("Viernes");
+	    listaDias.add("Sábado");
+	    listaDias.add("Domingo");
+		
 		JPanel panelCentral = new JPanel();
 		panelCentral.setBorder(new EmptyBorder(10,10,10,10));
 		
 		panelCentral.setBackground(Color.blue);
-		panelCentral.setLayout(new BorderLayout());
+		panelCentral.setLayout(new GridLayout(1, 3));
+	
+		JPanel panel1 = new JPanel();
+		panel1.setBackground(Color.green);
 		
+		//Panel 1 con los entrenamientos de la semana
+		panel1.setLayout(new GridLayout(7, 1));
+
 		
-		EditarRutinaModelo modelo = new EditarRutinaModelo();
-		//modelo.cargarDatos(usuario)
-		JTable table = new JTable(modelo);
+		JPanel panel2 = new JPanel();
+		panel2.setBackground(Color.orange);
+		panel2.setLayout(new FlowLayout());
 		
-		JScrollPane scrollPane = new JScrollPane(table);
-		panelCentral.add(scrollPane, BorderLayout.CENTER);
+		JPanel panel3 = new JPanel();
+		panel3.setBackground(Color.red);
+		
+		int indice = 0;
+		for (int i = 0; i < 7; i++) {
+
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(1, 3));
+			
+			JPanel panel11 = new JPanel();
+			panel11.setLayout(new FlowLayout(FlowLayout.CENTER));
+			
+			JLabel lunes = new JLabel(listaDias.get(i));
+			
+	        lunes.setFont(new Font("Arial", Font.PLAIN, 20));
+	        lunes.setBackground(this.getBackground());
+	        
+			panel11.add(lunes);
+			panel.add(lunes);
+			
+			
+			if(entrenamientosSemana.get(i) == 1) {
+				JPanel panel12 = new JPanel();
+				panel12.setBorder(new EmptyBorder(10,10,10,10));
+				panel12.setLayout(new GridLayout(2, 1, 30, 10));
+				
+				JTextField nombre = new JTextField(rutina.getEntrenamientos().get(indice).getNombre());
+				JTextField desc2 = new JTextField(rutina.getEntrenamientos().get(indice).getDescripcionEntrenamiento());
+				
+				panel12.add(nombre);
+				panel12.add(desc2);
+				
+				panel.add(panel12);
+				
+				JPanel panel13 = new JPanel();
+				panel13.setBorder(new EmptyBorder(10,10,10,10));
+				panel13.setLayout(new GridLayout(3, 1, 15, 5));
+				
+				JButton guardar = new JButton("Guardar");
+				JButton eliminar = new JButton("Eliminar");
+				JButton editar = new JButton("Editar");
+				
+				int indice2 = indice;
+				
+				//Action listener de editar
+				editar.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {	
+						int numEjercicios = rutina.getEntrenamientos().get(indice2).getEjercicios().size();
+						
+						
+					
+						panel2.removeAll();
+						
+						for (EjercicioEnEntrenamiento ejercicio : rutina.getEntrenamientos().get(indice2).getEjercicios()) {
+							JPanel panelEjercicio = new JPanel();
+							panelEjercicio.setLayout(new FlowLayout());
+							
+							String id = Integer.toString(ejercicio.getID_Ejercicio());
+							
+							panelEjercicio.add(new JLabel(id));
+							panel2.add(panelEjercicio);
+						}
+						panel2.updateUI();
+						
+						
+					}
+				});
+				
+				indice += 1;
+				panel13.add(guardar);
+				panel13.add(eliminar);
+				panel13.add(editar);
+				
+				panel.add(panel13);
+				
+				panel1.add(panel);
+			}else {
+				JPanel panel12 = new JPanel();
+				panel12.setBorder(new EmptyBorder(20,10,10,10));
+				panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 10,10));
+				JButton botonAñadir = new JButton("AÑADIR");
+				panel12.add(botonAñadir);
+				panel.add(panel12);
+				panel.add(new JLabel(""));
+				panel1.add(panel);
+			}
+			
+			
+			
+		}
+		
+		panelCentral.add(panel1);
+		panelCentral.add(panel2);
+		panelCentral.add(panel3);
 		
 		this.add(panelCentral, BorderLayout.CENTER);
 		
@@ -138,6 +263,41 @@ public class EditarRutina extends JFrame {
 		setVisible(true);
 	}
 	
+	private void cargarEntrenamientos(Rutina rutina, ArrayList<Integer> entrenamientosSemana) {
+		ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
+		
+		for (int i = 0; i < 7; i++) {
+			entrenamientosSemana.add(0);
+		}
+		
+		for (Entrenamiento entrenamiento : entrenamientos) {
+			
+			if(entrenamiento.getDía().equals(DayOfWeek.MONDAY)) {
+				entrenamientosSemana.set(0, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.TUESDAY)) {
+				entrenamientosSemana.set(1, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.WEDNESDAY)) {
+				entrenamientosSemana.set(2, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.THURSDAY)) {
+				entrenamientosSemana.set(3, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.FRIDAY)) {
+				entrenamientosSemana.set(4, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.SATURDAY)) {
+				entrenamientosSemana.set(5, 1);
+			}
+			if(entrenamiento.getDía().equals(DayOfWeek.SUNDAY)) {
+				entrenamientosSemana.set(6, 1);
+			}
+			
+		}
+		
+	}
+
 	protected void actualizarNombreDesc(String nombre, String desc, int id) {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -167,43 +327,7 @@ public class EditarRutina extends JFrame {
 		
 	}
 
-	class EditarRutinaModelo extends AbstractTableModel {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		private String[] nombreDatos = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
-		private Object[][] data = new Object[0][0];
-		
-		
-		
-		@Override
-		public int getRowCount() {
-			return data.length;
-		}
-
-		@Override
-		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			return false;
-		}
-
-		@Override
-		public int getColumnCount() {
-			return nombreDatos.length;
-		}
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			return data[rowIndex][columnIndex];
-		}
-
-		@Override
-		public String getColumnName(int column) {
-			return nombreDatos[column];
-		}
-	}
+	
 }
 	
 
