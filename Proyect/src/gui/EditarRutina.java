@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.DayOfWeek;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sound.sampled.spi.FormatConversionProvider;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,6 +37,7 @@ import domain.Ejercicio;
 import domain.EjercicioEnEntrenamiento;
 import domain.Entrenamiento;
 import domain.Rutina;
+import domain.Serie;
 
 public class EditarRutina extends JFrame {
 	
@@ -214,14 +218,60 @@ public class EditarRutina extends JFrame {
 					
 						panel2.removeAll();
 						
+						int indice3 = 0;
+						
 						for (EjercicioEnEntrenamiento ejercicio : rutina.getEntrenamientos().get(indice2).getEjercicios()) {
+							
 							JPanel panelEjercicio = new JPanel();
-							panelEjercicio.setLayout(new FlowLayout());
 							
-							String id = Integer.toString(ejercicio.getID_Ejercicio());
+							panelEjercicio.setLayout(new BoxLayout(panelEjercicio, BoxLayout.Y_AXIS));
 							
-							panelEjercicio.add(new JLabel(id));
+							int id = ejercicio.getID_Ejercicio();
+
+							JPanel panelSubEjercicio = new JPanel();
+							panelSubEjercicio.setLayout(new GridLayout(1, 3));
+							panelSubEjercicio.setBorder(new EmptyBorder(25,10,10,25));
+							panelSubEjercicio.setPreferredSize(new Dimension(panel2.getWidth(),100));
+							
+							panelSubEjercicio.add(new JLabel(nombreEjercicio(id)));
+													
+							JButton botonEditar = new JButton("Editar");
+							panelSubEjercicio.add(botonEditar);
+							
+							int indice4 = indice3;
+							botonEditar.addActionListener(new ActionListener() {
+								
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									
+									List<Serie> listaSeries = rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getSeries();
+									
+									for (Serie serie : listaSeries) {
+										JPanel panelSerie = new JPanel();
+										//panelSerie.setLayout(new GridLayout()))
+									}
+									
+								}
+							});
+							
+							JButton botonEliminar = new JButton("Eliminar");
+							panelSubEjercicio.add(botonEliminar);
+							
+							panelEjercicio.add(panelSubEjercicio);
+							
+							JPanel panelAñadirEjercicio = new JPanel();
+							panelAñadirEjercicio.setLayout(new FlowLayout());
+							panelAñadirEjercicio.setBorder(new EmptyBorder(20,20,20,20));
+							JButton añadirEjercicio = new JButton("Añadir");
+							añadirEjercicio.setPreferredSize(new Dimension(100, 50));
+							
+							panelAñadirEjercicio.add(añadirEjercicio);							
+							panelEjercicio.add(panelAñadirEjercicio);
+							
 							panel2.add(panelEjercicio);
+							
+							indice3 += 1;
+							
 						}
 						panel2.updateUI();
 						
@@ -253,7 +303,12 @@ public class EditarRutina extends JFrame {
 		}
 		
 		panelCentral.add(panel1);
-		panelCentral.add(panel2);
+
+		JScrollPane scrollPane = new JScrollPane(panel2);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        panelCentral.add(scrollPane);
+		
 		panelCentral.add(panel3);
 		
 		this.add(panelCentral, BorderLayout.CENTER);
@@ -263,6 +318,43 @@ public class EditarRutina extends JFrame {
 		setVisible(true);
 	}
 	
+	protected ArrayList<Serie> cargarSerie(int id) {
+		ArrayList<Serie> listaSeries = new ArrayList<>();
+		
+		return listaSeries;
+	}
+	
+	protected String nombreEjercicio(int id) {
+		String nombre = "";
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT Nombre FROM Ejercicio WHERE ID_Ejercicio = ?";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			queryStmt.setInt(1, id);
+
+			ResultSet resultado =  queryStmt.executeQuery();
+			nombre = resultado.getString("Nombre");
+			
+			
+			queryStmt.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return nombre;
+		
+	}
+
 	private void cargarEntrenamientos(Rutina rutina, ArrayList<Integer> entrenamientosSemana) {
 		ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
 		
