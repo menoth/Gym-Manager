@@ -37,7 +37,7 @@ public class RetoDiario extends JFrame {
 
     public RetoDiario(String usuario) {
         setTitle("Reto diario");
-        setSize(1000, 600);
+        setSize(1300, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
@@ -223,6 +223,13 @@ public class RetoDiario extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				if(hayReto(usuario)) {
+					JOptionPane.showMessageDialog(RetoDiario.this, "Ya tienes un reto asignado para hoy, vuelve mañana");
+				}else {
+					
+				
+				
 				//Iniciar el hilo
 				new Thread(new Runnable() {
 					
@@ -252,6 +259,7 @@ public class RetoDiario extends JFrame {
 					
 				}).start();
 				
+			}
 			}
 		});
         
@@ -301,6 +309,38 @@ public class RetoDiario extends JFrame {
 			e.printStackTrace();
 		}
 		
+	}
+    
+    private boolean hayReto(String usuario) {
+		Boolean resultado = false;
+		try {
+	        Class.forName("org.sqlite.JDBC");
+	    } catch (ClassNotFoundException e) {
+	        System.out.println("No se ha podido cargar el driver de la BD");
+	        e.printStackTrace();
+	    }
+	    try {
+	        Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+
+	        // Obtener la fecha actual en el formato de la base de datos
+	        Date fechaActual = new Date();
+	        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+	        String fechaHoy = formatoFecha.format(fechaActual);
+
+	        String sql = "SELECT COUNT(*) AS total FROM RetoDiario WHERE Usuario = ? AND Fecha = ?";
+	        PreparedStatement queryStmt = conn.prepareStatement(sql);
+	        queryStmt.setString(1, usuario);
+	        queryStmt.setString(2, fechaHoy);
+
+	        ResultSet rs = queryStmt.executeQuery();
+	        if (rs.next() && rs.getInt("total") > 0) {
+	            resultado = true;
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+    	
+    	return resultado;
 	}
     
     class RetosModel extends AbstractTableModel{
@@ -546,5 +586,4 @@ public class RetoDiario extends JFrame {
 		new RetoDiario("admin");
 	}
 }
-
 
