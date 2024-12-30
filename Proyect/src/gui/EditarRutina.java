@@ -22,6 +22,7 @@ import javax.sound.sampled.spi.FormatConversionProvider;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,6 +39,7 @@ import domain.EjercicioEnEntrenamiento;
 import domain.Entrenamiento;
 import domain.Rutina;
 import domain.Serie;
+import domain.Serie.Esfuerzo;
 
 public class EditarRutina extends JFrame {
 	
@@ -52,6 +54,7 @@ public class EditarRutina extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setTitle("Perfil");
+		
 		
 		this.setLayout(new BorderLayout());
 			
@@ -212,11 +215,10 @@ public class EditarRutina extends JFrame {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {	
-						int numEjercicios = rutina.getEntrenamientos().get(indice2).getEjercicios().size();
 						
-						
-					
 						panel2.removeAll();
+						panel3.removeAll();
+						
 						
 						int indice3 = 0;
 						
@@ -242,14 +244,64 @@ public class EditarRutina extends JFrame {
 							botonEditar.addActionListener(new ActionListener() {
 								
 								@Override
+								
 								public void actionPerformed(ActionEvent e) {
 									
-									List<Serie> listaSeries = rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getSeries();
+									System.out.println("rutina completa:"+ rutina.getEntrenamientos());
+									List<Serie> listaSeries = rutina.getEntrenamientos().get(0).getEjercicios().get(indice4).getSeries();
+									System.out.println("lista series:"+listaSeries);
 									
+									JPanel panelSerie = new JPanel();
+									panelSerie.setLayout(new BoxLayout(panelSerie, BoxLayout.Y_AXIS));
+									
+									int contador = 0;
 									for (Serie serie : listaSeries) {
-										JPanel panelSerie = new JPanel();
-										//panelSerie.setLayout(new GridLayout()))
+										contador +=1;
+										JPanel panelSubSerie = new JPanel();
+										panelSubSerie.setLayout(new FlowLayout());
+										panelSubSerie.setBorder(new EmptyBorder(25,10,10,25));
+										panelSubSerie.setPreferredSize(new Dimension(panel3.getWidth(),100));
+										
+										JComboBox<Integer> ordenSerie = new JComboBox<>();
+										ordenSerie.addItem(contador);
+										
+										JComboBox<Double> pesoSerie = new JComboBox<>();
+										for (double i = 1; i <= 1000; i += 0.5) {
+										    pesoSerie.addItem(i);
+										}
+										
+										JComboBox<Integer> repeticionesSerie = new JComboBox<>();
+										for (int i = 1; i <= 100; i++) {
+										    repeticionesSerie.addItem(i);
+										}
+										
+										JComboBox<Esfuerzo> esfuerzoSerie = new JComboBox<>();
+										esfuerzoSerie.addItem(Esfuerzo.APROXIMACION);
+										esfuerzoSerie.addItem(Esfuerzo.ESTANDAR);
+										esfuerzoSerie.addItem(Esfuerzo.TOPSET);
+										
+										panelSubSerie.add(ordenSerie);
+										panelSubSerie.add(pesoSerie);
+										panelSubSerie.add(repeticionesSerie);
+										panelSubSerie.add(esfuerzoSerie);
+										
+										
+										panelSerie.add(panelSubSerie);
 									}
+									
+									JPanel panelAñadirSerie = new JPanel();
+									panelAñadirSerie.setLayout(new FlowLayout());
+									panelAñadirSerie.setBorder(new EmptyBorder(20,20,20,20));
+									
+									JButton añadirSerie = new JButton("Añadir");
+									añadirSerie.setPreferredSize(new Dimension(100, 50));
+									
+									panelAñadirSerie.add(añadirSerie);
+									
+									panelSerie.add(panelAñadirSerie);
+									
+									panel3.add(panelSerie);
+									panel3.updateUI();
 									
 								}
 							});
@@ -273,7 +325,9 @@ public class EditarRutina extends JFrame {
 							indice3 += 1;
 							
 						}
+						
 						panel2.updateUI();
+						panel3.updateUI();
 						
 						
 					}
@@ -304,12 +358,14 @@ public class EditarRutina extends JFrame {
 		
 		panelCentral.add(panel1);
 
-		JScrollPane scrollPane = new JScrollPane(panel2);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JScrollPane scrollPane2 = new JScrollPane(panel2);
+        scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
-        panelCentral.add(scrollPane);
+        panelCentral.add(scrollPane2);
 		
-		panelCentral.add(panel3);
+        JScrollPane scrollPane3 = new JScrollPane(panel3);
+        scrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		panelCentral.add(scrollPane3);
 		
 		this.add(panelCentral, BorderLayout.CENTER);
 		
