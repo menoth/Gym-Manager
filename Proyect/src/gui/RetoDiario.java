@@ -228,8 +228,6 @@ public class RetoDiario extends JFrame {
 					JOptionPane.showMessageDialog(RetoDiario.this, "Ya tienes un reto asignado para hoy, vuelve mañana");
 				}else {
 					
-				
-				
 				//Iniciar el hilo
 				new Thread(new Runnable() {
 					
@@ -255,16 +253,13 @@ public class RetoDiario extends JFrame {
                         escribirReto(retoSeleccionado, usuario);
                         modelo.cargarDatosDesdeBD(usuario);
 					}
-
 					
 				}).start();
 				
 			}
 			}
 		});
-        
-
-        
+             
         setVisible(true);
     }
     
