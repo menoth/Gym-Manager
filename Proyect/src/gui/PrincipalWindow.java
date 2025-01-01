@@ -1,18 +1,12 @@
 	package gui;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
-
-
 import java.awt.Dimension;
 import java.awt.Font;
-
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Scanner;
 import java.awt.Toolkit;
@@ -21,37 +15,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-
-
 import javax.swing.DefaultListModel;
-
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
-
 import javax.swing.JList;
-
-
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-
 import domain.Usuario;
 import javax.swing.JPopupMenu;
-
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 
 public class PrincipalWindow extends JFrame {

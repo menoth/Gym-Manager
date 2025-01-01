@@ -1,6 +1,5 @@
 package gui;
 
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
@@ -14,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,20 +21,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class RetoDiario extends JFrame {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	 HashMap<String, Integer> retos = new HashMap<>();
+	HashMap<String, Integer> retos = new HashMap<>();
 	 LinkedList<Color> listaColores = new LinkedList<>();
 	 ArrayList<JLabel> listaLabels = new ArrayList<>();
 	 ArrayList<String> listaRetos = new ArrayList<>();
 	
-
-
     public RetoDiario(String usuario) {
         setTitle("Reto diario");
         setSize(1300, 700);
@@ -51,6 +48,7 @@ public class RetoDiario extends JFrame {
         retos.put("Caminar 10km", 4);
         retos.put("Subir una montaña", 9);
         retos.put("Bicicleta 50km", 6);
+        
         
         // Lista de retos
        for (String reto : retos.keySet()) {
@@ -316,6 +314,7 @@ public class RetoDiario extends JFrame {
 	    }
 	    try {
 	        Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+			Statement stmt = conn.createStatement();
 
 	        // Obtener la fecha actual en el formato de la base de datos
 	        Date fechaActual = new Date();
@@ -331,6 +330,8 @@ public class RetoDiario extends JFrame {
 	        if (rs.next() && rs.getInt("total") > 0) {
 	            resultado = true;
 	        }
+			stmt.close();
+			conn.close();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
@@ -359,7 +360,8 @@ public class RetoDiario extends JFrame {
 				Connection conn = DriverManager.getConnection
 					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 		
-
+				Statement stmt = conn.createStatement();
+				
 				String sql = "SELECT * FROM RetoDiario WHERE Usuario LIKE ?";
 				PreparedStatement queryStmt = conn.prepareStatement(sql);
 				queryStmt.setString(1, user);
@@ -377,13 +379,12 @@ public class RetoDiario extends JFrame {
 	                
 	            }
 				fireTableDataChanged();	
+				stmt.close();
+				conn.close();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	    }
-		
-		
-	    
 		
 		@Override
 		public String getColumnName(int column) {
@@ -545,6 +546,7 @@ public class RetoDiario extends JFrame {
 			try {
 				Connection conn = DriverManager.getConnection
 						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+				
 				
 				
 				String sql = "UPDATE RetoDiario SET Completado = "+completado+" WHERE ID_RetoDiario ="+id ;

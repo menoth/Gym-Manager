@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,9 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -49,9 +48,6 @@ public class PerfilUsuario extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
-
 	
 	public PerfilUsuario(String usuario) {
 		
