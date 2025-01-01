@@ -169,7 +169,7 @@ public class InicioSesion extends JFrame {
    	 registro.setVisible(true);
 	}
     
-  // Dialogo para salir mediante el botón x
+    // Dialogo para salir mediante el botón x
   	private void confirmarSalida() {
   		int respuesta = JOptionPane.showConfirmDialog(
   				this,
