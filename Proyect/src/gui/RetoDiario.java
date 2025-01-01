@@ -39,16 +39,7 @@ public class RetoDiario extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         
-        
-
-        // Agregar retos y su dificultad
-        retos.put("Correr 5km", 5);
-        retos.put("Hacer 100 flexiones", 7);
-        retos.put("Nadar 2km", 8);
-        retos.put("Caminar 10km", 4);
-        retos.put("Subir una montaña", 9);
-        retos.put("Bicicleta 50km", 6);
-        
+        cargarRetos();
         
         // Lista de retos
        for (String reto : retos.keySet()) {
@@ -62,7 +53,7 @@ public class RetoDiario extends JFrame {
         panelSuperior.setLayout(new FlowLayout());
         panelSuperior.setBackground(Color.blue);
         
-        JTextArea txtExplicacion = new JTextArea("¡Apúntate al reto diario para esos días en los que te sientes con motivación extra!");
+        JTextArea txtExplicacion = new JTextArea("¡Apúntate al reto diario para esos días en los que te sientes con motivación extra! Las dificultades van del 1 (mínimo) al 5 (máximo)");
         txtExplicacion.setFont(new Font("Arial", Font.BOLD, 18));
         txtExplicacion.setBackground(this.getBackground());
         txtExplicacion.setPreferredSize(new Dimension(800, 70));
@@ -261,6 +252,38 @@ public class RetoDiario extends JFrame {
         setVisible(true);
     }
     
+    protected void cargarRetos() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            System.out.println("No se ha podido cargar el driver de la BD");
+            e.printStackTrace();
+        }
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");  
+            Statement stmt = conn.createStatement();
+            
+            String sql = "SELECT Nombre, Dificultad FROM ListadoRetos";
+            PreparedStatement queryStmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = queryStmt.executeQuery();
+            
+            while (rs.next()) {
+                String nombreReto = rs.getString("Nombre"); 
+                int dificultad = rs.getInt("Dificultad");   
+                retos.put(nombreReto, dificultad);  
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     private void escribirReto(String retoSeleccionado, String usuario) {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -269,7 +292,7 @@ public class RetoDiario extends JFrame {
 			e.printStackTrace();
 		}try {
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");	
-			
+			Statement stmt = conn.createStatement();
 			
 			String nombre = retoSeleccionado;
 			
@@ -297,7 +320,8 @@ public class RetoDiario extends JFrame {
 			int filasInsertadas = queryStmt.executeUpdate();
             System.out.println("Filas insertadas: " + filasInsertadas);
 			
-
+            stmt.close();
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
