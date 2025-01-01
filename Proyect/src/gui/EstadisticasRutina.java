@@ -41,7 +41,6 @@ public class EstadisticasRutina extends JFrame {
 	public EstadisticasRutina(Rutina rutina){
 		
 		//Detalles de la ventana
-		setSize(new Dimension(1100, 700));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -85,7 +84,7 @@ public class EstadisticasRutina extends JFrame {
         panelNombre.setLayout(new BorderLayout());
         panelNombre.setBorder(new EmptyBorder(80,20,20,20));
         
-        JTextArea txtNombreRutina = new JTextArea("Estas son las estadísticas de tu rutina "+ nombre +", en la grafica inferior podrás ver la intensidad de trabajo de cada músuclo, siendo el valor más optimo el 1.");
+        JTextArea txtNombreRutina = new JTextArea("Estas son las estadísticas de tu rutina "+ nombre +", en la grafica inferior podrás ver la intensidad de trabajo de cada músuclo, siendo el valor más optimo el 12.");
         txtNombreRutina.setFont(new Font("Arial", Font.BOLD, 18));
         txtNombreRutina.setBackground(this.getBackground());
         
@@ -356,6 +355,7 @@ public class EstadisticasRutina extends JFrame {
             
             //Escribe los musculos 
             for (int i = 0; i < numEtiquetas; i++) {
+            	g2.setFont(new Font("SansSerif", Font.PLAIN, anchoBarra/4));
                 int x = margenIzquierdo + i * (anchoGrafico / numEtiquetas) + anchoBarra / 2;
                 g2.drawString(musculos.get(i), x, height - margenInferior + 20);
             }

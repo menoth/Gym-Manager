@@ -119,7 +119,7 @@ public class PrincipalWindow extends JFrame {
             new SeguimientoPersonal(usuario); // Asegúrate de pasar el usuario actual si es necesario
         });
         opcion3.setBackground(new Color(176,224,230));
-        JMenuItem opcion4 = new JMenuItem("MIS AMIGOS");
+        JMenuItem opcion4 = new JMenuItem("GENERAR RUTINA ALEATORIA");
         opcion4.setBackground(new Color(176,224,230));
         JMenuItem opcion5 = new JMenuItem("RETO DIARIO");
         opcion5.setBackground(new Color(176,224,230));
@@ -145,6 +145,14 @@ public class PrincipalWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new RetoDiario(usuario);
 				
+			}
+		});
+        
+opcion4.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new GenerarRutinaAleatoria(usuario);
 			}
 		});
         

@@ -555,7 +555,8 @@ public class PerfilUsuario extends JFrame {
 							}
 						}
 						
-						new EstadisticasRutina(rutinaSeleccionada);
+						EstadisticasRutina estadisticas = new EstadisticasRutina(rutinaSeleccionada);
+						estadisticas.setExtendedState(JFrame.MAXIMIZED_BOTH);
 					}
 					
 					
