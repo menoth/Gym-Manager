@@ -1,87 +1,86 @@
 package domain;
 
-import java.awt.Component;
-import java.util.EventObject;
-
-import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.TableCellEditor;
-
 import gui.CatalogoEjercicio;
-import gui.InterfazRutina;
 
-public class EditorBoton implements TableCellEditor{
-	
-	private final JButton boton;
-	private final String usuario; 
-	private final String nombreRutina; 
-	
-	public EditorBoton(InterfazRutina ir, String usuario, String nombreRutina) {
-		this.usuario = usuario;
-		this.nombreRutina = nombreRutina;
+import javax.swing.*;
+import javax.swing.table.TableCellEditor;
+import java.awt.*;
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 
-		
-		
-		boton = new JButton();
-		boton.addActionListener(e -> {
-			ir.dispose();
-		    System.out.println("Abriendo CatalogoEjercicio con usuario: " + usuario + " y nombreRutina: " + nombreRutina);
-		    new CatalogoEjercicio(usuario, nombreRutina);
-		});
-	}
+public class EditorBoton implements TableCellEditor {
 
-	@Override
-	public Object getCellEditorValue() {
-		// TODO Auto-generated method stub
-		return boton.getText();
-	}
+    private final JButton boton;
+    private int editingColumn;
+    
+    @SuppressWarnings("unused")
+	private final JTable tabla;
 
-	@Override
-	public boolean isCellEditable(EventObject anEvent) {
-		
-		//Para que se pueda hacer click
-		return true;
-	}
-	
-	@Override
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		
-		//Devuelve el boton para que se pueda ver en la celda
-		return boton;
-	}
-	
+    public EditorBoton(String usuario, String nombreRutina, JTable tabla) {
+        this.tabla = tabla;
+        boton = new JButton("Añadir ejercicio");
+        boton.addActionListener(e -> {
+            new CatalogoEjercicio(usuario, nombreRutina, (nombreEjercicio, seriesData) -> {
+            	
+                if (editingColumn >= 0) {
+                	
+                	//Metemos en el mapa los datos del nombre del ejercicio y las series/kg
+                    Map<String, Object> datos = new HashMap<>();
+                    datos.put("ejercicio", nombreEjercicio);
+                    datos.put("series", seriesData); 
+                    ((ModeloJTable) tabla.getModel()).setValueAt(datos, 1, editingColumn);
+                    
+                    //Actualizamos la tabla
+                    tabla.revalidate();
+                    tabla.repaint();
+                }
+            }, null);
+            
+        });
+    }
 
-	@Override
-	public boolean shouldSelectCell(EventObject anEvent) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public Object getCellEditorValue() {
+    	//Devuelve el texto actual del botón
+        return boton.getText();
+    }
 
-	@Override
-	public boolean stopCellEditing() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isCellEditable(EventObject anEvent) {
+    	//Cualquier celda editable puede abrir el botón al hacer click
+        return true;
+    }
 
-	@Override
-	public void cancelCellEditing() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        this.editingColumn = column;
+        if (value != null) {
+            boton.setText(value.toString()); // Si el valor no es nulo, usa su representación como texto
+        } else {
+            boton.setText("Añadir ejercicio"); // Si el valor es nulo, establece "Añadir ejercicio"
+        }
+        return boton;
+    }
 
-	@Override
-	public void addCellEditorListener(CellEditorListener l) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public boolean stopCellEditing() {
+    	//Permite que es guarde el valor y se termide la edición
+        return true;
+    }
 
-	@Override
-	public void removeCellEditorListener(CellEditorListener l) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void cancelCellEditing() { }
 
-	
+    @Override
+    public void addCellEditorListener(javax.swing.event.CellEditorListener l) { }
 
+    @Override
+    public void removeCellEditorListener(javax.swing.event.CellEditorListener l) { }
+
+    @Override
+    public boolean shouldSelectCell(EventObject anEvent) {
+    	//Para evitar que la celda se quede seleccionada después de la edición
+        return false;
+    }
 }
