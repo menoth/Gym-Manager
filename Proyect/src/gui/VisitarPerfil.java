@@ -270,8 +270,6 @@ public class VisitarPerfil extends JFrame {
 			}
 		}
 		
-		System.out.println(rutinasUsuario.get(0).getEntrenamientos());
-		
 		RutinaModel modelo = new RutinaModel();
 		modelo.cargarDatosDesdeBD(usuario);
 		JTable table = new JTable(modelo);

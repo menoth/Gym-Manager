@@ -8,13 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -26,8 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import domain.Usuario;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
@@ -38,7 +41,6 @@ public class PrincipalWindow extends JFrame {
 	private JTextField campo_busqueda;
     private JButton boton_buscar;
     private DefaultListModel<String> lista;
-    private JPopupMenu popUpMenu;
 
     // Lista con los datos a buscar
     private List<String> datos = new ArrayList<>();
@@ -148,7 +150,7 @@ public class PrincipalWindow extends JFrame {
 			}
 		});
         
-opcion4.addActionListener(new ActionListener() {
+        opcion4.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -241,7 +243,6 @@ opcion4.addActionListener(new ActionListener() {
 		
 		 JPanel panelBusqueda = new JPanel();
 		 panelBusqueda.add(Box.createVerticalStrut(150));
-		 popUpMenu = new JPopupMenu();
 	     
 	     panelBusqueda.add(campo_busqueda);
 	     panelBusqueda.add(boton_buscar);
@@ -251,29 +252,18 @@ opcion4.addActionListener(new ActionListener() {
 		    
 		 //Ponemos en el buscador todos los nombres de usuario que haya en la base de datos
 	     datosUsuario((ArrayList<String>) datos);
-	   	 
-	   	 //Listeners para el popUpMenu
-	   	 campo_busqueda.getDocument().addDocumentListener(new DocumentListener() {
-	   		 
-	   		 //Listener para que cada vez que se escriba se llame al método
-             @Override
-             public void insertUpdate(DocumentEvent e) {
-                 actualizarResultados();
-             }
-             
-             //Listener para que cada vez que se borre llame al método
-             @Override
-             public void removeUpdate(DocumentEvent e) {
-                 actualizarResultados();
-             }
-             
-             //Listener que omitimos pero es necesario para completar el método DocumentListener
-             @Override
-             public void changedUpdate(DocumentEvent e) {
-                 actualizarResultados();
-             }
-         });
-	   	 
+	   	boton_buscar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (String string : datos) {
+					if(string.equals(campo_busqueda.getText())) {
+						new VisitarPerfil(string, usuario);
+					}
+				}
+				
+			}
+		});
+	     
          //WindowListener para cerrar aplicación
          addWindowListener(new WindowAdapter() { 
 			 	@Override 
@@ -287,69 +277,6 @@ opcion4.addActionListener(new ActionListener() {
          add(general);
  		 setVisible(true);
      }
-	
-	//------------------------------MÉTODOS-------------------------------------------------------------------
-	
-	
-	//Método para el buscador
-	protected void actualizarResultados() {
-		
-		//Recoge lo que se ha escrito en campo_busqueda 
-		//El trim se utiliza para eliminar espacios al principio y al final
-		String textoBusqueda = campo_busqueda.getText().trim();
-		
-		//Si se llama a actualizarResultados(), siginifica que se ha hecho una modificación
-		//en el campo_busqueda por lo que antes de mostrar nuevos resultados hay que eliminar 
-		//el popUp anterior
-		popUpMenu.removeAll();
-		
-		//Primero metemos en la lista resultados los perfiles que coincidan
-		if(!textoBusqueda.isEmpty()) {
-			 List<String> resultados = new ArrayList<>();
-	            for (String item : datos) {
-	                if (item.toLowerCase().contains(textoBusqueda.toLowerCase())) {
-	                    resultados.add(item);
-	                }
-	            }
-	     
-		//
-		if(!textoBusqueda.isEmpty()) {
-			for (String resultado : resultados) {
-				
-				//Por cada resultado se crea un JMenuItem
-                JMenuItem menuItem = new JMenuItem(resultado);
-                
-                //Este listener lo que hace es cerrar el menú cuando se hace click
-                //en un perfil del popUp. Esto hay que conectarlo con llevarle a la pagina de ese perfil.
-                menuItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-        
-                        popUpMenu.setVisible(false); 
-                    }
-                });
-                
-                //Añadir cada resultado al menú
-                popUpMenu.add(menuItem);
-		}
-			 //Mostrar el popup justo debajo del campo de búsqueda
-            popUpMenu.show(campo_busqueda, 0, campo_busqueda.getHeight());
-            
-            //Sin esto cada vez que se escribe/borra una letra hay que volver a hacer 
-            //click (seleccionar) el JTextField para seguir escribiendo
-            campo_busqueda.requestFocusInWindow();
-        } 
-		// Ocultar si no hay resultados
-		else {
-            popUpMenu.setVisible(false); 
-        }
-    }
-		//Ocultar si no hay texto de búsqueda
-		else {
-        popUpMenu.setVisible(false); 
-		}
-	}
-	
 
 	//Dialogo para salir mediante el botón x
 	private void confirmarSalida() {
@@ -386,18 +313,29 @@ opcion4.addActionListener(new ActionListener() {
 
      //Metodo para añadir todos los usuarios a el PopUpMenu
      private void datosUsuario(ArrayList<String> datos) {
-    	 File f = new File("baseDeDatos.csv");
-    	 try (Scanner sc = new Scanner (f)) {
-    		 while(sc.hasNextLine()) {
-    			 String linea = sc.nextLine();
-    			 String[] campos = linea.split(";");
-    			 String usuario = campos[2];
-    			 
-    			 datos.add(usuario);
-    		 }
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    	 try {
+ 			Class.forName("org.sqlite.JDBC");
+ 		} catch (ClassNotFoundException e) {
+ 			System.out.println("No se ha podido cargar el driver de la BD");
+ 		}
+ 		try {
+ 			Connection conn = DriverManager.getConnection
+ 				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+ 	
+ 			Statement stmt = conn.createStatement();
+ 			String sql = "SELECT Usuario FROM Usuario";
+ 			PreparedStatement queryStmt = conn.prepareStatement(sql);
+ 			ResultSet rs = queryStmt.executeQuery();
+ 	
+ 			while (rs.next()) {
+ 				String usuarioBD = rs.getString("Usuario");
+ 				datos.add(usuarioBD);
+ 			}
+ 			stmt.close();
+ 			conn.close();
+ 		} catch (SQLException e) {
+ 			e.printStackTrace();
+ 		}
 	 }
 
      public static void main(String[] args) {
