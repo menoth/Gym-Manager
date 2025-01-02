@@ -187,4 +187,34 @@ public class ConectarBaseDeDatos {
 			// TODO: handle exception
 		}		
 	}
+	
+	public static void ConectarBaseDeDatosMusculos(List<Musculo> musculos) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT * FROM Musculo";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			ResultSet rs = queryStmt.executeQuery();
+	
+			while (rs.next()) {
+				
+				String Nombre = rs.getString("Nombre");
+				String tamaño = rs.getString("TamanoMusculo");
+				
+				musculos.add(new Musculo(Nombre, TamanoMusculo.valueOf(tamaño)));
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}		
+	}
 }
