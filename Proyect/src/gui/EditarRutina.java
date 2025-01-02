@@ -226,7 +226,7 @@ public class EditarRutina extends JFrame {
 				eliminar.addActionListener(new ActionListener() {			
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						EliminarEntrenamiento(rutina.getEntrenamientos().get(indice2).getId(), usuario); 	
+						EliminarEntrenamiento(rutina.getEntrenamientos().get(indice2).getId(), usuario, rutina.getId()); 	
 						
 					}
 				});
@@ -327,7 +327,7 @@ public class EditarRutina extends JFrame {
 											
 											@Override
 											public void actionPerformed(ActionEvent e) {
-												actualizarPesoSerie((float) pesoSerie.getSelectedItem(), serie, usuario);
+												actualizarPesoSerie((float) pesoSerie.getSelectedItem(), serie, usuario, rutina.getId());
 												
 											}
 										});
@@ -336,7 +336,7 @@ public class EditarRutina extends JFrame {
 										repeticionesSerie.addActionListener(new ActionListener() {
 											@Override
 											public void actionPerformed(ActionEvent e) {
-												actualizarRepeticionesSerie((int) repeticionesSerie.getSelectedItem(), serie, usuario);
+												actualizarRepeticionesSerie((int) repeticionesSerie.getSelectedItem(), serie, usuario, rutina.getId());
 												
 											}
 										});
@@ -345,7 +345,7 @@ public class EditarRutina extends JFrame {
 										esfuerzoSerie.addActionListener(new ActionListener() {								
 											@Override
 											public void actionPerformed(ActionEvent e) {
-												actualizarEsfuerzo((Esfuerzo)esfuerzoSerie.getSelectedItem(), serie, usuario);
+												actualizarEsfuerzo((Esfuerzo)esfuerzoSerie.getSelectedItem(), serie, usuario, rutina.getId());
 												
 											}
 										});
@@ -354,7 +354,7 @@ public class EditarRutina extends JFrame {
 										eliminarSerie.addActionListener(new ActionListener() {											
 											@Override
 											public void actionPerformed(ActionEvent e) {
-												eliminarSerie(serie, usuario);
+												eliminarSerie(serie, usuario, rutina.getId());
 											}
 										});
 										
@@ -380,7 +380,7 @@ public class EditarRutina extends JFrame {
 										
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											añadirSerie(rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getId(), usuario);
+											añadirSerie(rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getId(), usuario, rutina.getId());
 											
 										}
 									});
@@ -405,9 +405,7 @@ public class EditarRutina extends JFrame {
 							botonEliminar.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									eliminarEjercicio(rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getId());
-									dispose();
-									new PerfilUsuario(usuario);
+									eliminarEjercicio(rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getId(), rutina.getId(), usuario);
 									
 								}
 							});
@@ -491,29 +489,60 @@ public class EditarRutina extends JFrame {
 		return listaSeries;
 	}
 	
-	protected void EliminarEntrenamiento(int idEntrenamiento, String usuario) {
+	protected void EliminarEntrenamiento(int idEntrenamiento, String usuario, int idRutina) {
 	    try {
 	        Class.forName("org.sqlite.JDBC");
 	    } catch (ClassNotFoundException e) {
 	        System.out.println("No se ha podido cargar el driver de la BD");
 	        e.printStackTrace();
+	        return;
 	    }
 
 	    try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+	        //PRAGMA foreign_keys hecho con chatGPT4 para poder habilitar el borrado en cascada
+	        try (PreparedStatement pragmaStmt = conn.prepareStatement("PRAGMA foreign_keys = ON;")) {
+	            pragmaStmt.execute();
+	        }
+
 	        String sql = "DELETE FROM Entrenamiento WHERE ID_Entrenamiento = ?";
 	        try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
-	            queryStmt.setInt(1, idEntrenamiento); 
+	            queryStmt.setInt(1, idEntrenamiento);
 
 	            int filasAfectadas = queryStmt.executeUpdate();
 	            if (filasAfectadas > 0) {
-	                System.out.println("Serie eliminada correctamente.");
+	                System.out.println("Entrenamiento eliminado correctamente.");
 	            }
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+
+	    // Actualizar la lista de rutinas del usuario
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
+	}
+
+	
+	public static void ActualizarListaRutina(int idRutina, String usuario) {
+		Rutina rutinaDevolver = null;
+		ArrayList<Rutina> listaRutinas = new ArrayList<>();
+		ConectarBaseDeDatos.ConectarBaseDeDatosRutina(listaRutinas); 
+		
+		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
+		for (Rutina rutina : listaRutinas) {
+			if(rutina.getUsuario().equals(usuario)) {
+				rutinasUsuario.add(rutina);	
+			}
+		}
+		
+		for (Rutina rutina : rutinasUsuario) {
+			if(rutina.getId() == idRutina) {
+				rutinaDevolver = rutina;
+				break;
+			}
+		}
+		
+		new EditarRutina(usuario, idRutina, rutinaDevolver);
 	}
 	
 	protected void AñadirEntrenamiento(int id, int idRutina, String usuario) {
@@ -543,8 +572,8 @@ public class EditarRutina extends JFrame {
 		    } catch (SQLException e) {
 		        e.printStackTrace();
 		    }
-		    dispose();
-		    new PerfilUsuario(usuario);
+	    dispose();
+	    	ActualizarListaRutina(idRutina, usuario);
 		}
 	
 	protected void actualizarNombreDescEntrenamiento(String nombre, String desc, int idEntrenamiento) {
@@ -575,19 +604,26 @@ public class EditarRutina extends JFrame {
 	}
 	
 	protected void añadirEjercicio(String usuario, int idRutina, Rutina rutina, int idEntrenamiento) {
-		new CatalogoEjerciciosEditarRutina(usuario, idRutina, rutina, idEntrenamiento);
 		dispose();
+		new CatalogoEjerciciosEditarRutina(usuario, idRutina, rutina, idEntrenamiento);
+		 
 	}
 	
-	protected void eliminarEjercicio(int idEjercicioEnEntrenamiento) {
-		try {
+	protected void eliminarEjercicio(int idEjercicioEnEntrenamiento, int idRutina, String usuario) {
+	    try {
 	        Class.forName("org.sqlite.JDBC");
 	    } catch (ClassNotFoundException e) {
 	        System.out.println("No se ha podido cargar el driver de la BD");
 	        e.printStackTrace();
+	        return;
 	    }
 
 	    try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+	    	//PRAGMA foreign_keys hecho con chatGPT4 para poder habilitar el borrado en cascada
+	        try (PreparedStatement pragmaStmt = conn.prepareStatement("PRAGMA foreign_keys = ON;")) {
+	            pragmaStmt.execute();
+	        }
+
 	        String sql = "DELETE FROM EjercicioEnEntrenamiento WHERE ID_EjercicioEnEntrenamiento = ?";
 	        try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
 	            queryStmt.setInt(1, idEjercicioEnEntrenamiento);
@@ -601,9 +637,13 @@ public class EditarRutina extends JFrame {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+
+	    dispose();
+	    ActualizarListaRutina(idRutina, usuario);
 	}
+
 	
-	protected void añadirSerie(int idEjercicioEnEntrenamiento, String usuario) {
+	protected void añadirSerie(int idEjercicioEnEntrenamiento, String usuario, int idRutina) {
 
 	    float peso = (float) 1.0;
 	    int repeticiones = 10;  
@@ -635,10 +675,9 @@ public class EditarRutina extends JFrame {
 	        e.printStackTrace();
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 
-	
 	protected void cambiarOrdenSerie(List<Serie> arrySeries, Serie serie, int ordenNuevo, String usuario, int idRutina, Rutina rutina) {
 	    // Crear un mapa para almacenar las series con su orden actual
 	    HashMap<Integer, Serie> mapa = new HashMap<>();
@@ -716,10 +755,10 @@ public class EditarRutina extends JFrame {
 	        }
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 
-	public void actualizarPesoSerie(float nuevoPeso, Serie serie, String usuario) {
+	public void actualizarPesoSerie(float nuevoPeso, Serie serie, String usuario, int idRutina) {
 	    // Obtener el ID de la serie para realizar la actualización
 	    int idSerie = serie.getId();
 
@@ -752,10 +791,10 @@ public class EditarRutina extends JFrame {
 	        e.printStackTrace();
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 
-	public void actualizarRepeticionesSerie(int nuevasRepeticiones, Serie serie, String usuario) {
+	public void actualizarRepeticionesSerie(int nuevasRepeticiones, Serie serie, String usuario, int idRutina) {
 	    // Obtener el ID de la serie para realizar la actualización
 	    int idSerie = serie.getId();
 
@@ -784,10 +823,10 @@ public class EditarRutina extends JFrame {
 	        e.printStackTrace();
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 
-	protected void actualizarEsfuerzo(Esfuerzo esfuerzo, Serie serie, String usuario) {
+	protected void actualizarEsfuerzo(Esfuerzo esfuerzo, Serie serie, String usuario, int idRutina) {
 		// Obtener el ID de la serie para realizar la actualización
 	    int idSerie = serie.getId();
 
@@ -816,10 +855,10 @@ public class EditarRutina extends JFrame {
 	        e.printStackTrace();
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 	
-	public void eliminarSerie(Serie serie, String usuario) {
+	public void eliminarSerie(Serie serie, String usuario, int idRutina) {
 	    int idSerie = serie.getId();
 
 	    try {
@@ -845,7 +884,7 @@ public class EditarRutina extends JFrame {
 	        e.printStackTrace();
 	    }
 	    dispose();
-	    new PerfilUsuario(usuario);
+	    ActualizarListaRutina(idRutina, usuario);
 	}
 
 	

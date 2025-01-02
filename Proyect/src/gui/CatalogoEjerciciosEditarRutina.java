@@ -154,8 +154,7 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					cargarEjercicioEnBaseDeDatos(idRutina,idEntrenamiento, ejercicio.getId());
-					new PerfilUsuario(usuario);
+					cargarEjercicioEnBaseDeDatos(idRutina,idEntrenamiento, ejercicio.getId(), usuario);
 		            dispose();
 					
 				}
@@ -179,7 +178,7 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
     }
 
     // Mostrar un cuadro de diálogo para el ejercicio seleccionado
-    private void cargarEjercicioEnBaseDeDatos(int idRutina, int idEntrenamiento, int idEjercicio) {
+    private void cargarEjercicioEnBaseDeDatos(int idRutina, int idEntrenamiento, int idEjercicio, String usuario) {
     	 try {
     	        // Cargar el driver JDBC de SQLite
     	        Class.forName("org.sqlite.JDBC");
@@ -210,5 +209,8 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
     	        System.out.println("Error al añadir el ejercicio a EjercicioEnEntrenamiento.");
     	        e.printStackTrace();
     	    }
+    	    dispose();
+    	    EditarRutina.ActualizarListaRutina(idRutina, usuario);
+    	   
     }
 }
