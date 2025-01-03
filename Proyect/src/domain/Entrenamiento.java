@@ -11,7 +11,8 @@ public class Entrenamiento{
 		private String descripcionEntrenamiento;
 		private int ID_rutina;
 		private DayOfWeek día;
-		private List<EjercicioEnEntrenamiento> ejercicios;
+		private List<EjercicioEnEntrenamiento> ejercicios; 
+		
 		
 		public Entrenamiento(int id, String nombre, String descripcionEntrenamiento, int iD_rutina, DayOfWeek día,
 				List<EjercicioEnEntrenamiento> ejercicios) {

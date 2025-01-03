@@ -599,6 +599,7 @@ public class PerfilUsuario extends JFrame {
 	        dispose();
 	        new PerfilUsuario(usuario);
 	    }
+	    
 
 
 		@Override
