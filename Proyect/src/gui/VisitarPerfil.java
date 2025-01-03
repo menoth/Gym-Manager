@@ -233,7 +233,7 @@ public class VisitarPerfil extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-                PrincipalWindow principal = new PrincipalWindow(usuarioQueVisita);
+            	PrincipalWindow principal = new PrincipalWindow(usuarioQueVisita);
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });

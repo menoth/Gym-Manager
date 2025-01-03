@@ -254,7 +254,7 @@ public class PerfilUsuario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-                PrincipalWindow principal = new PrincipalWindow(user3);
+            	PrincipalWindow principal = new PrincipalWindow(user3);
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
