@@ -33,6 +33,7 @@ public class RetoDiario extends JFrame {
 	 ArrayList<String> listaRetos = new ArrayList<>();
 	
     public RetoDiario(String usuario) {
+    	setUndecorated(true);
         setTitle("Reto diario");
         setSize(1300, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,12 +51,35 @@ public class RetoDiario extends JFrame {
         
 //--------------------------------------LADO SUPERIOR----------------------------------
         JPanel panelSuperior = new JPanel();
-        panelSuperior.setLayout(new FlowLayout());
-        panelSuperior.setBackground(Color.blue);
+        panelSuperior.setLayout(new FlowLayout(FlowLayout.CENTER, 50,20));
+        panelSuperior.setBackground(new Color(70, 130, 180));
+        
+        JButton botonVolver = new JButton("VOLVER");
+        botonVolver.setPreferredSize(new Dimension(120, 60));
+		
+        botonVolver.setBackground(new Color(255, 255, 255));
+        botonVolver.setForeground(new Color(70, 130, 180));
+        botonVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        
+        botonVolver.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				new PrincipalWindow(usuario);
+				
+			}
+		});
+        
+        panelSuperior.add(botonVolver);
+        
+ 
+
         
         JTextArea txtExplicacion = new JTextArea("¡Apúntate al reto diario para esos días en los que te sientes con motivación extra! Las dificultades van del 1 (mínimo) al 5 (máximo)");
-        txtExplicacion.setFont(new Font("Arial", Font.BOLD, 18));
-        txtExplicacion.setBackground(this.getBackground());
+        txtExplicacion.setFont(new Font("Arial", Font.BOLD, 24));
+        txtExplicacion.setBackground(new Color(70, 130, 180));
+        
         txtExplicacion.setPreferredSize(new Dimension(800, 70));
         
         txtExplicacion.setLineWrap(true);          
@@ -69,7 +93,7 @@ public class RetoDiario extends JFrame {
         
         //Como lo tenemos que desactivar para que no esté el cursor, tenemos que cambiarle
         //el color para cuando esta desactivado
-        txtExplicacion.setDisabledTextColor(Color.black);
+        txtExplicacion.setDisabledTextColor(new Color(255, 255, 255));
         panelSuperior.add(txtExplicacion);
 
         this.add(panelSuperior, BorderLayout.NORTH);
@@ -77,20 +101,24 @@ public class RetoDiario extends JFrame {
 //-----------------------PARTE CENTRAL------------------------------------
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new GridLayout(1, 2));
-        panelCentral.setBackground(Color.blue);
+        panelCentral.setBackground(new Color(70, 130, 180));
         panelCentral.setBorder(new EmptyBorder(20,20,20,20));
         
         //----------LADO IZQUIERDO CENTRAL
         JPanel panelIzquierda = new JPanel();
         panelIzquierda.setLayout(new GridLayout(3, 1));
         panelIzquierda.setBorder(new EmptyBorder(0,0,0,10));
-        panelIzquierda.setBackground(Color.blue);
+        panelIzquierda.setBackground(new Color(70, 130, 180));
         
         //1 DE 3 partes LADO IZQUIERDO CENTRAL
         JPanel panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 70));
+        
         JButton boton = new JButton("OBTEN RETO");
-        boton.setPreferredSize(new Dimension(120,60));
+        boton.setBackground(new Color(255, 255, 255));
+        boton.setForeground(new Color(70, 130, 180));
+        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setPreferredSize(new Dimension(160,60));
         
         
         panel1.add(boton);
@@ -102,6 +130,7 @@ public class RetoDiario extends JFrame {
         JTextArea txtResultado = new JTextArea("Presiona el botón para obtener un reto");
         txtResultado.setFont(new Font("Arial", Font.BOLD, 18));
         txtResultado.setBackground(this.getBackground());
+    
         txtResultado.setPreferredSize(new Dimension(345, 100));
         
         txtResultado.setLineWrap(true);          
@@ -115,7 +144,7 @@ public class RetoDiario extends JFrame {
         
         //Como lo tenemos que desactivar para que no esté el cursor, tenemos que cambiarle
         //el color para cuando esta desactivado
-        txtResultado.setDisabledTextColor(Color.black);
+        txtResultado.setDisabledTextColor(new Color(70, 130, 180));
         
         panel2.add(txtResultado);
         panelIzquierda.add(panel2);
@@ -154,11 +183,12 @@ public class RetoDiario extends JFrame {
         //----------LADO DERECHO CENTRAL
         JPanel panelDerecha = new JPanel();
         panelDerecha.setBorder(new EmptyBorder(0,10,0,0));
-        panelDerecha.setBackground(Color.blue);
+        panelDerecha.setBackground(new Color(70, 130, 180));
         panelDerecha.setLayout(new BorderLayout());
         
         //Label retos pasados
         JLabel retosLabel = new JLabel("Registro de retos");
+        retosLabel.setForeground(new Color(255, 255, 255));
         retosLabel.setFont(new Font("Arial", Font.PLAIN, 25));
         
         panelDerecha.add(retosLabel, BorderLayout.NORTH);
@@ -239,6 +269,7 @@ public class RetoDiario extends JFrame {
 						 // Después de 5 segundos, seleccionar un reto aleatorio
                         String retoSeleccionado = listaRetos.get((int) (Math.random() * listaRetos.size()));
                         txtResultado.setText("Tu reto diario es: " + retoSeleccionado);
+                        
                         escribirReto(retoSeleccionado, usuario);
                         modelo.cargarDatosDesdeBD(usuario);
 					}
@@ -602,9 +633,5 @@ public class RetoDiario extends JFrame {
 		}
     	
     }
-    
-    public static void main(String[] args) {
-		new RetoDiario("admin");
-	}
 }
 
