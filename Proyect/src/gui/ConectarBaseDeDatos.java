@@ -22,7 +22,6 @@ import domain.Usuario;
 // Lo usaremos para conectar la base de datos con una lista de usuarios
 public class ConectarBaseDeDatos {
 	public static void main(String[] args) {
-		
 	}
 	public static void ConectarBaseDeDatos(List<Usuario> usuarios) {
 		try {
@@ -111,9 +110,9 @@ public class ConectarBaseDeDatos {
 						// cargamos desde la base de datos todas las series que tengan ese ID_Ejercicio en la lista de series del ejercicio
 						String sql4 = "SELECT * FROM Serie WHERE ID_EjercicioEnEntrenamiento = ?";
 						PreparedStatement queryStmt4 = conn.prepareStatement(sql4);
-						queryStmt4.setInt(1, ID_Ejercicio);
-						ResultSet rs4 = queryStmt4.executeQuery();
-						while (rs4.next()) {
+						queryStmt4.setInt(1, ID_EjercicioEnEntrenamiento);
+							ResultSet rs4 = queryStmt4.executeQuery();
+							while (rs4.next()) {
 							int ID_Serie = rs4.getInt("ID_Serie");
 							float Peso = rs4.getFloat("Peso");
 							int Repeticiones = rs4.getInt("Repeticiones");
@@ -180,6 +179,36 @@ public class ConectarBaseDeDatos {
 				String TamanoMusculoSecundario = rs3.getString("TamanoMusculo");
 				
 				ejercicios.add(new Ejercicio(ID_Ejercicio, Nombre, new Musculo(NombreMusculoPrincipal, TamanoMusculo.valueOf(TamanoMusculoPrincipal)), new Musculo(NombreMusculoSecundario, TamanoMusculo.valueOf(TamanoMusculoSecundario))));
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}		
+	}
+	
+	public static void ConectarBaseDeDatosMusculos(List<Musculo> musculos) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+		try {
+			Connection conn = DriverManager.getConnection
+				("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT * FROM Musculo";
+			PreparedStatement queryStmt = conn.prepareStatement(sql);
+			ResultSet rs = queryStmt.executeQuery();
+	
+			while (rs.next()) {
+				
+				String Nombre = rs.getString("Nombre");
+				String tamaño = rs.getString("TamanoMusculo");
+				
+				musculos.add(new Musculo(Nombre, TamanoMusculo.valueOf(tamaño)));
 			}
 			stmt.close();
 			conn.close();

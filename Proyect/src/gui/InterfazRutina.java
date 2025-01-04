@@ -1,75 +1,74 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-
 import domain.EditorBoton;
 import domain.ModeloJTable;
 import domain.RendererTabla;
 
-
+import javax.swing.*;
+import java.awt.*;
 
 public class InterfazRutina extends JFrame {
-	
+
     private static final long serialVersionUID = 1L;
-    
-    //private DayOfWeek dias;
-    
 
-    InterfazRutina(String usuario, String nombreRutina) {
-    	
-    	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    	
-    	
-    	JPanel panelGeneral = new JPanel();
-    	panelGeneral.setLayout(new BorderLayout());
-    	
-    	JTable rutina = new JTable(new ModeloJTable(null, null, null));
-    	rutina.setDefaultRenderer(Object.class, new RendererTabla(usuario, nombreRutina));
-    	
-    	for (int i = 0; i < rutina.getColumnCount(); i++) {
-            rutina.getColumnModel().getColumn(i).setCellEditor(new EditorBoton(InterfazRutina.this, usuario, nombreRutina));
+    public InterfazRutina(String usuario, String nombreRutina) {
+        setTitle("Rutina - " + nombreRutina);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
+       
+
+        ModeloJTable modelo = new ModeloJTable();
+
+        JTable tabla = new JTable(modelo);
+        tabla.setRowHeight(40); 
+
+        RendererTabla rendererTabla = new RendererTabla(usuario, nombreRutina);
+        for (int i = 0; i < tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(rendererTabla);
+            tabla.getColumnModel().getColumn(i).setCellEditor(new EditorBoton(usuario, nombreRutina, tabla));
         }
-    	
-    	JScrollPane jsp = new JScrollPane(rutina);
-    	jsp.setBorder(new TitledBorder(nombreRutina));
-    	
-    	JPanel panelAbajo = new JPanel();
-    	
-    	JPanel panelAbajoIzquierda = new JPanel();
-    	panelAbajoIzquierda.setLayout(new GridLayout(1, 3, 5, 5));
-    	
-    	JButton cancelarBtn = new JButton("CANCELAR");
-    	cancelarBtn.addActionListener(new ActionListener() {
+        
+        modelo.addTableModelListener(e -> SwingUtilities.invokeLater(() -> {
+            for (int row = 0; row < tabla.getRowCount(); row++) {
+                for (int column = 0; column < tabla.getColumnCount(); column++) {
+                    Component comp = tabla.prepareRenderer(tabla.getCellRenderer(row, column), row, column);
+                    int preferredHeight = comp.getPreferredSize().height;
+                    tabla.setRowHeight(row, Math.max(tabla.getRowHeight(row), preferredHeight));
+                }
+            }
+        }));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				new PrincipalWindow(usuario);
-			}
-    		
-    	});
-    	panelAbajoIzquierda.add(cancelarBtn);
-    	panelAbajoIzquierda.add(new JButton("ELIMINAR EJERCICIO"));
-    	panelAbajoIzquierda.add(new JButton("GUARDAR"));
-    		
-    	panelAbajo.add(panelAbajoIzquierda);
-    	
-    	panelGeneral.add(jsp, BorderLayout.CENTER);
-    	panelGeneral.add(panelAbajo, BorderLayout.SOUTH);
-    	
-    	add(panelGeneral);
-    	
-    	this.setTitle("Nueva rutina");
-    	setExtendedState(JFrame.MAXIMIZED_BOTH);
-    	setVisible(true);
+
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        add(scrollPane, BorderLayout.CENTER);
+
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton botonGuardar = new JButton("Guardar");
+        botonGuardar.addActionListener(e -> JOptionPane.showMessageDialog(this, "Rutina guardada con éxito"));
+
+        JButton botonCancelar = new JButton("Cancelar");
+        botonCancelar.addActionListener(e -> confirmarSalida(usuario, nombreRutina));
+
+        panelInferior.add(botonCancelar);
+        panelInferior.add(botonGuardar);
+
+        add(panelInferior, BorderLayout.SOUTH);
+
+        setVisible(true);
     }
-    
-    
-    
+
+    private void confirmarSalida(String usuario, String nombreRutina) {
+        int respuesta = JOptionPane.showConfirmDialog(
+                this,
+                "¿Desea cerrar " + nombreRutina + "? Se perderá todo lo hecho hasta ahora...",
+                "Confirmar salida",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            dispose();
+            new PrincipalWindow(usuario);
+        }
+    }
 }

@@ -1,110 +1,97 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 
 public class CatalogoEjercicio extends JFrame {
 
     private static final long serialVersionUID = 1L;
+    
+    //Cuando el usuario completa la selección (ejercicio, series, repeticiones y peso), se llama al método:
+    public interface Callback {
+        void onEjercicioSeleccionado(String nombreEjercicio, List<Map<String, Integer>> seriesData);
+    }
 
     private JTextField campoBusqueda;
-    private JButton botonBuscar;
-    private JPanel gridPrincipal; // Panel dinámico para botones
-    private List<String> listaEjercicios; // Lista dinámica para filtrar
+    private JPanel gridPrincipal;
+    private List<String> listaEjercicios;
+    private final Callback callback;
+    
+    @SuppressWarnings("unused")
+	private final InterfazRutina interfazRutina;
 
-    public CatalogoEjercicio(String usuario, String nombreRutina) {
-        // Detalles de la ventana
+    public CatalogoEjercicio(String usuario, String nombreRutina, Callback callback, InterfazRutina interfazRutina) {
+        this.callback = callback;
+        this.interfazRutina = interfazRutina;
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setUndecorated(true);
 
-        // Panel principal
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BorderLayout());
 
-        // Panel Superior
-        JPanel panelSuperior = new JPanel();
+        JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setBackground(Color.DARK_GRAY);
-        panelSuperior.setLayout(new BorderLayout());
-        panelSuperior.setBorder(new EmptyBorder(45, 40, 45, 40));
+        panelSuperior.setBorder(BorderFactory.createEmptyBorder(45, 40, 45, 40));
 
-        // Botón Volver
-        JButton botonVolver = new JButton("Atrás");
-        botonVolver.setPreferredSize(new Dimension(140, 10));
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setPreferredSize(new Dimension(200, 10));
         botonVolver.addActionListener(e -> {
             dispose();
-            new InterfazRutina(usuario, nombreRutina);
+            if (interfazRutina != null) {
+                interfazRutina.setVisible(true);
+            } else {
+                System.err.println("Error: InterfazRutina es nulo.");
+            }
         });
         panelSuperior.add(botonVolver, BorderLayout.WEST);
-
-        //---------------BOTÓN ADMINISTRADOR------------------------------------------------------------------------
         
-        JButton botonAdmin = new JButton("Administrador");
-        botonAdmin.setPreferredSize(new Dimension(140, 10));
-        if (usuario.equals("admin")) {
-            botonAdmin.addActionListener(e -> new formularioAdmin());
-        }
-        panelSuperior.add(botonAdmin, BorderLayout.EAST);
+        JButton botonAñadirEjercicio = new JButton("EDITAR EJERCICIOS");
+        botonAñadirEjercicio.setPreferredSize(new Dimension(200, 10));
+        botonAñadirEjercicio.addActionListener(e -> {mostrarDialogoAñadir_EliminarEjercicio(usuario);});
+        panelSuperior.add(botonAñadirEjercicio, BorderLayout.EAST);
 
-        // Buscador
         JPanel panelBusqueda = new JPanel();
         panelBusqueda.setBackground(Color.DARK_GRAY);
         campoBusqueda = new JTextField();
         campoBusqueda.setPreferredSize(new Dimension(500, 30));
-        botonBuscar = new JButton("Buscar");
+        
+        JButton botonBuscar = new JButton("Buscar");
         botonBuscar.setPreferredSize(new Dimension(140, 40));
-        botonBuscar.addActionListener(e -> filtrarEjercicios());
         panelBusqueda.add(campoBusqueda);
         panelBusqueda.add(botonBuscar);
         panelSuperior.add(panelBusqueda, BorderLayout.CENTER);
-        
-        //-----------------------------------------------------------------------------------------------------------
-        
-        // Añadir panel superior al principal
+
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
 
-        //-----------------CATÁLOGO----------------------------------------------------------------------------------
-        gridPrincipal = new JPanel();
+        gridPrincipal = new JPanel(new GridLayout(0, 4, 20, 20));
         gridPrincipal.setBackground(Color.LIGHT_GRAY);
-        gridPrincipal.setLayout(new GridLayout(0, 4, 20, 20)); // 4 botones por fila con espacio entre ellos
-        gridPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
+        gridPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Inicializar lista de ejercicios
         listaEjercicios = cargarEjerciciosDesdeBD();
-
-        // Mostrar botones dinámicos
         actualizarCatalogo(listaEjercicios);
 
-        // Scroll vertical
-        JScrollPane scrollPane = new JScrollPane(gridPrincipal, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); //DESPLAZAMIENTO
+        JScrollPane scrollPane = new JScrollPane(gridPrincipal);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-        
-        
-        //-------------------------------------------------------------------------------------------------------------
-        
+
         add(panelPrincipal);
         setVisible(true);
     }
 
-    // Cargar ejercicios desde la base de datos
     private List<String> cargarEjerciciosDesdeBD() {
         List<String> ejercicios = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
@@ -116,49 +103,305 @@ public class CatalogoEjercicio extends JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error al cargar los ejercicios desde la base de datos.");
         }
         return ejercicios;
     }
 
-    // Actualizar el catálogo de ejercicios
     private void actualizarCatalogo(List<String> ejercicios) {
-        gridPrincipal.removeAll(); // Limpiar el panel
+        gridPrincipal.removeAll();
         for (String nombreEjercicio : ejercicios) {
-            JButton boton = new JButton("+" + nombreEjercicio);
-            boton.addActionListener(e -> mostrarDialogoEjercicio(nombreEjercicio));
+            JButton boton = new JButton(nombreEjercicio);
+            boton.addActionListener(e -> mostrarDialogoSeries(nombreEjercicio));
             gridPrincipal.add(boton);
         }
         gridPrincipal.revalidate();
         gridPrincipal.repaint();
     }
+    
+    private void mostrarDialogoAñadir_EliminarEjercicio(String usuario) {
+        if (usuario.equals("admin")) {
+            JDialog dialogoAñadir_Eliminar = new JDialog(this, "Gestión de Ejercicios", true);
+            dialogoAñadir_Eliminar.setLayout(new GridLayout(1, 2, 10, 10));
+            dialogoAñadir_Eliminar.setSize(600, 300);
+            dialogoAñadir_Eliminar.setLocationRelativeTo(null);
 
-    // Filtrar ejercicios por el buscador
-    private void filtrarEjercicios() {
-        String filtro = campoBusqueda.getText().trim().toLowerCase();
-        List<String> ejerciciosFiltrados = new ArrayList<>();
-        for (String ejercicio : listaEjercicios) {
-            if (ejercicio.toLowerCase().contains(filtro)) {
-                ejerciciosFiltrados.add(ejercicio);
+            // Panel Añadir Ejercicio
+            JPanel añadirEjercicio = new JPanel();
+            añadirEjercicio.setLayout(new BoxLayout(añadirEjercicio, BoxLayout.Y_AXIS));
+            añadirEjercicio.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
+                "AÑADIR EJERCICIO",
+                TitledBorder.CENTER,
+                TitledBorder.DEFAULT_POSITION
+            ));
+
+            JLabel nombreEjercicio = new JLabel("Nombre:");
+            nombreEjercicio.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JTextField añadirNombre = new JTextField();
+            añadirNombre.setMaximumSize(new Dimension(600, 30));
+            añadirNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel nombreMusculo1 = new JLabel("Músculo Principal:");
+            nombreMusculo1.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JComboBox<String> comboMusculo1 = new JComboBox<>();
+            comboMusculo1.setAlignmentX(Component.LEFT_ALIGNMENT);
+            List<String> listaMusculos = cargarMusculosDesdeBD();
+            for (String musculo : listaMusculos) {
+                comboMusculo1.addItem(musculo);
             }
+            comboMusculo1.setMaximumSize(new Dimension(200, 30)); // Reducir tamaño del JComboBox
+
+            JLabel nombreMusculo2 = new JLabel("Músculo Secundario:");
+            nombreMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JComboBox<String> comboMusculo2 = new JComboBox<>();
+            for (String musculo : listaMusculos) {
+                comboMusculo2.addItem(musculo);
+            }
+            comboMusculo2.setMaximumSize(new Dimension(200, 30));
+            comboMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);// Reducir tamaño del JComboBox
+
+            JButton botonAñadir = new JButton("AÑADIR EJERCICIO");
+            botonAñadir.addActionListener(e -> {
+                String nombre = añadirNombre.getText();
+                String musculo1 = (String) comboMusculo1.getSelectedItem();
+                String musculo2 = (String) comboMusculo2.getSelectedItem();
+                
+                if (musculo1 != null && musculo2 != null && musculo1.equals(musculo2)) {
+                    JOptionPane.showMessageDialog(
+                        CatalogoEjercicio.this,
+                        "No es posible seleccionar el mismo músculo principal y secundario.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                    return;
+                }
+
+                if (!nombre.isEmpty() && musculo1 != null && musculo2 != null) {
+                    try {
+                        int nuevoId = listaEjercicios.size() + 1;
+                        InsertarDatosBD.insertarEjercicio(nuevoId, nombre, musculo1, musculo2);
+
+                        listaEjercicios = cargarEjerciciosDesdeBD();
+                        actualizarCatalogo(listaEjercicios);
+
+                        JOptionPane.showMessageDialog(
+                            CatalogoEjercicio.this,
+                            "Ejercicio añadido correctamente.",
+                            "Información",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(
+                            CatalogoEjercicio.this,
+                            "Error al añadir el ejercicio.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                        CatalogoEjercicio.this,
+                        "Todos los campos deben estar llenos.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                }
+            });
+
+            añadirEjercicio.add(nombreEjercicio);
+            añadirEjercicio.add(añadirNombre);
+            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(nombreMusculo1);
+            añadirEjercicio.add(comboMusculo1);
+            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(nombreMusculo2);
+            añadirEjercicio.add(comboMusculo2);
+            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(botonAñadir);
+
+            dialogoAñadir_Eliminar.add(añadirEjercicio);
+
+            // Panel Eliminar Ejercicio
+            JPanel eliminarEjercicio = new JPanel();
+            eliminarEjercicio.setLayout(new BoxLayout(eliminarEjercicio, BoxLayout.Y_AXIS));
+            eliminarEjercicio.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
+                "ELIMINAR EJERCICIO",
+                TitledBorder.CENTER,
+                TitledBorder.DEFAULT_POSITION
+            ));
+
+            JLabel nombreEjercicioEliminar = new JLabel("Nombre:");
+            JTextField añadirEjercicioEliminar = new JTextField();
+            añadirEjercicioEliminar.setMaximumSize(new Dimension(600, 30)); // Tamaño igual al de añadir
+
+            JButton botonEliminar = new JButton("ELIMINAR EJERCICIO");
+            botonEliminar.addActionListener(e -> {
+                String nombre = añadirEjercicioEliminar.getText();
+                if (!nombre.isEmpty()) {
+                    eliminarEjercicioDeBaseDeDatos(nombre);
+                    dialogoAñadir_Eliminar.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(
+                        CatalogoEjercicio.this,
+                        "El campo no puede estar vacío.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+                }
+            });
+
+            eliminarEjercicio.add(nombreEjercicioEliminar);
+            eliminarEjercicio.add(añadirEjercicioEliminar);
+            eliminarEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            eliminarEjercicio.add(botonEliminar);
+
+            dialogoAñadir_Eliminar.add(eliminarEjercicio);
+
+            dialogoAñadir_Eliminar.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(
+                null,
+                "Acceso restringido. Solo administradores pueden editar ejercicios",
+                "Información",
+                JOptionPane.INFORMATION_MESSAGE
+            );
         }
-        actualizarCatalogo(ejerciciosFiltrados);
     }
 
-    // Mostrar un cuadro de diálogo para el ejercicio seleccionado
-    private void mostrarDialogoEjercicio(String nombreEjercicio) {
-        JDialog dialog = new JDialog();
-        dialog.setLayout(new BorderLayout());
-        dialog.setSize(300, 200);
-        dialog.setLocation(620, 350);
 
-        JLabel label = new JLabel("¿Qué deseas hacer con el ejercicio " + nombreEjercicio + "?");
-        dialog.add(label, BorderLayout.CENTER);
-
-        JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.addActionListener(event -> dialog.dispose());
-        dialog.add(btnCerrar, BorderLayout.SOUTH);
-
-        dialog.setVisible(true);
+    private void eliminarEjercicioDeBaseDeDatos(String nombre) {
+        String sql = "DELETE FROM Ejercicio WHERE Nombre = ?";
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, nombre);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Ejercicio eliminado correctamente.");
+                listaEjercicios = cargarEjerciciosDesdeBD();
+                actualizarCatalogo(listaEjercicios);
+            } else {
+                JOptionPane.showMessageDialog(this, "El ejercicio no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar el ejercicio.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
+
+    private void mostrarDialogoSeries(String ejercicio) {
+        JDialog dialogoSeries = new JDialog(this, "Número de Series - " + ejercicio, true);
+        dialogoSeries.setLayout(new GridLayout(2, 2, 10, 10));
+        dialogoSeries.setSize(300, 150);
+        dialogoSeries.setLocationRelativeTo(this);
+
+        JLabel labelSeries = new JLabel("Número de series:");
+        JSpinner spinnerSeries = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        bloquearEdicionSpinner(spinnerSeries);
+
+        JButton botonAceptar = new JButton("Aceptar");
+        JButton botonCancelar = new JButton("Cancelar");
+
+        botonAceptar.addActionListener(e -> {
+            int numSeries = (int) spinnerSeries.getValue();
+            dialogoSeries.dispose();
+            mostrarDialogoRepeticiones(numSeries, ejercicio);
+        });
+
+        botonCancelar.addActionListener(e -> dialogoSeries.dispose());
+
+        dialogoSeries.add(labelSeries);
+        dialogoSeries.add(spinnerSeries);
+        dialogoSeries.add(botonAceptar);
+        dialogoSeries.add(botonCancelar);
+
+        dialogoSeries.setVisible(true);
+    }
+
+    private void mostrarDialogoRepeticiones(int numSeries, String ejercicio) {
+        JDialog dialogoRepeticiones = new JDialog(this, "Repeticiones y Peso - " + ejercicio, true);
+        dialogoRepeticiones.setLayout(new GridLayout(numSeries + 1, 3, 10, 10));
+        dialogoRepeticiones.setSize(400, 50 + (numSeries * 50));
+        dialogoRepeticiones.setLocationRelativeTo(this);
+        
+        //Los tamaños de los arrays de las etiquetas tienen la misma cantidad que el num de Series
+        JLabel[] etiquetasSeries = new JLabel[numSeries];
+        JSpinner[] spinnersRepeticiones = new JSpinner[numSeries];
+        JLabel[] etiquetasSeries2 = new JLabel[numSeries];
+        JSpinner[] spinnersPeso = new JSpinner[numSeries];
+        
+        
+        for (int i = 0; i < numSeries; i++) {
+            etiquetasSeries[i] = new JLabel("Serie " + (i + 1) + ":");
+            spinnersRepeticiones[i] = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+            etiquetasSeries2[i] = new JLabel("Peso " + (i + 1) + ":");
+            spinnersPeso[i] = new JSpinner(new SpinnerNumberModel(0, 0, 500, 1)); // Peso inicial 0
+            bloquearEdicionSpinner(spinnersRepeticiones[i]);
+            bloquearEdicionSpinner(spinnersPeso[i]);
+
+            dialogoRepeticiones.add(etiquetasSeries[i]);
+            dialogoRepeticiones.add(spinnersRepeticiones[i]);
+            dialogoRepeticiones.add(etiquetasSeries2[i]);
+            dialogoRepeticiones.add(spinnersPeso[i]);
+        }
+        
+        //Cuando se le da a aceptar se meten los datos en el mapa 
+        JButton botonAceptar = new JButton("Aceptar");
+        botonAceptar.addActionListener(e -> {
+        	
+        	//Se guardara los datos de las series 
+            List<Map<String, Integer>> seriesData = new ArrayList<>();
+            
+            //Recorre las series
+            for (int i = 0; i < numSeries; i++) {
+            	
+            	//Creo mapa para que se almacenen cada serie 
+                Map<String, Integer> datosSerie = new HashMap<>();
+                
+                //Obtiene el valor ingresado por el usuario en el spinner de repeticiones para la serie i
+                datosSerie.put("repeticiones", (Integer) spinnersRepeticiones[i].getValue());
+                
+                //Obtiene el peso ingresado por el usuario para la serie i
+                datosSerie.put("peso", (Integer) spinnersPeso[i].getValue());
+                
+                seriesData.add(datosSerie);
+            }
+            if (callback != null) {
+                callback.onEjercicioSeleccionado(ejercicio, seriesData);
+            }
+            
+            dialogoRepeticiones.dispose();
+            this.dispose();
+        });
+
+        dialogoRepeticiones.add(new JLabel());
+        dialogoRepeticiones.add(botonAceptar);
+
+        dialogoRepeticiones.setVisible(true);
+    }
+
+    private void bloquearEdicionSpinner(JSpinner spinner) {
+        JComponent editor = spinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor spinnerEditor) {
+            spinnerEditor.getTextField().setEditable(false);
+        }
+    }
+    
+    private List<String> cargarMusculosDesdeBD() {
+        List<String> musculos = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+            String sql = "SELECT Nombre FROM Musculo";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                musculos.add(rs.getString("Nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return musculos;
+    }
+
 }

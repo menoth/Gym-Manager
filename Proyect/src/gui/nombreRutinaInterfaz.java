@@ -32,7 +32,7 @@ public class nombreRutinaInterfaz extends JFrame{
 	    JDialog dialog = new JDialog();
 	    dialog.setLayout(new BorderLayout());
 	    dialog.setSize(300, 200);
-	    dialog.setLocation(620, 350);
+	    dialog.setLocationRelativeTo(null);
 	    dialog.setTitle("Nueva rutina");
 		
 	    // Crear el panel principal del diálogo

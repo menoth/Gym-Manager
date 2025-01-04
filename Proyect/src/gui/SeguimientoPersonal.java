@@ -2,105 +2,259 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.YearMonth;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.HashMap;
+import java.util.Map;
+import java.sql.*;
 
 public class SeguimientoPersonal extends JFrame {
+
     private static final long serialVersionUID = 1L;
     private JPanel panelPrincipal;
     private int añoElegido;
-
+    private final Map<JButton, Integer> estadoBotones = new HashMap<>();
+    private Connection connection;
+    private final String usuario;
 
     public SeguimientoPersonal(String usuario) {
-        
+        this.usuario = usuario;
 
-        setTitle("Calendario Anual - Seguimiento");
+        setTitle("Calendario Anual - Seguimiento: " + usuario);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        // Mostrar la ventana en pantalla completa
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        // Selector de Año
-        JPanel panelElegirMes = new JPanel();
-        panelElegirMes.setLayout(new FlowLayout());
+        inicializarConexion();
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cerrarConexion();
+                dispose();
+            }
+        });
+
+        JPanel panelElegirAño = new JPanel(new FlowLayout());
         JLabel labelAño = new JLabel("Selecciona el Año:");
         JComboBox<Integer> selectorAño = new JComboBox<>();
-        
-        //Añadimos todas las opciones
         for (int year = 2024; year <= 2100; year++) {
             selectorAño.addItem(year);
         }
-        
         añoElegido = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
-        
         selectorAño.setSelectedItem(añoElegido);
         selectorAño.addActionListener(e -> {
             añoElegido = (int) selectorAño.getSelectedItem();
-            actualizarSeguimiento();
+            actualizarCalendario();
         });
 
-        panelElegirMes.add(labelAño);
-        panelElegirMes.add(selectorAño);
-        add(panelElegirMes, BorderLayout.NORTH);
+        panelElegirAño.add(labelAño);
+        panelElegirAño.add(selectorAño);
+        add(panelElegirAño, BorderLayout.NORTH);
 
-        // Panel Principal para los meses
-        panelPrincipal = new JPanel();
-        panelPrincipal.setLayout(new GridLayout(3, 4, 7, 7)); // 3 filas, 4 columnas
+        panelPrincipal = new JPanel(new GridLayout(3, 4, 10, 10));
         add(panelPrincipal, BorderLayout.CENTER);
 
-        actualizarSeguimiento();
+        JPanel panelLeyenda = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel labelCumplido = new JLabel("Cumplido:");
+        labelCumplido.setForeground(Color.GREEN);
+        JLabel labelNoCumplido = new JLabel("No Cumplido:");
+        labelNoCumplido.setForeground(Color.RED);
+
+        panelLeyenda.add(labelCumplido);
+        panelLeyenda.add(new JLabel("✓"));
+        panelLeyenda.add(Box.createHorizontalStrut(20));
+        panelLeyenda.add(labelNoCumplido);
+        panelLeyenda.add(new JLabel("✗"));
+
+        add(panelLeyenda, BorderLayout.SOUTH);
+
+        actualizarCalendario();
+        setVisible(true);
     }
 
-    private void actualizarSeguimiento() {
-    	
-    	//Quitar todo de la interfaz
-        panelPrincipal.removeAll();
+    private void inicializarConexion() {
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+            System.out.println("Conexión exitosa a la base de datos.");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos:");
+            e.printStackTrace();
+        }
+    }
 
-        // Crear paneles para cada mes
+    private void cerrarConexion() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Conexión a la base de datos cerrada.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión a la base de datos:");
+            e.printStackTrace();
+        }
+    }
+
+    private void registrarEstado(String fecha, String estado) {
+        try {
+            // Verificar si la fecha ya existe para este usuario
+            if (estadoYaExiste(fecha)) {
+                eliminarEstado(fecha);
+            }
+
+            // Insertar o actualizar el estado para el usuario
+            String insertarSQL = "INSERT INTO SeguimientoPersonal (fecha, estado, usuario) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(insertarSQL)) {
+                statement.setString(1, fecha);
+                statement.setString(2, estado);
+                statement.setString(3, usuario);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al registrar el estado:");
+            e.printStackTrace();
+        }
+    }
+
+    private boolean estadoYaExiste(String fecha) {
+        String consultaSQL = "SELECT COUNT(*) FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
+        try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
+            statement.setString(1, usuario);
+            statement.setString(2, fecha);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Si hay al menos un registro
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar la existencia del estado:");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void eliminarEstado(String fecha) {
+        String eliminarSQL = "DELETE FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
+        try (PreparedStatement statement = connection.prepareStatement(eliminarSQL)) {
+            statement.setString(1, usuario);
+            statement.setString(2, fecha);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar el estado:");
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarEstadosDesdeBD() {
+        String consultaSQL = "SELECT fecha, estado FROM SeguimientoPersonal WHERE usuario = ?";
+        try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
+            statement.setString(1, usuario);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    String fecha = rs.getString("fecha");
+                    String estado = rs.getString("estado");
+
+                    JButton boton = buscarBotonPorFecha(fecha);
+                    if (boton != null) {
+                        switch (estado) {
+                            case "Verde" -> {
+                                boton.setBackground(Color.GREEN);
+                                estadoBotones.put(boton, 1);
+                            }
+                            case "Rojo" -> {
+                                boton.setBackground(Color.RED);
+                                estadoBotones.put(boton, 2);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar los estados desde la base de datos:");
+            e.printStackTrace();
+        }
+    }
+
+    private JButton buscarBotonPorFecha(String fecha) {
+        for (JButton boton : estadoBotones.keySet()) {
+            if (boton.getName().equals(fecha)) {
+                return boton;
+            }
+        }
+        return null;
+    }
+
+    private void actualizarCalendario() {
+        panelPrincipal.removeAll();
+        estadoBotones.clear();
+
         for (int mes = 1; mes <= 12; mes++) {
-            JPanel panelMes = new JPanel();
-            
-            //Ponemos el borde del nombre de cada mes y el año elegido en el ComboBox
+            JPanel panelMes = new JPanel(new BorderLayout());
             panelMes.setBorder(BorderFactory.createTitledBorder(YearMonth.of(añoElegido, mes).getMonth().toString()));
 
-            JPanel panelDias = new JPanel();
-            panelDias.setLayout(new GridLayout(0, 7)); // 7 columnas para los días de la semana
+            JPanel panelDias = new JPanel(new GridLayout(7, 7));
+            panelMes.add(panelDias, BorderLayout.CENTER);
 
-            // Añadir nombres de los días de la semana
             for (DayOfWeek dia : DayOfWeek.values()) {
                 JLabel labelDia = new JLabel(dia.toString().substring(0, 3), SwingConstants.CENTER);
                 labelDia.setFont(new Font("Arial", Font.BOLD, 12));
                 panelDias.add(labelDia);
             }
 
-            // Obtener los días del mes
             YearMonth yearMonth = YearMonth.of(añoElegido, mes);
             int totalDias = yearMonth.lengthOfMonth();
             int primerDia = yearMonth.atDay(1).getDayOfWeek().getValue();
 
-            // Rellenar espacios en blanco antes del primer día del mes
             for (int i = 1; i < primerDia; i++) {
                 panelDias.add(new JLabel(""));
             }
 
-            // Añadir días del mes como botones con sus números
             for (int dia = 1; dia <= totalDias; dia++) {
-                JButton botonDia = new JButton();
-                botonDia.setText(String.valueOf(dia)); // Establece el texto como número del día
-                botonDia.setPreferredSize(new Dimension(40, 40));    // Tamaño del botón
-                botonDia.setFont(new Font("Arial", Font.PLAIN, 10)); // Fuente del número
-                botonDia.setFocusPainted(false);                     // Sin bordes al hacer clic
-                panelDias.add(botonDia);                             // Añadir botón al panel de días
+                JButton botonDia = new JButton(String.valueOf(dia));
+                botonDia.setName(LocalDate.of(añoElegido, mes, dia).toString());
+                botonDia.setPreferredSize(new Dimension(40, 40));
+                botonDia.setFont(new Font("Arial", Font.PLAIN, 10));
+                botonDia.setFocusPainted(false);
+
+                botonDia.addActionListener(e -> cambiarColorBoton(botonDia));
+                estadoBotones.put(botonDia, 0);
+
+                panelDias.add(botonDia);
             }
 
-            panelMes.add(panelDias, BorderLayout.CENTER);
+            int totalCeldas = 42;
+            int celdasUsadas = primerDia - 1 + totalDias;
+            for (int i = celdasUsadas; i < totalCeldas; i++) {
+                panelDias.add(new JLabel(""));
+            }
+
             panelPrincipal.add(panelMes);
         }
 
         panelPrincipal.revalidate();
         panelPrincipal.repaint();
-        setVisible(true);
+
+        cargarEstadosDesdeBD();
     }
 
+    private void cambiarColorBoton(JButton boton) {
+        String fecha = boton.getName();
+        int estadoActual = estadoBotones.getOrDefault(boton, 0);
+
+        if (estadoActual == 0) {
+            boton.setBackground(Color.GREEN);
+            estadoBotones.put(boton, 1);
+            registrarEstado(fecha, "Verde");
+        } else if (estadoActual == 1) {
+            boton.setBackground(Color.RED);
+            estadoBotones.put(boton, 2);
+            registrarEstado(fecha, "Rojo");
+        } else {
+            boton.setBackground(null);
+            estadoBotones.put(boton, 0);
+            eliminarEstado(fecha);
+        }
+    }
 }

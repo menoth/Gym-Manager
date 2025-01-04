@@ -1,6 +1,5 @@
 package gui;
 
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
@@ -14,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,20 +21,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class RetoDiario extends JFrame {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	 HashMap<String, Integer> retos = new HashMap<>();
+	HashMap<String, Integer> retos = new HashMap<>();
 	 LinkedList<Color> listaColores = new LinkedList<>();
 	 ArrayList<JLabel> listaLabels = new ArrayList<>();
 	 ArrayList<String> listaRetos = new ArrayList<>();
 	
-
-
     public RetoDiario(String usuario) {
         setTitle("Reto diario");
         setSize(1300, 700);
@@ -42,15 +39,7 @@ public class RetoDiario extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         
-        
-
-        // Agregar retos y su dificultad
-        retos.put("Correr 5km", 5);
-        retos.put("Hacer 100 flexiones", 7);
-        retos.put("Nadar 2km", 8);
-        retos.put("Caminar 10km", 4);
-        retos.put("Subir una montaña", 9);
-        retos.put("Bicicleta 50km", 6);
+        cargarRetos();
         
         // Lista de retos
        for (String reto : retos.keySet()) {
@@ -64,7 +53,7 @@ public class RetoDiario extends JFrame {
         panelSuperior.setLayout(new FlowLayout());
         panelSuperior.setBackground(Color.blue);
         
-        JTextArea txtExplicacion = new JTextArea("¡Apúntate al reto diario para esos días en los que te sientes con motivación extra!");
+        JTextArea txtExplicacion = new JTextArea("¡Apúntate al reto diario para esos días en los que te sientes con motivación extra! Las dificultades van del 1 (mínimo) al 5 (máximo)");
         txtExplicacion.setFont(new Font("Arial", Font.BOLD, 18));
         txtExplicacion.setBackground(this.getBackground());
         txtExplicacion.setPreferredSize(new Dimension(800, 70));
@@ -228,8 +217,6 @@ public class RetoDiario extends JFrame {
 					JOptionPane.showMessageDialog(RetoDiario.this, "Ya tienes un reto asignado para hoy, vuelve mañana");
 				}else {
 					
-				
-				
 				//Iniciar el hilo
 				new Thread(new Runnable() {
 					
@@ -255,18 +242,47 @@ public class RetoDiario extends JFrame {
                         escribirReto(retoSeleccionado, usuario);
                         modelo.cargarDatosDesdeBD(usuario);
 					}
-
 					
 				}).start();
 				
 			}
 			}
 		});
-        
-
-        
+             
         setVisible(true);
     }
+    
+    protected void cargarRetos() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            System.out.println("No se ha podido cargar el driver de la BD");
+            e.printStackTrace();
+        }
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");  
+            Statement stmt = conn.createStatement();
+            
+            String sql = "SELECT Nombre, Dificultad FROM ListadoRetos";
+            PreparedStatement queryStmt = conn.prepareStatement(sql);
+            
+            ResultSet rs = queryStmt.executeQuery();
+            
+            while (rs.next()) {
+                String nombreReto = rs.getString("Nombre"); 
+                int dificultad = rs.getInt("Dificultad");   
+                retos.put(nombreReto, dificultad);  
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     
     private void escribirReto(String retoSeleccionado, String usuario) {
 		try {
@@ -276,7 +292,7 @@ public class RetoDiario extends JFrame {
 			e.printStackTrace();
 		}try {
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");	
-			
+			Statement stmt = conn.createStatement();
 			
 			String nombre = retoSeleccionado;
 			
@@ -304,7 +320,8 @@ public class RetoDiario extends JFrame {
 			int filasInsertadas = queryStmt.executeUpdate();
             System.out.println("Filas insertadas: " + filasInsertadas);
 			
-
+            stmt.close();
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -321,6 +338,7 @@ public class RetoDiario extends JFrame {
 	    }
 	    try {
 	        Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+			Statement stmt = conn.createStatement();
 
 	        // Obtener la fecha actual en el formato de la base de datos
 	        Date fechaActual = new Date();
@@ -336,6 +354,8 @@ public class RetoDiario extends JFrame {
 	        if (rs.next() && rs.getInt("total") > 0) {
 	            resultado = true;
 	        }
+			stmt.close();
+			conn.close();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
@@ -364,7 +384,8 @@ public class RetoDiario extends JFrame {
 				Connection conn = DriverManager.getConnection
 					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
 		
-
+				Statement stmt = conn.createStatement();
+				
 				String sql = "SELECT * FROM RetoDiario WHERE Usuario LIKE ?";
 				PreparedStatement queryStmt = conn.prepareStatement(sql);
 				queryStmt.setString(1, user);
@@ -382,13 +403,12 @@ public class RetoDiario extends JFrame {
 	                
 	            }
 				fireTableDataChanged();	
+				stmt.close();
+				conn.close();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	    }
-		
-		
-	    
 		
 		@Override
 		public String getColumnName(int column) {
@@ -550,6 +570,7 @@ public class RetoDiario extends JFrame {
 			try {
 				Connection conn = DriverManager.getConnection
 						("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+				
 				
 				
 				String sql = "UPDATE RetoDiario SET Completado = "+completado+" WHERE ID_RetoDiario ="+id ;

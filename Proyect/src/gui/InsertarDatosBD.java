@@ -3,11 +3,10 @@ package gui;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import domain.Ejercicio;
 
 
 
@@ -76,6 +75,23 @@ public class InsertarDatosBD {
 			System.out.println("No se ha podido cargar el musculo.");
 		}		
 	}
+	
+	public static boolean musculoExiste(String nombreMusculo) {
+	    String sql = "SELECT COUNT(*) FROM Musculo WHERE Nombre = ?";
+	    try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setString(1, nombreMusculo);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt(1) > 0;
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+
+	
 	public static void insertarRetoDiario(int ID_RetoDiario, String Nombre, String Fecha, int Dificultad, int Completado, String Usuario) {
 		
     	try {

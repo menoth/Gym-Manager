@@ -27,7 +27,7 @@ import javax.swing.JButton;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -39,17 +39,23 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import domain.Ejercicio;
+import domain.EjercicioEnEntrenamiento;
+import domain.Entrenamiento;
+import domain.Musculo;
 import domain.Rutina;
+import domain.Serie;
 import domain.Usuario;
+import domain.Musculo.TamanoMusculo;
 
-public class PerfilUsuario extends JFrame {
+public class VisitarPerfil extends JFrame {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public PerfilUsuario(String usuario) {
+	public VisitarPerfil(String usuario, String usuarioQueVisita) {
 		
 //----------------------------------------------BD-------------------------------------------------------------------		
 		List<Usuario> usuarios = new ArrayList<>();
@@ -207,31 +213,6 @@ public class PerfilUsuario extends JFrame {
 		nombreApellidos.setFont(new Font("Arial",Font.PLAIN ,18));
 		panelIz1.add(nombreApellidos);
 		
-		//Boton para editar datos
-		JButton editarDatos = new JButton("EDITAR");
-		editarDatos.setPreferredSize(new Dimension(100, 50));
-		panelIz1.add(editarDatos); 
-		
-		//Boton para editar foto de perfil
-		JButton botonCambiarFoto = new JButton("Editar foto");
-		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
-		
-		//Para que no de errores el action listener
-		Usuario uFinal = uElegido;
-		
-		//Action listener que cuando editas el perfil te lleva a la ventana editarPerfil
-		editarDatos.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {				
-				new EditarPerfil(uFinal);
-				dispose();
-				
-				
-			}
-		});
-		
-
 		//Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
 		desc.setBackground(new Color(195,248,255));
@@ -245,16 +226,14 @@ public class PerfilUsuario extends JFrame {
 		
 		// Añadimos la descripcion a panelSubOeste1
 		panelIz2.add(desc);
-		
-		
+			
 		// Listener para volver a la ventana principal cuando se presiona el
 		// botón volver
-		String user3 = uElegido.getUsuario();
 		botonPrincipal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-            	PrincipalWindow principal = new PrincipalWindow(user3);
+            	PrincipalWindow principal = new PrincipalWindow(usuarioQueVisita);
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
@@ -283,7 +262,6 @@ public class PerfilUsuario extends JFrame {
 		ArrayList<Rutina> listaRutinas = new ArrayList<>();
 		ConectarBaseDeDatos.ConectarBaseDeDatosRutina(listaRutinas); 
 		
-		
 		//Lista en la que se meten las rutinas del usuario
 		ArrayList<Rutina> rutinasUsuario = new ArrayList<>();
 		for (Rutina rutina : listaRutinas) {
@@ -296,7 +274,7 @@ public class PerfilUsuario extends JFrame {
 		modelo.cargarDatosDesdeBD(usuario);
 		JTable table = new JTable(modelo);
 		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
-		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario));
+		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario, usuarioQueVisita));
 		
 		//Ajustar el tamaño de Nombre
 		table.getColumnModel().getColumn(1).setWidth(170);
@@ -359,6 +337,8 @@ public class PerfilUsuario extends JFrame {
 	                //Notifica a la tabla que los datos han cambiado
 	                fireTableDataChanged();
 	            }
+				stmt.close();
+				conn.close();	
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
@@ -415,24 +395,17 @@ public class PerfilUsuario extends JFrame {
 	        // Limpia el panel para cada renderizado
 	        this.removeAll();
 
-	        //Icono editar
-	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
-	        Image img = iconoLapiz.getImage();
+	        //Icono copiar
+	        ImageIcon iconoCopiar = new ImageIcon("Sources/imagenes/copiar.png");
+	        Image img = iconoCopiar.getImage();
 	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-	        iconoLapiz = new ImageIcon(imgEscalada);
+	        iconoCopiar = new ImageIcon(imgEscalada);
 	        
 	        //Icono expandir
 	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
 	        Image img2 = iconoExpandir.getImage();
 	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	        iconoExpandir = new ImageIcon(img2Escalada);
-	        
-	        
-	        //Icono eliminar
-	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
-	        Image img3 = iconoEliminar.getImage();
-	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-	        iconoEliminar = new ImageIcon(img3Escalada);
 	        
 	        //Icono estadisticas
 	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
@@ -441,9 +414,8 @@ public class PerfilUsuario extends JFrame {
 	        iconoEstadisticas = new ImageIcon(img4Escalada);
 	        
 	        // Añade los botones necesarios
-	        this.add(new JButton(iconoLapiz));
+	        this.add(new JButton(iconoCopiar));
 	        this.add(new JButton(iconoExpandir));
-	        this.add(new JButton(iconoEliminar));
 	        this.add(new JButton(iconoEstadisticas));
 
 	        return this;
@@ -461,14 +433,14 @@ public class PerfilUsuario extends JFrame {
 		private JTable table;
 		private int editingRow = -1;
 		
-	    public EditorBoton(String usuario, List<Rutina> rutinasUsuario) {
+	    public EditorBoton(String usuario, List<Rutina> rutinasUsuario, String usuarioQueVisita) {
 	        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	      //Icono editar
-	        ImageIcon iconoLapiz = new ImageIcon("Sources/imagenes/lapiz.png");
-	        Image img = iconoLapiz.getImage();
+	      //Icono copiar
+	        ImageIcon iconoCopiar = new ImageIcon("Sources/imagenes/copiar.png");
+	        Image img = iconoCopiar.getImage();
 	        Image imgEscalada = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-	        iconoLapiz = new ImageIcon(imgEscalada);
+	        iconoCopiar = new ImageIcon(imgEscalada);
 	        
 	        //Icono expandir
 	        ImageIcon iconoExpandir = new ImageIcon("Sources/imagenes/expandir.png");
@@ -476,26 +448,19 @@ public class PerfilUsuario extends JFrame {
 	        Image img2Escalada = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	        iconoExpandir = new ImageIcon(img2Escalada);
 	        
-	        
-	        //Icono eliminar
-	        ImageIcon iconoEliminar = new ImageIcon("Sources/imagenes/eliminar.png");
-	        Image img3 = iconoEliminar.getImage();
-	        Image img3Escalada = img3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-	        iconoEliminar = new ImageIcon(img3Escalada);
-	        
 	        //Icono estadisticas
 	        ImageIcon iconoEstadisticas = new ImageIcon("Sources/imagenes/estadisticas.png");
 	        Image img4 = iconoEstadisticas.getImage();
 	        Image img4Escalada = img4.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	        iconoEstadisticas = new ImageIcon(img4Escalada);
 	        
-	        JButton editButton = new JButton(iconoLapiz);
+	        JButton copyButton = new JButton(iconoCopiar);
 	        JButton expandButton = new JButton(iconoExpandir);
-	        JButton deleteButton = new JButton(iconoEliminar);
 	        JButton statsButton = new JButton(iconoEstadisticas);
+			
 	        
-	        //Action listener para editar
-	        editButton.addActionListener(new ActionListener() {
+	        //Action listener para copiar
+	        copyButton.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -508,9 +473,10 @@ public class PerfilUsuario extends JFrame {
 							rutinaSeleccionada = rutina2;
 						}
 					}
-					dispose();
 					
-					new EditarRutina(usuario, Integer.parseInt(id.toString()), rutinaSeleccionada);
+					copiarRutinaUsuario(rutinaSeleccionada, usuarioQueVisita);
+					
+					JOptionPane.showMessageDialog(VisitarPerfil.this, "La rutina se ha copiado a tu perfil");
 					
 				}
 			});
@@ -525,20 +491,6 @@ public class PerfilUsuario extends JFrame {
 					
 				}
 			});
-	        
-	        //Action listener eliminar
-	        deleteButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (editingRow != -1) {
-						
-						Object id = table.getModel().getValueAt(editingRow, 0);
-						eliminarRutina(Integer.parseInt(id.toString()), usuario);
-					}
-				}
-			});
-	        //Action listener anuncio
-	        
 	        
 	        //Action listener estadísticas
 	        statsButton.addActionListener(new ActionListener() {
@@ -564,44 +516,130 @@ public class PerfilUsuario extends JFrame {
 				}
 			});
 	        
-	        panel.add(editButton);
+	        panel.add(copyButton);
 	        panel.add(expandButton);
-	        panel.add(deleteButton);
 	        panel.add(statsButton);
 	    }
+	    
+	    protected void copiarRutinaUsuario(Rutina rutina, String usuarioQueVisita) {
+	        int id_Rutina = 0;
 
-	    protected void eliminarRutina(int id, String usuario) {
 	        try {
+	            // Cargar el driver
 	            Class.forName("org.sqlite.JDBC");
 	        } catch (ClassNotFoundException e) {
-	            System.out.println("No se ha podido cargar el driver de la BD");
+	            System.err.println("No se ha podido cargar el driver de la base de datos.");
 	            e.printStackTrace();
 	            return;
 	        }
 
-
+	        // Primera conexión: Copiar la rutina
 	        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
-	        	//PRAGMA foreign_keys hecho con chatGPT4 para poder habilitar el borrado en cascada
-	            try (PreparedStatement pragmaStmt = conn.prepareStatement("PRAGMA foreign_keys = ON;")) {
-	                pragmaStmt.execute();
-	            }
-
-	            String sql = "DELETE FROM Rutina WHERE ID_Rutina = ?";
+	            String sql = "INSERT INTO Rutina (Nombre, Descripción, Usuario) VALUES (?, ?, ?)";
 	            try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
-	                queryStmt.setInt(1, id);
+	                queryStmt.setString(1, "Copia rutina de " + rutina.getUsuario());
+	                queryStmt.setString(2, rutina.getDescripcionRutina());
+	                queryStmt.setString(3, usuarioQueVisita);
 
 	                int filasAfectadas = queryStmt.executeUpdate();
-	                System.out.println(filasAfectadas + " fila(s) afectada(s).");
+	                System.out.println("Rutina copiada: " + filasAfectadas + " filas afectadas.");
+
+	                try (ResultSet generatedKeys = queryStmt.getGeneratedKeys()) {
+	                    if (generatedKeys.next()) {
+	                        id_Rutina = generatedKeys.getInt(1);
+	                    }
+	                }
 	            }
 	        } catch (SQLException e) {
+	            System.err.println("Error al copiar la rutina.");
 	            e.printStackTrace();
+	            return;
 	        }
 
-	        dispose();
-	        new PerfilUsuario(usuario);
-	    }
-	    
+	        // Segunda conexión: Introducir los entrenamientos
+	        if (!rutina.getEntrenamientos().isEmpty()) {
+	            for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
+	                String dia = entrenamiento.getDía().name();
+	                String nombre = entrenamiento.getNombre();
+	                String desc = entrenamiento.getDescripcionEntrenamiento();
+	                int idEntrenamiento = 0;
 
+	                try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+	                    String sql = "INSERT INTO Entrenamiento (Nombre, Descripción, ID_Rutina, Dia) VALUES (?, ?, ?, ?)";
+	                    try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
+	                        queryStmt.setString(1, nombre);
+	                        queryStmt.setString(2, desc);
+	                        queryStmt.setInt(3, id_Rutina);
+	                        queryStmt.setString(4, dia);
+
+	                        int filasAfectadas = queryStmt.executeUpdate();
+	                        System.out.println("Entrenamiento copiado: " + filasAfectadas + " filas afectadas.");
+
+	                        try (ResultSet generatedKeys = queryStmt.getGeneratedKeys()) {
+	                            if (generatedKeys.next()) {
+	                                idEntrenamiento = generatedKeys.getInt(1);
+	                            }
+	                        }
+	                    }
+	                } catch (SQLException e) {
+	                    System.err.println("Error al copiar el entrenamiento: " + nombre);
+	                    e.printStackTrace();
+	                    continue;
+	                }
+
+	                // Tercera conexión: Introducir los ejercicios
+	                if (!entrenamiento.getEjercicios().isEmpty()) {
+	                    for (EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
+	                        int idEjercicioEnEntrenamiento = 0;
+
+	                        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+	                            String sql = "INSERT INTO EjercicioEnEntrenamiento (ID_Entrenamiento, ID_Ejercicio, OrdenEnEntrenamiento) VALUES (?, ?, ?)";
+	                            try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
+	                                queryStmt.setInt(1, idEntrenamiento);
+	                                queryStmt.setInt(2, ejercicio.getID_Ejercicio());
+	                                queryStmt.setInt(3, ejercicio.getOrdeEnEntrenamiento());
+
+	                                int filasAfectadas = queryStmt.executeUpdate();
+	                                System.out.println("Ejercicio copiado: " + filasAfectadas + " filas afectadas.");
+
+	                                try (ResultSet generatedKeys = queryStmt.getGeneratedKeys()) {
+	                                    if (generatedKeys.next()) {
+	                                        idEjercicioEnEntrenamiento = generatedKeys.getInt(1);
+	                                    }
+	                                }
+	                            }
+	                        } catch (SQLException e) {
+	                            System.err.println("Error al copiar el ejercicio.");
+	                            e.printStackTrace();
+	                            continue;
+	                        }
+
+	                        // Cuarta conexión: Introducir las series
+	                        if (!ejercicio.getSeries().isEmpty()) {
+	                            for (Serie serie : ejercicio.getSeries()) {
+	                                try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+	                                    String sql = "INSERT INTO Serie (ID_EjercicioEnEntrenamiento, ID_RPE, Repeticiones, Peso, OrdenEnEjercicio) VALUES (?, ?, ?, ?, ?)";
+	                                    try (PreparedStatement queryStmt = conn.prepareStatement(sql)) {
+	                                        queryStmt.setInt(1, idEjercicioEnEntrenamiento);
+	                                        queryStmt.setInt(2, serie.getEsfuerzo().ordinal()+1);
+	                                        queryStmt.setInt(3, serie.getRepeticiones());
+	                                        queryStmt.setFloat(4, serie.getPeso());
+	                                        queryStmt.setInt(5, serie.getOrdenEnEjercicio());
+
+	                                        int filasAfectadas = queryStmt.executeUpdate();
+	                                        System.out.println("Serie copiada"+ filasAfectadas);
+	                                    }
+	                                } catch (SQLException e) {
+	                                    System.err.println("Error al copiar la serie");
+	                                    e.printStackTrace();
+	                                 }
+	                            }
+	                          } 
+	                    }
+	                	}
+	              }
+	        }
+	     }
 
 		@Override
 	    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -615,4 +653,9 @@ public class PerfilUsuario extends JFrame {
 	        return null;
 	    }
 	}
+	
+	 public static void main(String[] args) {
+        new VisitarPerfil("admin", "pablo");
+    }
+	
 }
