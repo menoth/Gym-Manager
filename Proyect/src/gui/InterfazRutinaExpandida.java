@@ -3,7 +3,6 @@ package gui;
 import domain.Rutina;
 import domain.Serie;
 import domain.Entrenamiento;
-import domain.Ejercicio;
 import domain.EjercicioEnEntrenamiento;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 public class InterfazRutinaExpandida extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -25,14 +23,21 @@ public class InterfazRutinaExpandida extends JFrame {
         setLayout(new GridLayout(1, 3)); // Configurar para tres paneles verticales
         setSize(1000, 600);
 
+        // Establecer color de fondo de la ventana principal
+        getContentPane().setBackground(new Color(70, 130, 180)); // Color de fondo RGB(70, 130, 180)
+
         // Panel 1: Día y nombre del entrenamiento
         JPanel panelEntrenamiento = new JPanel();
         panelEntrenamiento.setLayout(new BoxLayout(panelEntrenamiento, BoxLayout.Y_AXIS));
         panelEntrenamiento.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
+        panelEntrenamiento.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
 
+        // Cambiar color de las fuentes a blanco
         for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
             JLabel lblDia = new JLabel("Día: " + entrenamiento.getDía());
+            lblDia.setForeground(Color.WHITE); // Fuente blanca
             JLabel lblNombreEntrenamiento = new JLabel("Entrenamiento: " + entrenamiento.getNombre());
+            lblNombreEntrenamiento.setForeground(Color.WHITE); // Fuente blanca
 
             panelEntrenamiento.add(lblDia);
             panelEntrenamiento.add(lblNombreEntrenamiento);
@@ -45,13 +50,17 @@ public class InterfazRutinaExpandida extends JFrame {
         JPanel panelEjercicios = new JPanel();
         panelEjercicios.setLayout(new BoxLayout(panelEjercicios, BoxLayout.Y_AXIS));
         panelEjercicios.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
+        panelEjercicios.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
 
+        // Cambiar color de las fuentes a blanco
         for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
             JLabel lblTituloEjercicios = new JLabel("Ejercicios para " + entrenamiento.getNombre() + ":");
+            lblTituloEjercicios.setForeground(Color.WHITE); // Fuente blanca
             panelEjercicios.add(lblTituloEjercicios);
 
             for (EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
                 JLabel lblNombreEjercicio = new JLabel(nombreEjercicio(ejercicio.getID_Ejercicio()));
+                lblNombreEjercicio.setForeground(Color.WHITE); // Fuente blanca
                 panelEjercicios.add(lblNombreEjercicio);
             }
 
@@ -64,16 +73,22 @@ public class InterfazRutinaExpandida extends JFrame {
         JPanel panelDetalles = new JPanel();
         panelDetalles.setLayout(new BoxLayout(panelDetalles, BoxLayout.Y_AXIS));
         panelDetalles.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
+        panelDetalles.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
 
+        // Cambiar color de las fuentes a blanco
         for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
             for (EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
                 JLabel lblDetalleEjercicio = new JLabel("Ejercicio: " + nombreEjercicio(ejercicio.getID_Ejercicio()));
+                lblDetalleEjercicio.setForeground(Color.WHITE); // Fuente blanca
                 JLabel lblSeries = new JLabel("Series: " + ejercicio.getSeries().size());
+                lblSeries.setForeground(Color.WHITE); // Fuente blanca
                 panelDetalles.add(lblDetalleEjercicio);
                 panelDetalles.add(lblSeries);
                 for (Serie serie : ejercicio.getSeries()) {
                     JLabel lblRepeticiones = new JLabel("Repeticiones: " + serie.getRepeticiones());
+                    lblRepeticiones.setForeground(Color.WHITE); // Fuente blanca
                     JLabel lblPeso = new JLabel("Peso: " + serie.getPeso() + " kg");
+                    lblPeso.setForeground(Color.WHITE); // Fuente blanca
                     panelDetalles.add(lblRepeticiones);
                     panelDetalles.add(lblPeso);
                 }

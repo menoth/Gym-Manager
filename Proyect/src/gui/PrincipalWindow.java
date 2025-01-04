@@ -152,9 +152,9 @@ public class PrincipalWindow extends JFrame {
         pOeste.setPreferredSize(new Dimension(300, 0));
 
         // Añadir imagen al panel Oeste
-        ///JLabel labelOeste = new JLabel();
-        ///labelOeste.setIcon(new ImageIcon("Sources/imagenes/Anuncio Brastemp Principal.jpeg"));
-        ///pOeste.add(labelOeste);
+        JLabel labelOeste = new JLabel();
+        labelOeste.setIcon(new ImageIcon("Sources/imagenes/Gigachad1.png"));
+        pOeste.add(labelOeste);
 
         // Panel Este
         JPanel pEste = new JPanel();
@@ -162,9 +162,9 @@ public class PrincipalWindow extends JFrame {
         pEste.setPreferredSize(new Dimension(300, 0));
 
         // Añadir imagen al panel Este
-        ///JLabel labelEste = new JLabel();
-        ///labelEste.setIcon(new ImageIcon("Sources/imagenes/Anuncio UE Principal.jpeg"));
-        ///pEste.add(labelEste);
+        JLabel labelEste = new JLabel();
+        labelEste.setIcon(new ImageIcon("Sources/imagenes/Gigachad.png"));
+        pEste.add(labelEste);
 
 		JPanel pCentral = new JPanel();
 		pCentral.setLayout(new BorderLayout());
