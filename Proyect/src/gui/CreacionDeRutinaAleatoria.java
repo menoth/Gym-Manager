@@ -104,6 +104,7 @@ public class CreacionDeRutinaAleatoria{
 			for(EjercicioEnEntrenamiento ejercicio : ejerciciosEnEntrenamientos) {
 				if (ejercicio.getID_Entrenamiento() == entrenamiento.getId()) {
 					entrenamiento.getEjercicios().add(ejercicio);
+					ejercicio.setOrdeEnEntrenamiento(entrenamiento.getEjercicios().size()+1);
 				}
 			}
 		}
@@ -328,6 +329,7 @@ public class CreacionDeRutinaAleatoria{
     	return musculos2;
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean esOptimo(ArrayList<EjercicioEnEntrenamiento> ejerciciosEntrenamiento, ArrayList<Ejercicio> ejercicios, ArrayList<String> musculos) {
 		HashMap<String, Double> mapa = new HashMap<String, Double>();
 		boolean resultado = true;

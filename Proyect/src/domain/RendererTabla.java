@@ -65,18 +65,30 @@ public class RendererTabla extends JPanel implements TableCellRenderer {
             // Editar el aspecto de las series y los pesos 
             @SuppressWarnings("unchecked")
             List<Map<String, Integer>> series = (List<Map<String, Integer>>) datos.get("series");
-            
-            //Bucle para recorrer las series
+
+            // Bucle para recorrer las series
             for (int i = 0; i < series.size(); i++) {
                 Map<String, Integer> serie = series.get(i);
                 
-                JLabel etiquetaSerie = new JLabel("Serie " + (i + 1) + ": " + serie.get("repeticiones") + " reps, Peso: " + serie.get("peso") + " kg");
+                // Obtener esfuerzo como texto
+                String esfuerzo;
+                switch (serie.get("esfuerzo")) {
+                    case 1: esfuerzo = "W"; break;
+                    case 2: esfuerzo = "E"; break;
+                    case 3: esfuerzo = "T"; break;
+                    default: esfuerzo = "W"; break;
+                }
+                
+                // Etiqueta que muestra repeticiones, peso y esfuerzo
+                JLabel etiquetaSerie = new JLabel("Serie " + (i + 1) + ": " +
+                        serie.get("repeticiones") + " reps, Peso: " + serie.get("peso") + " kg, Esfuerzo: " + esfuerzo);
                 
                 etiquetaSerie.setFont(new Font(etiquetaSerie.getFont().getName(), Font.PLAIN, 13));
                 etiquetaSerie.setAlignmentX(CENTER_ALIGNMENT);
                 panelInterno.add(etiquetaSerie);
                 etiquetaSerie.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Márgenes internos
             }
+
 
             add(panelInterno); 
         }
