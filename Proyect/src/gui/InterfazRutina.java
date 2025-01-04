@@ -1,7 +1,6 @@
 package gui;
 
 import domain.EditorBoton;
-
 import domain.ModeloJTable;
 import domain.RendererTabla;
 
@@ -12,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,10 @@ import java.util.Map;
 public class InterfazRutina extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private List<String> listaRutina;
+    @SuppressWarnings("unused")
+	private List<String> listaRutina;
+    @SuppressWarnings("unused")
+	private List<String> listaEntrenamientos;
     private String descripcionRutina;
     private JTable tabla;
 
@@ -116,40 +119,111 @@ public class InterfazRutina extends JFrame {
             System.out.println("Se ha cargado el driver correctamente.");
         } catch (ClassNotFoundException e) {
             System.out.println("No se ha podido cargar el driver de la BD");
+            return;
         }
 
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+            conn.setAutoCommit(false); // Iniciar transacción
             System.out.println("Se ha conectado a la base de datos.");
-            String sql = "INSERT INTO Rutina (ID_Rutina, Nombre, Descripción, Usuario) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            // Asignar un nuevo ID basado en el tamaño de la lista de rutinas
-            listaRutina = cargarRutinasDesdeBD();
-            int idRutina = listaRutina.size() + 1;
+            // Obtener el próximo ID para la Rutina
+            int idRutina = cargarRutinasDesdeBD().size() + 1;
 
-            pstmt.setInt(1, idRutina);
-            pstmt.setString(2, nombreRutina);
-            pstmt.setString(3, descripcionRutina);
-            pstmt.setString(4, usuario);
+            // GUARDAR EN LA BD LA RUTINA
+            String sqlRutina = "INSERT INTO Rutina (ID_Rutina, Nombre, Descripción, Usuario) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmtRutina = conn.prepareStatement(sqlRutina)) {
+                pstmtRutina.setInt(1, idRutina);
+                pstmtRutina.setString(2, nombreRutina);
+                pstmtRutina.setString(3, descripcionRutina);
+                pstmtRutina.setString(4, usuario);
+                pstmtRutina.executeUpdate();
+            }
 
-            // Ejecutar la consulta
-            pstmt.executeUpdate();
+            // Preparar los IDs
+            int idEjercicioEnEntrenamiento = obtenerMaxIdEjercicioEnEntrenamiento(conn) + 1;
 
-            // Mostrar mensaje de éxito
-            JOptionPane.showMessageDialog(null, "Rutina '" + nombreRutina + "' guardada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            // GUARDAR EJERCICIOS Y SERIES EN LA BASE DE DATOS
+            ModeloJTable modelo = (ModeloJTable) tabla.getModel();
+            for (int columnIndex = 0; columnIndex < modelo.getColumnCount(); columnIndex++) {
+                DayOfWeek dia = DayOfWeek.of(columnIndex + 1); // Día asociado a la columna
+                String diaEntrenamiento = dia.toString(); // Día en texto
 
-            System.out.println(nombreRutina + " insertado correctamente. Verifica la BD.");
-            pstmt.close();
-            conn.close();
-            this.dispose();
-            new PrincipalWindow(usuario);
+                // Obtener el próximo ID para el Entrenamiento
+                int idEntrenamiento = obtenerMaxIdEntrenamiento(conn) + 1;
+
+                // INSERTAR ENTRENAMIENTO PARA ESTE DÍA
+                String sqlEntrenamiento = "INSERT INTO Entrenamiento (ID_Entrenamiento, Nombre, Descripción, ID_Rutina, Dia) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmtEntrenamiento = conn.prepareStatement(sqlEntrenamiento)) {
+                    pstmtEntrenamiento.setInt(1, idEntrenamiento);
+                    pstmtEntrenamiento.setString(2, nombreRutina + " - " + diaEntrenamiento);
+                    pstmtEntrenamiento.setString(3, descripcionRutina);
+                    pstmtEntrenamiento.setInt(4, idRutina);
+                    pstmtEntrenamiento.setString(5, diaEntrenamiento);
+                    pstmtEntrenamiento.executeUpdate();
+                }
+
+                // OBTENER LOS EJERCICIOS DE LA COLUMNA (DÍA)
+                List<Map<String, Object>> ejercicios = modelo.getDatosColumnas().get(dia);
+                if (ejercicios != null) {
+                    for (int ordenEnEntrenamiento = 0; ordenEnEntrenamiento < ejercicios.size(); ordenEnEntrenamiento++) {
+                        Map<String, Object> ejercicioData = ejercicios.get(ordenEnEntrenamiento);
+                        String nombreEjercicio = (String) ejercicioData.get("ejercicio");
+
+                        int idEjercicio = obtenerIdEjercicio(conn, nombreEjercicio); // Obtener ID del ejercicio
+                        int ordenEjercicio = ordenEnEntrenamiento + 1; // Incrementar orden del ejercicio
+
+                        // INSERTAR EN EJERCICIOENENTRENAMIENTO
+                        String sqlEjercicioEnEntrenamiento = "INSERT INTO EjercicioEnEntrenamiento "
+                                + "(ID_EjercicioEnEntrenamiento, ID_Entrenamiento, ID_Ejercicio, OrdenEnEntrenamiento) "
+                                + "VALUES (?, ?, ?, ?)";
+                        try (PreparedStatement pstmtEjercicio = conn.prepareStatement(sqlEjercicioEnEntrenamiento)) {
+                            pstmtEjercicio.setInt(1, idEjercicioEnEntrenamiento);
+                            pstmtEjercicio.setInt(2, idEntrenamiento);
+                            pstmtEjercicio.setInt(3, idEjercicio);
+                            pstmtEjercicio.setInt(4, ordenEjercicio);
+                            pstmtEjercicio.executeUpdate();
+                        }
+
+                        // OBTENER SERIES DEL EJERCICIO
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Integer>> series = (List<Map<String, Integer>>) ejercicioData.get("series");
+                        for (int serieIndex = 0; serieIndex < series.size(); serieIndex++) {
+                            Map<String, Integer> serieData = series.get(serieIndex);
+
+                            // INSERTAR EN SERIE
+                            String sqlSerie = "INSERT INTO Serie (ID_EjercicioEnEntrenamiento, ID_RPE, Repeticiones, Peso, OrdenEnEjercicio) "
+                                    + "VALUES (?, ?, ?, ?, ?)";
+                            try (PreparedStatement pstmtSerie = conn.prepareStatement(sqlSerie)) {
+                                pstmtSerie.setInt(1, idEjercicioEnEntrenamiento); // Asociar con EjercicioEnEntrenamiento
+                                pstmtSerie.setInt(2, serieData.get("esfuerzo")); // ID de RPE
+                                pstmtSerie.setInt(3, serieData.get("repeticiones")); // Repeticiones
+                                pstmtSerie.setDouble(4, serieData.get("peso")); // Peso
+                                pstmtSerie.setInt(5, serieIndex + 1); // Orden en ejercicio
+                                pstmtSerie.executeUpdate();
+                            }
+                        }
+
+                        // Incrementar ID para el próximo EjercicioEnEntrenamiento
+                        idEjercicioEnEntrenamiento++;
+                    }
+                }
+            }
+
+            
+            conn.commit();
+            JOptionPane.showMessageDialog(this, "Rutina y entrenamiento guardados correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Datos guardados correctamente en la base de datos.");
+
+            // Cerrar la ventana actual y abrir PrincipalWindow
+            dispose(); // Cierra la ventana actual
+            new PrincipalWindow(usuario); // Abre la ventana principal
+
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al guardar la rutina. Por favor, verifica los datos.", "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("No se ha podido guardar la rutina.");
+            JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     
     private List<String> cargarRutinasDesdeBD() {
@@ -166,4 +240,55 @@ public class InterfazRutina extends JFrame {
         }
         return ejercicios;
     }
+    
+    @SuppressWarnings("unused")
+	private List<String> cargarEntrenamientosDesdeBD() {
+        List<String> ejercicios = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {
+            String sql = "SELECT Nombre FROM Entrenamiento";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                ejercicios.add(rs.getString("Nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ejercicios;
+    }
+    
+    private int obtenerIdEjercicio(Connection conn, String nombreEjercicio) throws SQLException {
+        String sql = "SELECT ID_Ejercicio FROM Ejercicio WHERE Nombre = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, nombreEjercicio);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID_Ejercicio");
+            }
+        }
+        throw new SQLException("No se encontró el ejercicio: " + nombreEjercicio);
+    }
+    
+    private int obtenerMaxIdEntrenamiento(Connection conn) throws SQLException {
+        String sql = "SELECT COALESCE(MAX(ID_Entrenamiento), 0) AS MaxID FROM Entrenamiento";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("MaxID");
+            }
+        }
+        return 0; // Si no hay registros, empezar desde 0
+    }
+    
+    private int obtenerMaxIdEjercicioEnEntrenamiento(Connection conn) throws SQLException {
+        String sql = "SELECT COALESCE(MAX(ID_EjercicioEnEntrenamiento), 0) AS MaxID FROM EjercicioEnEntrenamiento";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("MaxID");
+            }
+        }
+        return 0; // Si no hay registros, empezar desde 0
+    }
+
+
+
 }

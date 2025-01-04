@@ -103,4 +103,8 @@ public class ModeloJTable extends AbstractTableModel {
         datosColumnas.computeIfAbsent(dia, k -> new ArrayList<>()).add(datos);
         fireTableDataChanged();
     }
+    
+    public Map<DayOfWeek, List<Map<String, Object>>> getDatosColumnas() {
+        return datosColumnas; // Devuelve el mapa con los datos organizados por días
+    }
 }
