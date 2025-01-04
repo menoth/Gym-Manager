@@ -97,4 +97,10 @@ public class ModeloJTable extends AbstractTableModel {
     	//Solo la primera fila es editable
         return rowIndex == 0;
     }
+    
+    public void agregarDatos(Map<String, Object> datos) {
+        DayOfWeek dia = DayOfWeek.of(1); // Cambiar según la lógica
+        datosColumnas.computeIfAbsent(dia, k -> new ArrayList<>()).add(datos);
+        fireTableDataChanged();
+    }
 }

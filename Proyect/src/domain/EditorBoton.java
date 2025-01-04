@@ -1,6 +1,7 @@
 package domain;
 
 import gui.CatalogoEjercicio;
+import gui.InterfazRutina;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -17,7 +18,7 @@ public class EditorBoton implements TableCellEditor {
     @SuppressWarnings("unused")
 	private final JTable tabla;
 
-    public EditorBoton(String usuario, String nombreRutina, JTable tabla) {
+    public EditorBoton(String usuario, String nombreRutina, JTable tabla, InterfazRutina interfazRutina) {
         this.tabla = tabla;
         boton = new JButton("Añadir ejercicio");
         boton.addActionListener(e -> {
@@ -35,7 +36,7 @@ public class EditorBoton implements TableCellEditor {
                     tabla.revalidate();
                     tabla.repaint();
                 }
-            }, null);
+            }, interfazRutina);
             
         });
     }
