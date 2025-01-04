@@ -18,7 +18,7 @@ public class SeleccionMusculosYDias extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SeleccionMusculosYDias(String usuario, int DiasEntrenados, int MusculosPriorizados) {
+	public SeleccionMusculosYDias(String usuario, String nombreRutina, String descripcionRutina, int DiasEntrenados, int MusculosPriorizados) {
         // Crear el diálogo
         JDialog dialog = new JDialog();
         dialog.setLayout(new BorderLayout());
@@ -94,7 +94,8 @@ public class SeleccionMusculosYDias extends JFrame {
 
                 // Cerrar el diálogo y abrir la ventana de creación de rutina
                 dialog.dispose();
-                new CreacionDeRutinaAleatoria(usuario, diasSeleccionados, musculosSeleccionados);
+                new CreacionDeRutinaAleatoria(usuario, nombreRutina, descripcionRutina,  diasSeleccionados, musculosSeleccionados);
+                JOptionPane.showMessageDialog(SeleccionMusculosYDias.this, "Creacion de rutina aleatoria exitosa");
             }
         });
 
