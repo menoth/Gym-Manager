@@ -145,13 +145,25 @@ public class PrincipalWindow extends JFrame {
 		pNorte.add(panelPerfil, BorderLayout.WEST);
 
 		
-		JPanel pOeste = new JPanel();
-		pOeste.setBackground(new Color(224, 255, 255)); // Azul pálido
-		pOeste.setPreferredSize(new Dimension(300, 0));
+		// Panel Oeste
+        JPanel pOeste = new JPanel();
+        pOeste.setBackground(new Color(224, 255, 255)); // Azul pálido
+        pOeste.setPreferredSize(new Dimension(300, 0));
 
-		JPanel pEste = new JPanel();
-		pEste.setBackground(new Color(224, 255, 255));
-		pEste.setPreferredSize(new Dimension(300, 0));
+        // Añadir imagen al panel Oeste
+        ///JLabel labelOeste = new JLabel();
+        ///labelOeste.setIcon(new ImageIcon("Sources/imagenes/Anuncio Brastemp Principal.jpeg"));
+        ///pOeste.add(labelOeste);
+
+        // Panel Este
+        JPanel pEste = new JPanel();
+        pEste.setBackground(new Color(224, 255, 255));
+        pEste.setPreferredSize(new Dimension(300, 0));
+
+        // Añadir imagen al panel Este
+        ///JLabel labelEste = new JLabel();
+        ///labelEste.setIcon(new ImageIcon("Sources/imagenes/Anuncio UE Principal.jpeg"));
+        ///pEste.add(labelEste);
 
 		JPanel pCentral = new JPanel();
 		pCentral.setLayout(new BorderLayout());

@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
@@ -12,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
+
 
 public class AnuncioVentana extends JDialog {
 
@@ -73,6 +74,7 @@ public class AnuncioVentana extends JDialog {
 
         // Crear el contador
         JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelTitulo.setBackground(new Color(70,130,180));
         JLabel anuncio = new JLabel("Anuncio Publicitario");
         anuncio.setFont(new Font("Arial", Font.BOLD, 16));
         panelTitulo.add(anuncio);
@@ -129,5 +131,4 @@ public class AnuncioVentana extends JDialog {
         hiloCierre.start();
     }
 	
-    
 }
