@@ -41,6 +41,7 @@ public class PrincipalWindow extends JFrame {
 
 		JButton profileButton = new JButton("PERFIL");
 		profileButton.setPreferredSize(new Dimension(120, 60));
+		
 		profileButton.setBackground(new Color(255, 255, 255)); // Blanco
 		profileButton.setForeground(new Color(70, 130, 180)); // Azul acero
 		profileButton.setFont(new Font("Arial", Font.BOLD, 16));
@@ -158,12 +159,13 @@ public class PrincipalWindow extends JFrame {
 
 		// Buscador
 		JPanel pBuscador = new JPanel();
-		pBuscador.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+		pBuscador.setLayout(new FlowLayout());
 		pBuscador.setBackground(new Color(245, 245, 245));
 
 		JLabel etiquetaBuscar = new JLabel("Buscar Usuario:");
+		etiquetaBuscar.setPreferredSize(new Dimension(190,30));
 		etiquetaBuscar.setFont(new Font("Arial", Font.BOLD, 24));
-		etiquetaBuscar.setForeground(new Color(70, 130, 180)); // Azul acero
+		etiquetaBuscar.setForeground(new Color(70, 130, 180));
 
 		campo_busqueda = new JTextField(30);
 		campo_busqueda.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -172,6 +174,7 @@ public class PrincipalWindow extends JFrame {
 		boton_buscar.setFont(new Font("Arial", Font.BOLD, 20));
 		boton_buscar.setBackground(new Color(70, 130, 180));
 		boton_buscar.setForeground(Color.WHITE);
+		boton_buscar.setPreferredSize(new Dimension(190,30));
 
 		lista = new DefaultListModel<>();
 		new JList<>(lista);
@@ -192,7 +195,7 @@ public class PrincipalWindow extends JFrame {
 	     
 		
 		// Espaciador para bajar el buscador
-		pBuscador.add(Box.createVerticalStrut(200)); // Baja el buscador más abajo
+		pBuscador.add(Box.createVerticalStrut(250)); // Baja el buscador más abajo
 		pBuscador.add(etiquetaBuscar);
 		pBuscador.add(campo_busqueda);
 		pBuscador.add(boton_buscar);
@@ -208,7 +211,7 @@ public class PrincipalWindow extends JFrame {
 		añadirEntreno.setForeground(Color.WHITE);
 
 		// Espaciador para bajar "Añadir Rutina"
-		pRutina.add(Box.createVerticalStrut(150)); // Baja el botón más abajo
+		pRutina.add(Box.createVerticalStrut(150));
 		pRutina.add(añadirEntreno);
 		pCentral.add(pRutina, BorderLayout.CENTER);
 
