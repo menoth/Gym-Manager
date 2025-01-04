@@ -1,6 +1,7 @@
 package gui;
 
 import domain.EditorBoton;
+
 import domain.ModeloJTable;
 import domain.RendererTabla;
 

@@ -517,14 +517,22 @@ public class PerfilUsuario extends JFrame {
 	        
 	        //Action listener expandir
 	        expandButton.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-					new PrincipalWindow(usuario);
+	        	
+	        	
+	        	@Override
+	            public void actionPerformed(ActionEvent e) {
+	        		Rutina rutinaSeleccionada = null;
+					Object id = table.getModel().getValueAt(editingRow, 0);
 					
-				}
-			});
+					//Con ese id obtenemos la rutina
+					for (Rutina rutina2 : rutinasUsuario) {
+						if (rutina2.getId() == Integer.parseInt(id.toString())) {
+							rutinaSeleccionada = rutina2;
+						}
+					}
+	                new InterfazRutinaExpandida(rutinaSeleccionada, usuario);
+	        	}
+	        });
 	        
 	        //Action listener eliminar
 	        deleteButton.addActionListener(new ActionListener() {
