@@ -207,6 +207,9 @@ public class PrincipalWindow extends JFrame {
 		JPanel pRutina = new JPanel();
 		pRutina.setBackground(new Color(245, 245, 245));
 		JButton añadirEntreno = new JButton("AÑADIR RUTINA");
+		añadirEntreno.addActionListener(e -> {
+			new nombreRutinaInterfaz(this, usuario);
+		});
 		añadirEntreno.setFont(new Font("Serif", Font.BOLD, 24));
 		añadirEntreno.setPreferredSize(new Dimension(300, 80));
 		añadirEntreno.setBackground(new Color(70, 130, 180));

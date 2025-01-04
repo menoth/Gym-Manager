@@ -16,26 +16,34 @@ public class LogrosVentana extends JFrame {
     LogrosVentana(Usuario usuario) {
 
         // Crear ventana
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 800);
+    	setUndecorated(true);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setSize(1200, 900);
         setLayout(new BorderLayout());
         setTitle("Selecciona tus logros");
+        setLocationRelativeTo(null);
 
         JLabel info = new JLabel("Selecciona hasta 3 logros:", JLabel.CENTER);
         info.setFont(new Font("Arial", Font.BOLD, 16));
         add(info, BorderLayout.NORTH);
 
         // Panel para los logros
-        JPanel logrosPanel = new JPanel(new GridLayout(0, 3, 0, 0));
+        JPanel logrosPanel = new JPanel(new GridLayout(0, 5, 0, 0));
 
         // Nombres de las imágenes
         String[] logrosImagenes = {
+        	"40kgs en press de banca.png",
+        	"70kgs en press de banca.png",
             "100kgs en press de banca.png",
             "140kgs en press de banca.png",
             "180kgs en press de banca.png",
+            "60kgs en sentadilla.png",
+            "80kgs en sentadilla.png",
             "120kgs en sentadilla.png",
             "170kgs en sentadilla.png",
             "220kgs en sentadilla.png",
+            "60kgs en peso muerto.png",
+            "100kgs en peso muerto.png",
             "150kgs en peso muerto.png",
             "200kgs en peso muerto.png",
             "250kgs en peso muerto.png"
@@ -43,15 +51,21 @@ public class LogrosVentana extends JFrame {
 
         // Nombres de los textos
         String[] logrosTexto = {
-            "100kgs en press de banca",
-            "140kgs en press de banca",
-            "180kgs en press de banca",
-            "120kgs en sentadilla",
-            "170kgs en sentadilla",
-            "220kgs en sentadilla",
-            "150kgs en peso muerto",
-            "200kgs en peso muerto",
-            "250kgs en peso muerto"
+        		"40kgs en press de banca",
+            	"70kgs en press de banca",
+                "100kgs en press de banca",
+                "140kgs en press de banca",
+                "180kgs en press de banca",
+                "60kgs en sentadilla",
+                "80kgs en sentadilla",
+                "120kgs en sentadilla",
+                "170kgs en sentadilla",
+                "220kgs en sentadilla",
+                "60kgs en peso muerto",
+                "100kgs en peso muerto",
+                "150kgs en peso muerto",
+                "200kgs en peso muerto",
+                "250kgs en peso muerto"
         };
 
         // Cargar en la BD los nombres de los logros
@@ -88,8 +102,8 @@ public class LogrosVentana extends JFrame {
             radioButtons.add(radioButton);
             logroPanel.add(radioButton, BorderLayout.WEST);
 
-            // Agrupar por filas (3 por fila)
-            int fila = i / 3;
+            // Agrupar por filas (5 por fila)
+            int fila = i / 5;
             while (gruposPorFila.size() <= fila) {
                 gruposPorFila.add(new ButtonGroup());
             }
@@ -106,18 +120,8 @@ public class LogrosVentana extends JFrame {
 
         for (JRadioButton radioButton : radioButtons) {
             radioButton.addItemListener(e -> {
-                if (radioButton.isSelected()) {
-                    if (seleccionados.size() < 3) {
-                        seleccionados.add(radioButton);
-                    } else {
-                        radioButton.setSelected(false);
-                        JOptionPane.showMessageDialog(
-                            null,
-                            "Solo puedes seleccionar hasta 3 logros.",
-                            "Límite alcanzado",
-                            JOptionPane.WARNING_MESSAGE
-                        );
-                    }
+                if (radioButton.isSelected()) {                 
+                    seleccionados.add(radioButton);                    
                 } else {
                     seleccionados.remove(radioButton);
                 }
@@ -189,8 +193,8 @@ public class LogrosVentana extends JFrame {
 
         // Añadir botones a un GridLayout
         JPanel panel = new JPanel(new GridLayout(1, 2, 5, 5));
-        panel.add(confirmar);
         panel.add(cancelar);
+        panel.add(confirmar);
         add(panel, BorderLayout.SOUTH);
 
         setVisible(true);

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Serie {
 	
+	
 	public enum Esfuerzo {
 		APROXIMACION, ESTANDAR, TOPSET
 	}

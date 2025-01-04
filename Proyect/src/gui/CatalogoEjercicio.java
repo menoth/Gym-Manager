@@ -27,11 +27,20 @@ public class CatalogoEjercicio extends JFrame {
     private JPanel gridPrincipal;
     private List<String> listaEjercicios;
     private final Callback callback;
+    private final String nombreRutina;
+    private final String descripcionRutina;
+    private final String usuario;
     
-    @SuppressWarnings("unused")
-	private final InterfazRutina interfazRutina;
+    private final InterfazRutina interfazRutina;
 
     public CatalogoEjercicio(String usuario, String nombreRutina, Callback callback, InterfazRutina interfazRutina) {
+    	this.usuario = usuario;
+    	this.nombreRutina = nombreRutina;
+    	if (interfazRutina != null) {
+    	    this.descripcionRutina = interfazRutina.getDescripcionRutina();
+    	} else {
+    	    this.descripcionRutina = "Sin descripción";
+    	}
         this.callback = callback;
         this.interfazRutina = interfazRutina;
 
@@ -321,66 +330,117 @@ public class CatalogoEjercicio extends JFrame {
     }
 
     private void mostrarDialogoRepeticiones(int numSeries, String ejercicio) {
-        JDialog dialogoRepeticiones = new JDialog(this, "Repeticiones y Peso - " + ejercicio, true);
-        dialogoRepeticiones.setLayout(new GridLayout(numSeries + 1, 3, 10, 10));
-        dialogoRepeticiones.setSize(400, 50 + (numSeries * 50));
+        JDialog dialogoRepeticiones = new JDialog(this, "Repeticiones, Peso y Esfuerzo - " + ejercicio, true);
+        dialogoRepeticiones.setLayout(new GridBagLayout());
+        dialogoRepeticiones.setSize(700, 100 + (numSeries * 50));
         dialogoRepeticiones.setLocationRelativeTo(this);
-        
-        //Los tamaños de los arrays de las etiquetas tienen la misma cantidad que el num de Series
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Margen entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JLabel[] etiquetasSeries = new JLabel[numSeries];
         JSpinner[] spinnersRepeticiones = new JSpinner[numSeries];
-        JLabel[] etiquetasSeries2 = new JLabel[numSeries];
+        JLabel[] etiquetasPeso = new JLabel[numSeries];
         JSpinner[] spinnersPeso = new JSpinner[numSeries];
-        
-        
-        for (int i = 0; i < numSeries; i++) {
-            etiquetasSeries[i] = new JLabel("Serie " + (i + 1) + ":");
-            spinnersRepeticiones[i] = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-            etiquetasSeries2[i] = new JLabel("Peso " + (i + 1) + ":");
-            spinnersPeso[i] = new JSpinner(new SpinnerNumberModel(0, 0, 500, 1)); // Peso inicial 0
-            bloquearEdicionSpinner(spinnersRepeticiones[i]);
-            bloquearEdicionSpinner(spinnersPeso[i]);
+        JLabel[] etiquetasEsfuerzo = new JLabel[numSeries];
+        ButtonGroup[] gruposEsfuerzo = new ButtonGroup[numSeries];
+        JRadioButton[][] botonesEsfuerzo = new JRadioButton[numSeries][3]; // Para "Bajo", "Medio", "Alto"
 
-            dialogoRepeticiones.add(etiquetasSeries[i]);
-            dialogoRepeticiones.add(spinnersRepeticiones[i]);
-            dialogoRepeticiones.add(etiquetasSeries2[i]);
-            dialogoRepeticiones.add(spinnersPeso[i]);
+        for (int i = 0; i < numSeries; i++) {
+            // Etiqueta Serie
+            etiquetasSeries[i] = new JLabel("Serie " + (i + 1) + " - Repeticiones:");
+            gbc.gridx = 0; gbc.gridy = i;
+            dialogoRepeticiones.add(etiquetasSeries[i], gbc);
+
+            // Spinner Repeticiones
+            spinnersRepeticiones[i] = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+            bloquearEdicionSpinner(spinnersRepeticiones[i]);
+            gbc.gridx = 1;
+            dialogoRepeticiones.add(spinnersRepeticiones[i], gbc);
+
+            // Etiqueta Peso
+            etiquetasPeso[i] = new JLabel("Peso:");
+            gbc.gridx = 2;
+            dialogoRepeticiones.add(etiquetasPeso[i], gbc);
+
+            // Spinner Peso
+            spinnersPeso[i] = new JSpinner(new SpinnerNumberModel(0, 0, 500, 1));
+            bloquearEdicionSpinner(spinnersPeso[i]);
+            gbc.gridx = 3;
+            dialogoRepeticiones.add(spinnersPeso[i], gbc);
+
+            // Etiqueta Esfuerzo
+            etiquetasEsfuerzo[i] = new JLabel("Esfuerzo:");
+            gbc.gridx = 4;
+            dialogoRepeticiones.add(etiquetasEsfuerzo[i], gbc);
+
+            // Botones de Esfuerzo
+            gruposEsfuerzo[i] = new ButtonGroup();
+            JPanel panelEsfuerzo = new JPanel(new GridLayout(1, 3));
+            botonesEsfuerzo[i][0] = new JRadioButton("Aprox.(W)");
+            botonesEsfuerzo[i][1] = new JRadioButton("Estándar(E)");
+            botonesEsfuerzo[i][2] = new JRadioButton("Topset(T)");
+
+            for (JRadioButton boton : botonesEsfuerzo[i]) {
+                gruposEsfuerzo[i].add(boton);
+                panelEsfuerzo.add(boton);
+            }
+            botonesEsfuerzo[i][1].setSelected(true); // Selecciona "Medio" por defecto
+            gbc.gridx = 5;
+            dialogoRepeticiones.add(panelEsfuerzo, gbc);
         }
-        
-        //Cuando se le da a aceptar se meten los datos en el mapa 
+
+        // Botón Aceptar
         JButton botonAceptar = new JButton("Aceptar");
         botonAceptar.addActionListener(e -> {
-        	
-        	//Se guardara los datos de las series 
             List<Map<String, Integer>> seriesData = new ArrayList<>();
-            
-            //Recorre las series
+
             for (int i = 0; i < numSeries; i++) {
-            	
-            	//Creo mapa para que se almacenen cada serie 
                 Map<String, Integer> datosSerie = new HashMap<>();
-                
-                //Obtiene el valor ingresado por el usuario en el spinner de repeticiones para la serie i
                 datosSerie.put("repeticiones", (Integer) spinnersRepeticiones[i].getValue());
-                
-                //Obtiene el peso ingresado por el usuario para la serie i
                 datosSerie.put("peso", (Integer) spinnersPeso[i].getValue());
-                
+
+                // Obtener esfuerzo seleccionado como un entero
+                int esfuerzo = 0;
+                if (botonesEsfuerzo[i][0].isSelected()) esfuerzo = 1; // Bajo
+                else if (botonesEsfuerzo[i][1].isSelected()) esfuerzo = 2; // Medio
+                else if (botonesEsfuerzo[i][2].isSelected()) esfuerzo = 3; // Alto
+
+                datosSerie.put("esfuerzo", esfuerzo);
                 seriesData.add(datosSerie);
             }
+
+            
             if (callback != null) {
                 callback.onEjercicioSeleccionado(ejercicio, seriesData);
             }
             
+            if (interfazRutina != null) {
+                interfazRutina.setVisible(true);
+            } else {
+                System.err.println("Error: InterfazRutina es nulo.");
+            }
+            
+            if (interfazRutina == null) {
+                InterfazRutina nuevaInterfaz = new InterfazRutina(nombreRutina, descripcionRutina, usuario);
+                nuevaInterfaz.setVisible(true);
+            } else {
+                interfazRutina.setVisible(true);
+            }
+
             dialogoRepeticiones.dispose();
             this.dispose();
         });
 
-        dialogoRepeticiones.add(new JLabel());
-        dialogoRepeticiones.add(botonAceptar);
+        gbc.gridx = 0; gbc.gridy = numSeries; gbc.gridwidth = 6;
+        dialogoRepeticiones.add(botonAceptar, gbc);
 
         dialogoRepeticiones.setVisible(true);
     }
+
+
+
 
     private void bloquearEdicionSpinner(JSpinner spinner) {
         JComponent editor = spinner.getEditor();

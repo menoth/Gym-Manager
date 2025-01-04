@@ -550,6 +550,7 @@ public class PerfilUsuario extends JFrame {
 					}
 				}
 			});
+	        //Action listener anuncio
 	        
 	        
 	        //Action listener estadísticas

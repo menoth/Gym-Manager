@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class GenerarRutinaAleatoria extends JFrame {
@@ -24,7 +25,7 @@ public class GenerarRutinaAleatoria extends JFrame {
 		// TODO Auto-generated constructor stub
 		JDialog dialog = new JDialog();
 	    dialog.setLayout(new BorderLayout());
-	    dialog.setSize(300, 200);
+	    dialog.setSize(500, 500);
 	    dialog.setLocationRelativeTo(null);
 	    dialog.setTitle("Creacion de rutina aleatoria");
 		
@@ -32,6 +33,17 @@ public class GenerarRutinaAleatoria extends JFrame {
 	    JPanel panelContenido = new JPanel();
 	    panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
 	    panelContenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	    
+	    JLabel labelNombre = new JLabel("Nombre del entrenamiento:");
+        JTextArea textNombre = new JTextArea(1, 20);
+        textNombre.setBorder(BorderFactory.createEtchedBorder()); // Borde para distinguir el campo
+
+        // Campo para la descripción del entrenamiento
+        JLabel labelDescripcion = new JLabel("Descripción del entrenamiento:");
+        JTextArea textDescripcion = new JTextArea(3, 20);
+        textDescripcion.setLineWrap(true);
+        textDescripcion.setWrapStyleWord(true);
+        textDescripcion.setBorder(BorderFactory.createEtchedBorder()); // Borde para distinguir el campo
 
 	    // Crear los componentes
 	    JLabel labelDias = new JLabel("Cuantos dias quieres entrenar:");
@@ -55,8 +67,12 @@ public class GenerarRutinaAleatoria extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (textNombre.getText().trim().isEmpty() || textDescripcion.getText().trim().isEmpty()) {
+                    System.out.println("Por favor, completa todos los campos antes de continuar.");
+                    return;
+                }
 				dialog.dispose();
-                new SeleccionMusculosYDias(usuario, (int) diasDeSemana.getSelectedItem(), (int) musculosEntrenados.getSelectedItem());
+                new SeleccionMusculosYDias(usuario, textNombre.getText() , textDescripcion.getText() , (int) diasDeSemana.getSelectedItem(), (int) musculosEntrenados.getSelectedItem());
 			}
 	    	
 	    });
@@ -72,6 +88,10 @@ public class GenerarRutinaAleatoria extends JFrame {
 	    });
 
 	    // Añadir componentes al panel principal
+	    panelContenido.add(labelNombre);
+        panelContenido.add(textNombre);
+        panelContenido.add(labelDescripcion);
+        panelContenido.add(textDescripcion);
 	    panelContenido.add(labelDias);
 	    panelContenido.add(diasDeSemana);
 	    panelContenido.add(labelMusculos);
@@ -87,6 +107,7 @@ public class GenerarRutinaAleatoria extends JFrame {
 
 	    // Mostrar el diálogo
 	    dialog.setVisible(true);
+	    dialog.pack();
 		
 		
 	}
