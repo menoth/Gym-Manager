@@ -65,6 +65,7 @@ public class InicioSesion extends JFrame {
         setLayout(new BorderLayout());
         botonRegistrarse = new JButton("Registrarse");
         botonRegistrarse.setPreferredSize(new Dimension(665, 50));
+        
         JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelAbajo.setLayout(new GridLayout(2,1));
         panelAbajo.add(new JLabel());

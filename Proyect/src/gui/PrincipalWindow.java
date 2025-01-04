@@ -31,6 +31,13 @@ public class PrincipalWindow extends JFrame {
 		pNorte.setLayout(new BorderLayout());
 		pNorte.setBackground(new Color(70, 130, 180)); // Azul acero
 		pNorte.setPreferredSize(new Dimension(0, 200));
+		
+		// Crear un JLabel para el mensaje de bienvenida
+		JLabel labelBienvenido = new JLabel("Bienvenido " + usuario + "!");
+		labelBienvenido.setHorizontalAlignment(SwingConstants.CENTER); // Centrar el texto
+		labelBienvenido.setFont(new Font("Serif", Font.BOLD, 66));
+		labelBienvenido.setForeground(Color.WHITE);
+		iniciarAnimacionColor(labelBienvenido);
 
 		// Botón para ir al perfil
 		JPanel panelPerfil = new JPanel();
@@ -44,7 +51,7 @@ public class PrincipalWindow extends JFrame {
 		
 		profileButton.setBackground(new Color(255, 255, 255)); // Blanco
 		profileButton.setForeground(new Color(70, 130, 180)); // Azul acero
-		profileButton.setFont(new Font("Arial", Font.BOLD, 16));
+		profileButton.setFont(new Font("Serif", Font.BOLD, 16));
 
 		profileButton.addActionListener(e -> {
 			setVisible(false);
@@ -63,7 +70,7 @@ public class PrincipalWindow extends JFrame {
 		menuButton.setPreferredSize(new Dimension(120, 60));
 		menuButton.setBackground(new Color(255, 255, 255)); // Blanco
 		menuButton.setForeground(new Color(70, 130, 180)); // Azul acero
-		menuButton.setFont(new Font("Arial", Font.BOLD, 16));
+		menuButton.setFont(new Font("Serif", Font.BOLD, 16));
 
 		JPopupMenu menuDesplegable = new JPopupMenu();
 
@@ -145,6 +152,7 @@ public class PrincipalWindow extends JFrame {
 		panelPerfil.add(profileButton);
 		pNorte.add(panelPerfil, BorderLayout.WEST);
 
+		pNorte.add(labelBienvenido, BorderLayout.CENTER);
 		
 		// Panel Oeste
         JPanel pOeste = new JPanel();
@@ -175,25 +183,46 @@ public class PrincipalWindow extends JFrame {
 		pBuscador.setLayout(new FlowLayout());
 		pBuscador.setBackground(new Color(245, 245, 245));
 
-		JLabel etiquetaBuscar = new JLabel("Buscar Usuario:");
-		etiquetaBuscar.setPreferredSize(new Dimension(190,30));
-		etiquetaBuscar.setFont(new Font("Arial", Font.BOLD, 24));
-		etiquetaBuscar.setForeground(new Color(70, 130, 180));
+		// Crear el campo de búsqueda con un placeholder
+		campo_busqueda = new JTextField("Buscar usuario...");
+		campo_busqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Estilo cursiva para el placeholder
+		campo_busqueda.setForeground(Color.GRAY); // Color gris claro para el placeholder
+		campo_busqueda.setPreferredSize(new Dimension(500, 40)); // Ajustar tamaño del campo
 
-		campo_busqueda = new JTextField(30);
-		campo_busqueda.setFont(new Font("Arial", Font.PLAIN, 18));
+		// Agregar FocusListener para manejar el comportamiento del placeholder
+		campo_busqueda.addFocusListener(new FocusListener() {
+		    @Override
+		    public void focusGained(FocusEvent e) {
+		        // Cuando el campo obtiene el enfoque
+		        if (campo_busqueda.getText().equals("Buscar usuario...")) {
+		            campo_busqueda.setText(""); // Limpiar el texto
+		            campo_busqueda.setFont(new Font("Serif", Font.PLAIN, 23)); // Cambiar a fuente normal
+		            campo_busqueda.setForeground(Color.BLACK); // Cambiar a color negro
+		        }
+		    }
+
+		    @Override
+		    public void focusLost(FocusEvent e) {
+		        // Cuando el campo pierde el enfoque
+		        if (campo_busqueda.getText().isEmpty()) {
+		            campo_busqueda.setText("Buscar usuario..."); // Restaurar el placeholder
+		            campo_busqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Regresar a fuente cursiva
+		            campo_busqueda.setForeground(Color.GRAY); // Cambiar a color gris
+		        }
+		    }
+		});
 
 		boton_buscar = new JButton("Buscar");
-		boton_buscar.setFont(new Font("Arial", Font.BOLD, 20));
+		boton_buscar.setFont(new Font("Serif", Font.BOLD, 26));
 		boton_buscar.setBackground(new Color(70, 130, 180));
 		boton_buscar.setForeground(Color.WHITE);
-		boton_buscar.setPreferredSize(new Dimension(190,30));
+		boton_buscar.setPreferredSize(new Dimension(190,50));
 
 		lista = new DefaultListModel<>();
 		new JList<>(lista);
 		
 		//Ponemos en el buscador todos los nombres de usuario que haya en la base de datos
-	     datosUsuario((ArrayList<String>) datos);
+	    datosUsuario((ArrayList<String>) datos);
 	   	boton_buscar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -210,7 +239,6 @@ public class PrincipalWindow extends JFrame {
 		
 		// Espaciador para bajar el buscador
 		pBuscador.add(Box.createVerticalStrut(250)); // Baja el buscador más abajo
-		pBuscador.add(etiquetaBuscar);
 		pBuscador.add(campo_busqueda);
 		pBuscador.add(boton_buscar);
 		pCentral.add(pBuscador, BorderLayout.NORTH);
@@ -249,6 +277,53 @@ public class PrincipalWindow extends JFrame {
 
 		setVisible(true);
 	}
+	
+	private void iniciarAnimacionColor(JLabel label) {
+	    new Thread(() -> {
+	        boolean aumentando = true; // Controla si aumenta o disminuye la intensidad
+	        float progreso = 0;        // Controla el progreso de la transición (de 0.0 a 1.0)
+
+	        // Colores inicial y final
+	        Color colorInicio = Color.WHITE;
+	        Color colorFinal = new Color(70, 130, 180);
+
+	        while (true) {
+	            // Ajustar el progreso
+	            if (aumentando) {
+	                progreso += 0.01f; // Incrementar progreso
+	                if (progreso >= 1.0f) aumentando = false; // Si llega al final, invertir
+	            } else {
+	                progreso -= 0.01f; // Decrementar progreso
+	                if (progreso <= 0.0f) aumentando = true; // Si regresa al inicio, invertir
+	            }
+
+	            // Interpolar entre blanco y el color final
+	            int r = (int) ((1 - progreso) * colorInicio.getRed() + progreso * colorFinal.getRed());
+	            int g = (int) ((1 - progreso) * colorInicio.getGreen() + progreso * colorFinal.getGreen());
+	            int b = (int) ((1 - progreso) * colorInicio.getBlue() + progreso * colorFinal.getBlue());
+
+	            // Asegurar que los valores de color estén en el rango [0, 255]
+	            r = Math.max(0, Math.min(255, r));
+	            g = Math.max(0, Math.min(255, g));
+	            b = Math.max(0, Math.min(255, b));
+
+	            // Crear el color fuera de la expresión lambda
+	            Color nuevoColor = new Color(r, g, b);
+
+	            // Actualizar el color en el hilo de la interfaz gráfica
+	            SwingUtilities.invokeLater(() -> label.setForeground(nuevoColor));
+
+	            // Pausa para suavizar la animación
+	            try {
+	                Thread.sleep(15); // Ajusta la velocidad del cambio de color
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }).start();
+	}
+
+
 	
 	//Dialogo para salir mediante el botón x
 		private void confirmarSalida() {
@@ -309,9 +384,5 @@ public class PrincipalWindow extends JFrame {
 	 			e.printStackTrace();
 	 		}
 		 }
-	
-	public static void main(String[] args) {
-		new PrincipalWindow("admin");
-	}
 	
 }
