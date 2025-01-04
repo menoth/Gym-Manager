@@ -107,6 +107,7 @@ public class PrincipalWindow extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 				new RetoDiario(usuario);
 				
 			}
@@ -198,6 +199,7 @@ public class PrincipalWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				for (String string : datos) {
 					if(string.equals(campo_busqueda.getText())) {
+						dispose();
 						new VisitarPerfil(string, usuario);
 					}
 				}

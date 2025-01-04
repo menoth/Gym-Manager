@@ -50,7 +50,7 @@ public class PerfilUsuario extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public PerfilUsuario(String usuario) {
-		
+		setUndecorated(true);
 //----------------------------------------------BD-------------------------------------------------------------------		
 		List<Usuario> usuarios = new ArrayList<>();
 		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
@@ -107,19 +107,19 @@ public class PerfilUsuario extends JFrame {
 		//El panel izquierda tendrá nombre, apellidos, vitrina... y 
 		//el pane derecha tendrá las rutinas con sus estad´sticas
 		JPanel pIzquierda = new JPanel();
-		pIzquierda.setBackground(new Color(176,224,230));
+		pIzquierda.setBackground(new Color(70, 130, 180));
 		pIzquierda.setLayout(new GridLayout(3,1));
 		
 		// Margenes para el panelIzquierda
-		pIzquierda.setBorder(new EmptyBorder(60, 50, 50, 50)); 		
+		pIzquierda.setBorder(new EmptyBorder(80, 40, 80, 0)); 		
 		
 		//El panel izquierda se divide en 3 paneles
 		JPanel panelIz1 = new JPanel();
-		panelIz1.setLayout(new FlowLayout(FlowLayout.CENTER ,50, 30));
-		panelIz1.setBackground(new Color(176,224,230));
+		panelIz1.setLayout(new FlowLayout(FlowLayout.CENTER ,25, 30));
+		panelIz1.setBackground(new Color(70, 130, 180));
 		
 		JPanel panelIz2 = new JPanel();
-		panelIz2.setBackground(new Color(176,224,230));
+		panelIz2.setBackground(new Color(70, 130, 180));
 		
 		JPanel panelIz3 = new JPanel();
 		String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
@@ -182,7 +182,11 @@ public class PerfilUsuario extends JFrame {
 		// Botón para volver a la ventana principal
 		
 		JButton botonPrincipal = new JButton("VOLVER");
-		botonPrincipal.setPreferredSize(new Dimension(100, 40));
+		botonPrincipal.setPreferredSize(new Dimension(120, 50));
+		
+		botonPrincipal.setBackground(new Color(255, 255, 255));
+		botonPrincipal.setForeground(new Color(70, 130, 180));
+		botonPrincipal.setFont(new Font("Arial", Font.BOLD, 16));
 		panelIz1.add(botonPrincipal);
 		
 		// Label para la foto de perfil
@@ -202,19 +206,22 @@ public class PerfilUsuario extends JFrame {
                 + "@<b>" + uElegido.getUsuario() + "</b></html>";
 			 
 		JLabel nombreApellidos = new JLabel(texto);
+		nombreApellidos.setForeground(new Color(255,255,255));
 		
 		// Cambiamos el tamaño de la fuente
-		nombreApellidos.setFont(new Font("Arial",Font.PLAIN ,18));
+		nombreApellidos.setFont(new Font("Arial", Font.BOLD, 16));
+		nombreApellidos.setBackground(new Color(255, 255, 255));
 		panelIz1.add(nombreApellidos);
 		
 		//Boton para editar datos
 		JButton editarDatos = new JButton("EDITAR");
-		editarDatos.setPreferredSize(new Dimension(100, 50));
-		panelIz1.add(editarDatos); 
+		editarDatos.setPreferredSize(new Dimension(110, 50));
 		
-		//Boton para editar foto de perfil
-		JButton botonCambiarFoto = new JButton("Editar foto");
-		botonCambiarFoto.setPreferredSize(new Dimension(100, 50));
+		editarDatos.setBackground(new Color(255, 255, 255));
+		editarDatos.setForeground(new Color(70, 130, 180));
+		editarDatos.setFont(new Font("Arial", Font.BOLD, 16));
+		
+		panelIz1.add(editarDatos); 
 		
 		//Para que no de errores el action listener
 		Usuario uFinal = uElegido;
@@ -234,7 +241,7 @@ public class PerfilUsuario extends JFrame {
 
 		//Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
-		desc.setBackground(new Color(195,248,255));
+		desc.setBackground(new Color(255,255,255));
 		
 		// Detalles del JTextArea
 		desc.setWrapStyleWord(true);
@@ -269,13 +276,15 @@ public class PerfilUsuario extends JFrame {
 		
 //------------------------LADO DERECHO------------------------------
 		JPanel pDerecha = new JPanel();
-		pDerecha.setBackground(new Color(176,224,230));
+		pDerecha.setBackground(new Color(70, 130, 180));
 		add(pDerecha);
 		pDerecha.setLayout(new BorderLayout());
 		
 		//Label rutinas
 		JLabel rutinas = new JLabel("RUTINAS");
-		rutinas.setFont(new Font("Arial", Font.PLAIN, 25));
+		rutinas.setForeground(new Color(255, 255, 255));
+		rutinas.setFont(new Font("Arial", Font.BOLD, 25));
+
 		pDerecha.add(rutinas, BorderLayout.NORTH);
 		pDerecha.setBorder(new EmptyBorder(40,40,0,0));
 		
@@ -359,6 +368,8 @@ public class PerfilUsuario extends JFrame {
 	                //Notifica a la tabla que los datos han cambiado
 	                fireTableDataChanged();
 	            }
+				conn.close();
+				stmt.close();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
@@ -412,6 +423,8 @@ public class PerfilUsuario extends JFrame {
 
 	    @Override
 	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	    	
+	    	
 	        // Limpia el panel para cada renderizado
 	        this.removeAll();
 

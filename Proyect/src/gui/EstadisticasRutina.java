@@ -74,6 +74,8 @@ public class EstadisticasRutina extends JFrame {
 //------------------------------LADO IZQUIERDO-------------------------------------------------------
         
         JPanel pIzquierda = new JPanel();
+        pIzquierda.setBackground(new Color(255, 255, 255));
+
         pIzquierda.setLayout(new GridLayout(3, 1));
         pIzquierda.setBorder(new EmptyBorder(0,0,0,30));
         pIzquierda.setBorder(new LineBorder(Color.BLACK, 3));
@@ -81,6 +83,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Panel con el nombre que aparece en la parte superior
         JPanel panelNombre = new JPanel();
+        panelNombre.setForeground(new Color(255, 255, 255));
         panelNombre.setLayout(new BorderLayout());
         panelNombre.setBorder(new EmptyBorder(80,20,20,20));
         
@@ -106,6 +109,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Panel para el Volumen de entrenamiento
         JPanel pVolumen = new JPanel();
+        pVolumen.setForeground(new Color(255, 255, 255));
         pVolumen.setLayout(new BorderLayout(0,15));
         pVolumen.setBorder(new EmptyBorder(20,20,20,20));
         
@@ -146,12 +150,14 @@ public class EstadisticasRutina extends JFrame {
         
 //------------------------------LADO DERECHO------------------------------
         JPanel pDerecha = new JPanel();
+        pDerecha.setForeground(new Color(255, 255, 255));
         pDerecha.setBorder(new EmptyBorder(0,30,0,0));
         pDerecha.setLayout(new GridLayout(3,1));
         pDerecha.setBorder(new LineBorder(Color.BLACK, 3));
         
         //Primer panel
         JPanel panelDerecha1 = new JPanel();
+        panelDerecha1.setForeground(new Color(255, 255, 255));
         panelDerecha1.setLayout(new BorderLayout(0,0));
         panelDerecha1.setBorder(new EmptyBorder(100, 10, 30,0));
         
@@ -182,6 +188,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Segundo panel derecho con las recomendaciones de optimización
         JPanel musculosOpt = new JPanel();
+        musculosOpt.setForeground(new Color(255, 255, 255));
         musculosOpt.setLayout(new GridLayout(3,2));
         musculosOpt.setBorder(new EmptyBorder(0,30,20,20));
         
@@ -245,6 +252,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Ultimo panel del lado derecho con el recuadro de info
         JPanel panelInfo = new JPanel();
+        panelInfo.setForeground(new Color(255, 255, 255));
         panelInfo.setLayout(new BorderLayout(0,10));
         panelInfo.setBorder(new EmptyBorder(20,35,20,20));
         
@@ -258,6 +266,7 @@ public class EstadisticasRutina extends JFrame {
 	    panelInfo.add(labelLogoInfo, BorderLayout.WEST);
 	    
 	    JPanel panelContenedor = new JPanel();
+	    panelContenedor.setForeground(new Color(255, 255, 255));
 	    panelContenedor.setLayout(new FlowLayout());
 	    panelContenedor.setBorder(new EmptyBorder(40,0,0,0));
 	    
@@ -382,11 +391,6 @@ public class EstadisticasRutina extends JFrame {
         }
       }
     
-
-	public static void main(String[] args) {
-		Rutina rutinaEjemplo = null;
-		new EstadisticasRutina(rutinaEjemplo);
-	}
 	public HashMap<String, Double> CrearMapaGrafico(Rutina rutina, ArrayList<Ejercicio> ejercicios) {
     	HashMap<String, Double> mapa = new HashMap<String, Double>();
     	for(Entrenamiento entrenamiento : rutina.getEntrenamientos()) {

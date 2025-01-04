@@ -51,6 +51,7 @@ public class EditarRutina extends JFrame {
 		
 		
 		this.setLayout(new BorderLayout());
+		this.setBackground(new Color(70, 130, 180));
 		
 		//Ordenamos la rutina por dias de la semana
 		rutina.getEntrenamientos().sort((e1, e2) -> e1.getDía().compareTo(e2.getDía()));
@@ -58,11 +59,16 @@ public class EditarRutina extends JFrame {
 //----------------------------------------------PANEL NORTE------------------------------------------------		
 		JPanel panelNorte = new JPanel();
 		panelNorte.setLayout(new GridLayout(2, 1));
+		panelNorte.setBackground(new Color(70, 130, 180));
 		
 		JPanel panelNorteNorte = new JPanel();
 		panelNorteNorte.setLayout(new FlowLayout(EditarRutina.WIDTH, 340, 30));
+		panelNorteNorte.setBackground(new Color(70, 130, 180));
 		
 		JButton botonVolver = new JButton("Volver");
+		botonVolver.setBackground(new Color(255, 255, 255)); // Blanco
+		botonVolver.setForeground(new Color(70, 130, 180)); // Azul acero
+		botonVolver.setFont(new Font("Arial", Font.BOLD, 16));
 		botonVolver.setPreferredSize(new Dimension(120, 50));
 		
 		JTextField nombreRutina = new JTextField(rutina.getNombre());
@@ -70,6 +76,9 @@ public class EditarRutina extends JFrame {
 		nombreRutina.setFont(new Font("Arial", Font.PLAIN, 18));
 		
 		JButton guardarCambios = new JButton("Guardar");
+		guardarCambios.setBackground(new Color(255, 255, 255)); // Blanco
+		guardarCambios.setForeground(new Color(70, 130, 180)); // Azul acero
+		guardarCambios.setFont(new Font("Arial", Font.BOLD, 16));
 		guardarCambios.setPreferredSize(new Dimension(120, 50));
 		
 		panelNorteNorte.add(botonVolver);
@@ -79,6 +88,7 @@ public class EditarRutina extends JFrame {
 		
 		JPanel panelNorteSur = new JPanel();
 		panelNorteSur.setLayout(new FlowLayout());
+		panelNorteSur.setBackground(new Color(70, 130, 180));
 		
 		//Creamos un jTextArea que será la descripción de la rutina
 		JTextField desc = new JTextField(rutina.getDescripcionRutina());
@@ -144,33 +154,40 @@ public class EditarRutina extends JFrame {
 		
 		JPanel panelCentral = new JPanel();
 		panelCentral.setBorder(new EmptyBorder(10,10,10,10));
+		panelCentral.setBackground(new Color(70, 130, 180));
 		
-		panelCentral.setBackground(Color.black);
+		panelCentral.setBackground(new Color(70, 130, 180));
 		panelCentral.setLayout(new GridLayout(1, 3));
 	
 		JPanel panel1 = new JPanel();
+		panel1.setBackground(new Color(70, 130, 180));
 		
 		//Panel 1 con los entrenamientos de la semana
 		panel1.setLayout(new GridLayout(7, 1));
 
 		
 		JPanel panel2 = new JPanel();
+		panel2.setBackground(new Color(70, 130, 180));
 		panel2.setLayout(new FlowLayout());
 		
 		JPanel panel3 = new JPanel();
-
+		panel3.setBackground(new Color(70, 130, 180));
+		
 		int indice = 0;
 		for (int i = 0; i < 7; i++) {
 
 			JPanel panel = new JPanel();
+			panel.setBackground(new Color(70, 130, 180));
 			panel.setLayout(new GridLayout(1, 3));
 			
 			JPanel panel11 = new JPanel();
+			panel11.setBackground(new Color(70, 130, 180));
 			panel11.setLayout(new FlowLayout(FlowLayout.CENTER));
 			
 			JLabel lunes = new JLabel(listaDias.get(i));
-			
-	        lunes.setFont(new Font("Arial", Font.PLAIN, 20));
+			lunes.setFont(new Font("Arial", Font.BOLD, 24));
+			lunes.setForeground(new Color(255, 255, 255));
+
 	        lunes.setBackground(this.getBackground());
 	        
 			panel11.add(lunes);
@@ -179,6 +196,7 @@ public class EditarRutina extends JFrame {
 			
 			if(entrenamientosSemana.get(i) == 1) {
 				JPanel panel12 = new JPanel();
+				panel12.setBackground(new Color(70, 130, 180));
 				panel12.setBorder(new EmptyBorder(10,10,10,10));
 				panel12.setLayout(new GridLayout(2, 1, 30, 10));
 				
@@ -191,12 +209,24 @@ public class EditarRutina extends JFrame {
 				panel.add(panel12);
 				
 				JPanel panel13 = new JPanel();
+				panel13.setBackground(new Color(70, 130, 180));
 				panel13.setBorder(new EmptyBorder(10,10,10,10));
 				panel13.setLayout(new GridLayout(3, 1, 15, 5));
 				
 				JButton guardar = new JButton("Guardar");
+				guardar.setBackground(new Color(255, 255, 255)); // Blanco
+				guardar.setForeground(new Color(70, 130, 180)); // Azul acero
+				guardar.setFont(new Font("Arial", Font.BOLD, 16));
+				
 				JButton eliminar = new JButton("Eliminar");
+				eliminar.setBackground(new Color(255, 255, 255)); // Blanco
+				eliminar.setForeground(new Color(70, 130, 180)); // Azul acero
+				eliminar.setFont(new Font("Arial", Font.BOLD, 16));
+				
 				JButton editar = new JButton("Editar");
+				editar.setBackground(new Color(255, 255, 255)); // Blanco
+				editar.setForeground(new Color(70, 130, 180)); // Azul acero
+				editar.setFont(new Font("Arial", Font.BOLD, 16));
 				
 				int indice2 = indice;
 				
@@ -247,18 +277,28 @@ public class EditarRutina extends JFrame {
 						for (EjercicioEnEntrenamiento ejercicio : rutina.getEntrenamientos().get(indice2).getEjercicios()) {
 							
 							JPanel panelEjercicio = new JPanel();
+							panelEjercicio.setBackground(new Color(70, 130, 180));
 							
 							int id = ejercicio.getID_Ejercicio();
 
 							JPanel panelSubEjercicio = new JPanel();
+							panelSubEjercicio.setBackground(new Color(70, 130, 180));
 							panelSubEjercicio.setLayout(new FlowLayout());
 							panelSubEjercicio.setBorder(new EmptyBorder(25,10,10,25));
 							panelSubEjercicio.setPreferredSize(new Dimension(470, 100));
 							
-							panelSubEjercicio.add(new JLabel(nombreEjercicio(id)));
+							JLabel nombreEjercicio = new JLabel(nombreEjercicio(id));
+							nombreEjercicio.setForeground(new Color(255, 255, 255));
+							nombreEjercicio.setFont(new Font("Arial", Font.BOLD, 14));
+							
+							
+							panelSubEjercicio.add(nombreEjercicio);
 													
 							JButton botonEditar = new JButton("Editar");
-							botonEditar.setPreferredSize(new Dimension(70, 50));
+							botonEditar.setBackground(new Color(255, 255, 255)); // Blanco
+							botonEditar.setForeground(new Color(70, 130, 180)); // Azul acero
+							botonEditar.setFont(new Font("Arial", Font.BOLD, 14));
+							botonEditar.setPreferredSize(new Dimension(80, 50));
 							panelSubEjercicio.add(botonEditar);
 							
 							int indice4 = indice3;
@@ -272,15 +312,20 @@ public class EditarRutina extends JFrame {
 									List<Serie> listaSeries = rutina.getEntrenamientos().get(indice2).getEjercicios().get(indice4).getSeries();
 									
 									JPanel panelSerie = new JPanel();
+									panelSerie.setBackground(new Color(70, 130, 180));
 									panelSerie.setLayout(new BoxLayout(panelSerie, BoxLayout.Y_AXIS));
 									
 									for (Serie serie : listaSeries) {
 										JPanel panelSubSerie = new JPanel();
+										panelSubSerie.setBackground(new Color(70, 130, 180));
 										panelSubSerie.setLayout(new FlowLayout());
 										panelSubSerie.setBorder(new EmptyBorder(25,10,10,25));
 										panelSubSerie.setPreferredSize(new Dimension(panel3.getWidth(),100));
 										
 										JComboBox<Integer> ordenSerie = new JComboBox<>();
+										ordenSerie.setBackground(new Color(255, 255, 255)); // Blanco
+										ordenSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+										ordenSerie.setFont(new Font("Arial", Font.BOLD, 16));
 										for (int j = 0; j < listaSeries.size(); j++) {
 											ordenSerie.addItem(j+1);
 										}
@@ -289,6 +334,9 @@ public class EditarRutina extends JFrame {
 										
 										
 										JComboBox<Float> pesoSerie = new JComboBox<>();
+										pesoSerie.setBackground(new Color(255, 255, 255)); // Blanco
+										pesoSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+										pesoSerie.setFont(new Font("Arial", Font.BOLD, 16));
 										
 										for (float i = 1; i <= 120; i += 0.5) {
 										    pesoSerie.addItem(i);
@@ -297,6 +345,10 @@ public class EditarRutina extends JFrame {
 										pesoSerie.setSelectedItem(serie.getPeso());
 										
 										JComboBox<Integer> repeticionesSerie = new JComboBox<>();
+										repeticionesSerie.setBackground(new Color(255, 255, 255)); // Blanco
+										repeticionesSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+										repeticionesSerie.setFont(new Font("Arial", Font.BOLD, 16));
+										
 										for (int i = 1; i <= 100; i++) {
 										    repeticionesSerie.addItem(i);
 										}
@@ -304,11 +356,18 @@ public class EditarRutina extends JFrame {
 										repeticionesSerie.setSelectedItem(serie.getRepeticiones());
 										
 										JComboBox<Esfuerzo> esfuerzoSerie = new JComboBox<>();
+										esfuerzoSerie.setBackground(new Color(255, 255, 255)); // Blanco
+										esfuerzoSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+										esfuerzoSerie.setFont(new Font("Arial", Font.BOLD, 16));
+										
 										for (Esfuerzo esfuerzo : Esfuerzo.values()) {
 											esfuerzoSerie.addItem(esfuerzo);
 										}
 										
 										JButton eliminarSerie = new JButton("Eliminar serie");
+										eliminarSerie.setBackground(new Color(255, 255, 255)); // Blanco
+										eliminarSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+										eliminarSerie.setFont(new Font("Arial", Font.BOLD, 16));
 										
 										esfuerzoSerie.setSelectedItem(serie.getEsfuerzo());
 										
@@ -369,10 +428,14 @@ public class EditarRutina extends JFrame {
 									}
 									
 									JPanel panelAñadirSerie = new JPanel();
+									panelAñadirSerie.setBackground(new Color(70, 130, 180));
 									panelAñadirSerie.setLayout(new FlowLayout());
 									panelAñadirSerie.setBorder(new EmptyBorder(20,20,20,20));
 									
 									JButton añadirSerie = new JButton("Añadir");
+									añadirSerie.setBackground(new Color(255, 255, 255)); // Blanco
+									añadirSerie.setForeground(new Color(70, 130, 180)); // Azul acero
+									añadirSerie.setFont(new Font("Arial", Font.BOLD, 16));
 									añadirSerie.setPreferredSize(new Dimension(100, 50));
 									
 									//Action listener añadirSerie 
@@ -396,7 +459,10 @@ public class EditarRutina extends JFrame {
 							});
 							
 							JButton botonEliminar = new JButton("Eliminar");
-							botonEliminar.setPreferredSize(new Dimension(80,50));
+							botonEliminar.setBackground(new Color(255, 255, 255)); // Blanco
+							botonEliminar.setForeground(new Color(70, 130, 180)); // Azul acero
+							botonEliminar.setFont(new Font("Arial", Font.BOLD, 14));
+							botonEliminar.setPreferredSize(new Dimension(90,50));
 							panelSubEjercicio.add(botonEliminar);
 							
 							panelEjercicio.add(panelSubEjercicio);
@@ -415,6 +481,9 @@ public class EditarRutina extends JFrame {
 							
 						}
 						JButton añadirEjercicio = new JButton("Añadir");
+						añadirEjercicio.setBackground(new Color(255, 255, 255)); // Blanco
+						añadirEjercicio.setForeground(new Color(70, 130, 180)); // Azul acero
+						añadirEjercicio.setFont(new Font("Arial", Font.BOLD, 16));
 						añadirEjercicio.setPreferredSize(new Dimension(70, 50));
 						panel2.add(añadirEjercicio);
 						
@@ -444,10 +513,14 @@ public class EditarRutina extends JFrame {
 				panel1.add(panel);
 			}else {
 				JPanel panel12 = new JPanel();
+				panel12.setBackground(new Color(70, 130, 180));
 				panel12.setBorder(new EmptyBorder(20,10,10,10));
 				panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 10,10));
 				
 				JButton botonAñadir = new JButton("AÑADIR");
+				botonAñadir.setBackground(new Color(255, 255, 255)); // Blanco
+				botonAñadir.setForeground(new Color(70, 130, 180)); // Azul acero
+				botonAñadir	.setFont(new Font("Arial", Font.BOLD, 16));
 				panel12.add(botonAñadir);
 				int contadorEntrenamiento = i;
 				
