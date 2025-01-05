@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.*;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -117,15 +118,37 @@ public class CatalogoEjercicio extends JFrame {
     }
 
     private void actualizarCatalogo(List<String> ejercicios) {
-        gridPrincipal.removeAll();
+        gridPrincipal.removeAll(); // Limpia el catálogo anterior
         for (String nombreEjercicio : ejercicios) {
+            
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+
             JButton boton = new JButton(nombreEjercicio);
             boton.addActionListener(e -> mostrarDialogoSeries(nombreEjercicio));
-            gridPrincipal.add(boton);
+            panel.add(boton, BorderLayout.SOUTH);
+            
+            JLabel label = new JLabel();
+            String imagePath = "Sources/imagenes/" + nombreEjercicio.trim() + ".png";
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+            	 ImageIcon originalIcon = new ImageIcon(imagePath);
+                 Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+                 ImageIcon resizedIcon = new ImageIcon(resizedImage);
+                 label.setIcon(resizedIcon);
+            } else {
+                label.setText("Imagen no encontrada");
+                System.err.println("Imagen no encontrada: " + imagePath);
+            }
+            
+            panel.add(label);
+
+            gridPrincipal.add(panel); 
         }
         gridPrincipal.revalidate();
         gridPrincipal.repaint();
     }
+
     
     private void mostrarDialogoAñadir_EliminarEjercicio(String usuario) {
         if (usuario.equals("admin")) {

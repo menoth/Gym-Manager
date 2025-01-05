@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,8 +16,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -147,9 +151,10 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
     private void actualizarCatalogo(List<Ejercicio> ejercicios2, int idRutina, int idEntrenamiento, String usuario) {
         gridPrincipal.removeAll(); // Limpiar el panel
         for (Ejercicio ejercicio : ejercicios2) {
-            JButton boton = new JButton("+" + ejercicio.getNombre());
+        	JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
             
-            gridPrincipal.add(boton);
+            JButton boton = new JButton("+" + ejercicio.getNombre());
             boton.addActionListener(new ActionListener() {
 				
 				@Override
@@ -159,6 +164,23 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
 					
 				}
 			});
+            panel.add(boton, BorderLayout.SOUTH);
+            
+            JLabel label = new JLabel();
+            String imagePath = "Sources/imagenes/" + ejercicio.getNombre().trim() + ".png";
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+            	 ImageIcon originalIcon = new ImageIcon(imagePath);
+                 Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+                 ImageIcon resizedIcon = new ImageIcon(resizedImage);
+                 label.setIcon(resizedIcon);
+            } else {
+                label.setText("Imagen no encontrada");
+                System.err.println("Imagen no encontrada: " + imagePath);
+            }
+            panel.add(label);
+
+            gridPrincipal.add(panel);
             
         }
         gridPrincipal.revalidate();

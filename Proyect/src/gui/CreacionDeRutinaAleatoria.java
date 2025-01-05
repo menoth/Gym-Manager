@@ -18,7 +18,7 @@ import domain.Entrenamiento;
 import domain.Musculo;
 import domain.Serie;
 import domain.Serie.Esfuerzo;
-// Comentarios y correcion de un error con Chat-gpt
+// Comentarios y correcion de un error con Chat-gpt	
 public class CreacionDeRutinaAleatoria{
 	public CreacionDeRutinaAleatoria(String usuario, String nombreRutina, String descripcionRutina, ArrayList<DayOfWeek> dias, ArrayList<String> musculos) {
 		// TODO Auto-generated constructor stub
@@ -102,9 +102,9 @@ public class CreacionDeRutinaAleatoria{
 		ejerciciosEnEntrenamientos = RutinaAleatoria(entrenamientos, ejerciciosEnEntrenamientos, musculos, ejercicios, idSerie, idEjercicioEnEntrenamiento);
 		for(Entrenamiento entrenamiento : entrenamientos) {
 			for(EjercicioEnEntrenamiento ejercicio : ejerciciosEnEntrenamientos) {
+				ejercicio.setOrdeEnEntrenamiento(entrenamiento.getEjercicios().size()+1);
 				if (ejercicio.getID_Entrenamiento() == entrenamiento.getId()) {
 					entrenamiento.getEjercicios().add(ejercicio);
-					ejercicio.setOrdeEnEntrenamiento(entrenamiento.getEjercicios().size()+1);
 				}
 			}
 		}
@@ -329,7 +329,6 @@ public class CreacionDeRutinaAleatoria{
     	return musculos2;
 	}
 	
-	@SuppressWarnings("unused")
 	private boolean esOptimo(ArrayList<EjercicioEnEntrenamiento> ejerciciosEntrenamiento, ArrayList<Ejercicio> ejercicios, ArrayList<String> musculos) {
 		HashMap<String, Double> mapa = new HashMap<String, Double>();
 		boolean resultado = true;
