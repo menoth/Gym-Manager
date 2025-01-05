@@ -16,12 +16,15 @@ public class LogrosVentana extends JFrame {
     LogrosVentana(Usuario usuario) {
 
         // Crear ventana
-    	setUndecorated(true);
+        setUndecorated(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(1200, 900);
         setLayout(new BorderLayout());
         setTitle("Selecciona tus logros");
         setLocationRelativeTo(null);
+
+        // Establecer el color de fondo de la ventana
+        getContentPane().setBackground(new Color(70, 130, 180));
 
         JLabel info = new JLabel("Selecciona hasta 3 logros:", JLabel.CENTER);
         info.setFont(new Font("Arial", Font.BOLD, 16));
@@ -29,11 +32,12 @@ public class LogrosVentana extends JFrame {
 
         // Panel para los logros
         JPanel logrosPanel = new JPanel(new GridLayout(0, 5, 0, 0));
+        logrosPanel.setBackground(new Color(70, 130, 180)); // Cambiar fondo del panel de logros
 
         // Nombres de las imágenes
         String[] logrosImagenes = {
-        	"40kgs en press de banca.png",
-        	"70kgs en press de banca.png",
+            "40kgs en press de banca.png",
+            "70kgs en press de banca.png",
             "100kgs en press de banca.png",
             "140kgs en press de banca.png",
             "180kgs en press de banca.png",
@@ -51,21 +55,21 @@ public class LogrosVentana extends JFrame {
 
         // Nombres de los textos
         String[] logrosTexto = {
-        		"40kgs en press de banca",
-            	"70kgs en press de banca",
-                "100kgs en press de banca",
-                "140kgs en press de banca",
-                "180kgs en press de banca",
-                "60kgs en sentadilla",
-                "80kgs en sentadilla",
-                "120kgs en sentadilla",
-                "170kgs en sentadilla",
-                "220kgs en sentadilla",
-                "60kgs en peso muerto",
-                "100kgs en peso muerto",
-                "150kgs en peso muerto",
-                "200kgs en peso muerto",
-                "250kgs en peso muerto"
+            "40kgs en press de banca",
+            "70kgs en press de banca",
+            "100kgs en press de banca",
+            "140kgs en press de banca",
+            "180kgs en press de banca",
+            "60kgs en sentadilla",
+            "80kgs en sentadilla",
+            "120kgs en sentadilla",
+            "170kgs en sentadilla",
+            "220kgs en sentadilla",
+            "60kgs en peso muerto",
+            "100kgs en peso muerto",
+            "150kgs en peso muerto",
+            "200kgs en peso muerto",
+            "250kgs en peso muerto"
         };
 
         // Cargar en la BD los nombres de los logros
@@ -77,6 +81,7 @@ public class LogrosVentana extends JFrame {
         for (int i = 0; i < logrosImagenes.length; i++) {
             JPanel logroPanel = new JPanel();
             logroPanel.setLayout(new BorderLayout());
+            logroPanel.setBackground(new Color(70, 130, 180)); // Cambiar fondo de cada logro
 
             // Cargar imágenes
             ImageIcon icon = null;
@@ -95,10 +100,12 @@ public class LogrosVentana extends JFrame {
             // Texto debajo de la imagen
             JLabel textoLabel = new JLabel(logrosTexto[i], JLabel.CENTER);
             textoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            textoLabel.setForeground(Color.WHITE); // Asegurar que el texto sea visible
             logroPanel.add(textoLabel, BorderLayout.SOUTH);
 
             // RadioButton para la imagen
             JRadioButton radioButton = new JRadioButton();
+            radioButton.setBackground(new Color(70, 130, 180)); // Cambiar fondo del botón
             radioButtons.add(radioButton);
             logroPanel.add(radioButton, BorderLayout.WEST);
 
@@ -113,7 +120,9 @@ public class LogrosVentana extends JFrame {
         }
 
         // Agregar logros a un JScrollPanel por si hay muchos
-        add(new JScrollPane(logrosPanel), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(logrosPanel);
+        scrollPane.getViewport().setBackground(new Color(70, 130, 180)); // Fondo del viewport del scrollpane
+        add(scrollPane, BorderLayout.CENTER);
 
         // Solo se pueden seleccionar 3 logros en total
         ArrayList<JRadioButton> seleccionados = new ArrayList<>();

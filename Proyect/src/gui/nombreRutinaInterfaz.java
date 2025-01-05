@@ -1,7 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,25 +28,45 @@ public class nombreRutinaInterfaz extends JFrame {
         // Crear el diálogo
         JDialog dialog = new JDialog();
         dialog.setLayout(new BorderLayout());
-        dialog.setSize(300, 200);
+        dialog.setSize(400, 300);
         dialog.setLocationRelativeTo(null);
         dialog.setTitle("Nueva rutina");
 
         // Crear el panel principal del diálogo
         JPanel panelContenido = new JPanel();
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
-        panelContenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelContenido.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panelContenido.setBackground(new Color(70, 130, 180)); // Fondo azul principal
 
         // Crear los componentes
         JLabel labelNombre = new JLabel("Inserte el nombre de la rutina:");
+        labelNombre.setFont(new Font("Serif", Font.BOLD, 20));
+        labelNombre.setForeground(Color.WHITE); // Texto blanco
+
         JTextField nombreRutinaJ = new JTextField(10);
+        nombreRutinaJ.setFont(new Font("Serif", Font.PLAIN, 20));
+
         JLabel labelDescripcion = new JLabel("Inserte la descripción de la rutina:");
+        labelDescripcion.setFont(new Font("Serif", Font.BOLD, 20));
+        labelDescripcion.setForeground(Color.WHITE); // Texto blanco
+
         JTextField descripcionRutinaJ = new JTextField(10);
+        descripcionRutinaJ.setFont(new Font("Serif", Font.PLAIN, 20));
 
         // Botones de acción
         JPanel panelBotones = new JPanel();
+        panelBotones.setBackground(new Color(70, 130, 180)); // Fondo azul principal
         JButton btnAceptar = new JButton("Aceptar");
         JButton btnCancelar = new JButton("Cancelar");
+
+        // Estilo de los botones
+        btnAceptar.setFont(new Font("Arial", Font.BOLD, 20));
+        btnAceptar.setBackground(Color.WHITE); // Fondo blanco
+        btnAceptar.setForeground(new Color(70, 130, 180)); // Texto azul
+
+        btnCancelar.setFont(new Font("Arial", Font.BOLD, 20));
+        btnCancelar.setBackground(Color.WHITE); // Fondo blanco
+        btnCancelar.setForeground(new Color(70, 130, 180)); // Texto azul
 
         // Acción del botón Aceptar
         btnAceptar.addActionListener(e -> {
@@ -67,14 +91,18 @@ public class nombreRutinaInterfaz extends JFrame {
 
         // Añadir componentes al panel principal
         panelContenido.add(labelNombre);
+        panelContenido.add(Box.createVerticalStrut(10));
         panelContenido.add(nombreRutinaJ);
+        panelContenido.add(Box.createVerticalStrut(20));
         panelContenido.add(labelDescripcion);
+        panelContenido.add(Box.createVerticalStrut(10));
         panelContenido.add(descripcionRutinaJ);
 
         // Añadir botones al panel de botones
-        panelBotones.add(btnAceptar);
         panelBotones.add(btnCancelar);
-
+        panelBotones.add(btnAceptar);
+        
+        
         // Añadir todo al diálogo
         dialog.add(panelContenido, BorderLayout.CENTER);
         dialog.add(panelBotones, BorderLayout.SOUTH);
@@ -83,4 +111,3 @@ public class nombreRutinaInterfaz extends JFrame {
         dialog.setVisible(true);
     }
 }
-

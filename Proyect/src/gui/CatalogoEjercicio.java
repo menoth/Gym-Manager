@@ -1,8 +1,8 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +12,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +38,14 @@ public class CatalogoEjercicio extends JFrame {
     private final String nombreRutina;
     private final String descripcionRutina;
     private final String usuario;
+    private static final Color COLOR_PRINCIPAL = new Color(70, 130, 180);
     
     private final InterfazRutina interfazRutina;
 
     public CatalogoEjercicio(String usuario, String nombreRutina, Callback callback, InterfazRutina interfazRutina) {
     	this.usuario = usuario;
     	this.nombreRutina = nombreRutina;
+    	
     	if (interfazRutina != null) {
     	    this.descripcionRutina = interfazRutina.getDescripcionRutina();
     	} else {
@@ -62,11 +63,19 @@ public class CatalogoEjercicio extends JFrame {
         panelPrincipal.setLayout(new BorderLayout());
 
         JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setBackground(Color.DARK_GRAY);
-        panelSuperior.setBorder(BorderFactory.createEmptyBorder(45, 40, 45, 40));
+        panelSuperior.setBackground(COLOR_PRINCIPAL);
+        panelSuperior.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel labelTitulo = new JLabel("Catálogo de Ejercicios", SwingConstants.CENTER);
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 34));
+        labelTitulo.setForeground(Color.WHITE);
+        panelSuperior.add(labelTitulo, BorderLayout.NORTH);
 
-        JButton botonVolver = new JButton("Volver");
-        botonVolver.setPreferredSize(new Dimension(200, 10));
+        JButton botonVolver = new JButton("VOLVER");
+        botonVolver.setBackground(Color.WHITE);
+        botonVolver.setForeground(COLOR_PRINCIPAL);
+        botonVolver.setFont(new Font("Serif", Font.BOLD, 17));
+        botonVolver.setPreferredSize(new Dimension(180, 10));
         botonVolver.addActionListener(e -> {
             dispose();
             if (interfazRutina != null) {
@@ -78,26 +87,86 @@ public class CatalogoEjercicio extends JFrame {
         panelSuperior.add(botonVolver, BorderLayout.WEST);
         
         JButton botonAñadirEjercicio = new JButton("EDITAR EJERCICIOS");
-        botonAñadirEjercicio.setPreferredSize(new Dimension(200, 10));
+        botonAñadirEjercicio.setBackground(Color.WHITE);
+        botonAñadirEjercicio.setForeground(COLOR_PRINCIPAL);
+        botonAñadirEjercicio.setFont(new Font("Serif", Font.BOLD, 14));
+        botonAñadirEjercicio.setPreferredSize(new Dimension(180, 10));
         botonAñadirEjercicio.addActionListener(e -> {mostrarDialogoAñadir_EliminarEjercicio(usuario);});
         panelSuperior.add(botonAñadirEjercicio, BorderLayout.EAST);
 
-        JPanel panelBusqueda = new JPanel();
-        panelBusqueda.setBackground(Color.DARK_GRAY);
-        campoBusqueda = new JTextField();
-        campoBusqueda.setPreferredSize(new Dimension(500, 30));
+        JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        panelBusqueda.setBackground(COLOR_PRINCIPAL);
+
+        campoBusqueda = new JTextField("Busca el ejercicio que desees");
+		campoBusqueda.setForeground(Color.GRAY); // Color gris claro para el placeholder
+        campoBusqueda.setPreferredSize(new Dimension(500, 40));
+        campoBusqueda.setFont(new Font("Serif", Font.ITALIC, 17));
+        campoBusqueda.addFocusListener(new FocusListener() {
+		    @Override
+		    public void focusGained(FocusEvent e) {
+		        // Cuando el campo obtiene el enfoque
+		        if (campoBusqueda.getText().equals("Busca el ejercicio que desees")) {
+		            campoBusqueda.setText(""); // Limpiar el texto
+		            campoBusqueda.setFont(new Font("Serif", Font.PLAIN, 23)); // Cambiar a fuente normal
+		            campoBusqueda.setForeground(Color.BLACK); // Cambiar a color negro
+		        }
+		    }
+
+		    @Override
+		    public void focusLost(FocusEvent e) {
+		        // Cuando el campo pierde el enfoque
+		        if (campoBusqueda.getText().isEmpty()) {
+		            campoBusqueda.setText("Busca el ejercicio que desees"); // Restaurar el placeholder
+		            campoBusqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Regresar a fuente cursiva
+		            campoBusqueda.setForeground(Color.GRAY); // Cambiar a color gris
+		        }
+		    }
+		});
         
-        JButton botonBuscar = new JButton("Buscar");
-        botonBuscar.setPreferredSize(new Dimension(140, 40));
+        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarResultados();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarResultados();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarResultados();
+            }
+
+            private void filtrarResultados() {
+                String textoBusqueda = campoBusqueda.getText().toLowerCase();
+                if (textoBusqueda.isEmpty()) {
+                    // Mostrar todos los ejercicios si el campo está vacío
+                    actualizarCatalogo(listaEjercicios);
+                } else {
+                    // Filtrar ejercicios que contengan el texto de búsqueda
+                    List<String> ejerciciosFiltrados = new ArrayList<>();
+                    for (String ejercicio : listaEjercicios) {
+                        if (ejercicio.toLowerCase().contains(textoBusqueda)) {
+                            ejerciciosFiltrados.add(ejercicio);
+                        }
+                    }
+                    // Actualizar el catálogo con los resultados filtrados
+                    actualizarCatalogo(ejerciciosFiltrados);
+                }
+            }
+        });
+        
         panelBusqueda.add(campoBusqueda);
-        panelBusqueda.add(botonBuscar);
+        
         panelSuperior.add(panelBusqueda, BorderLayout.CENTER);
 
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
 
         gridPrincipal = new JPanel(new GridLayout(0, 4, 20, 20));
-        gridPrincipal.setBackground(Color.LIGHT_GRAY);
-        gridPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        gridPrincipal.setBackground(Color.WHITE);
+        gridPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         listaEjercicios = cargarEjerciciosDesdeBD();
         actualizarCatalogo(listaEjercicios);
@@ -108,6 +177,48 @@ public class CatalogoEjercicio extends JFrame {
 
         add(panelPrincipal);
         setVisible(true);
+    }
+    
+    private void actualizarCatalogo(List<String> ejercicios) {
+        gridPrincipal.removeAll(); // Limpia el catálogo anterior
+        
+        for (String nombreEjercicio : ejercicios) {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.WHITE);
+            panel.setBorder(BorderFactory.createLineBorder(COLOR_PRINCIPAL, 2));
+
+            JButton boton = new JButton(nombreEjercicio);
+            boton.setBackground(COLOR_PRINCIPAL);
+            boton.setForeground(Color.WHITE);
+            boton.setFont(new Font("Serif", Font.BOLD, 14));
+            
+            // Asocia el método mostrarDialogoSeries
+            boton.addActionListener(e -> mostrarDialogoSeries(nombreEjercicio));
+
+            panel.add(boton, BorderLayout.SOUTH);
+
+            JLabel label = new JLabel();
+            label.setFont(new Font("Serif", Font.BOLD, 16));
+            label.setForeground(COLOR_PRINCIPAL);
+
+            String imagePath = "Sources/imagenes/" + nombreEjercicio.trim() + ".png";
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+                ImageIcon originalIcon = new ImageIcon(imagePath);
+                Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+                ImageIcon resizedIcon = new ImageIcon(resizedImage);
+                label.setIcon(resizedIcon);
+            } else {
+                label.setText("Imagen no encontrada");
+            }
+            
+            panel.add(label, BorderLayout.CENTER);
+
+            gridPrincipal.add(panel);
+        }
+
+        gridPrincipal.revalidate();
+        gridPrincipal.repaint();
     }
 
     private List<String> cargarEjerciciosDesdeBD() {
@@ -124,65 +235,39 @@ public class CatalogoEjercicio extends JFrame {
         }
         return ejercicios;
     }
-
-    private void actualizarCatalogo(List<String> ejercicios) {
-        gridPrincipal.removeAll(); // Limpia el catálogo anterior
-        for (String nombreEjercicio : ejercicios) {
-            
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.setBackground(Color.WHITE);
-
-            JButton boton = new JButton(nombreEjercicio);
-            boton.addActionListener(e -> mostrarDialogoSeries(nombreEjercicio));
-            panel.add(boton, BorderLayout.SOUTH);
-            
-            JLabel label = new JLabel();
-            String imagePath = "Sources/imagenes/" + nombreEjercicio.trim() + ".png";
-            File imageFile = new File(imagePath);
-            if (imageFile.exists()) {
-            	 ImageIcon originalIcon = new ImageIcon(imagePath);
-                 Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
-                 ImageIcon resizedIcon = new ImageIcon(resizedImage);
-                 label.setIcon(resizedIcon);
-            } else {
-                label.setText("Imagen no encontrada");
-                System.err.println("Imagen no encontrada: " + imagePath);
-            }
-            
-            panel.add(label);
-
-            gridPrincipal.add(panel); 
-        }
-        gridPrincipal.revalidate();
-        gridPrincipal.repaint();
-    }
-
     
     private void mostrarDialogoAñadir_EliminarEjercicio(String usuario) {
         if (usuario.equals("admin")) {
             JDialog dialogoAñadir_Eliminar = new JDialog(this, "Gestión de Ejercicios", true);
             dialogoAñadir_Eliminar.setLayout(new GridLayout(1, 2, 10, 10));
             dialogoAñadir_Eliminar.setSize(600, 300);
-            dialogoAñadir_Eliminar.setLocationRelativeTo(null);
+            dialogoAñadir_Eliminar.setLocationRelativeTo(this);
 
             // Panel Añadir Ejercicio
             JPanel añadirEjercicio = new JPanel();
             añadirEjercicio.setLayout(new BoxLayout(añadirEjercicio, BoxLayout.Y_AXIS));
+            añadirEjercicio.setBackground(new Color(70, 130, 180));
             añadirEjercicio.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(),
-                "AÑADIR EJERCICIO",
-                TitledBorder.CENTER,
-                TitledBorder.DEFAULT_POSITION
+            		BorderFactory.createEtchedBorder(),
+                    "AÑADIR EJERCICIO",
+                    TitledBorder.CENTER,
+                    TitledBorder.DEFAULT_POSITION,
+                    new Font("Serif", Font.BOLD, 16),
+                    Color.WHITE
             ));
 
             JLabel nombreEjercicio = new JLabel("Nombre:");
+            nombreEjercicio.setForeground(Color.WHITE);
             nombreEjercicio.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
             JTextField añadirNombre = new JTextField();
             añadirNombre.setMaximumSize(new Dimension(600, 30));
             añadirNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             JLabel nombreMusculo1 = new JLabel("Músculo Principal:");
+            nombreMusculo1.setForeground(Color.WHITE);
             nombreMusculo1.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
             JComboBox<String> comboMusculo1 = new JComboBox<>();
             comboMusculo1.setAlignmentX(Component.LEFT_ALIGNMENT);
             List<String> listaMusculos = cargarMusculosDesdeBD();
@@ -192,7 +277,9 @@ public class CatalogoEjercicio extends JFrame {
             comboMusculo1.setMaximumSize(new Dimension(200, 30));
 
             JLabel nombreMusculo2 = new JLabel("Músculo Secundario:");
+            nombreMusculo2.setForeground(Color.WHITE);
             nombreMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
             JComboBox<String> comboMusculo2 = new JComboBox<>();
             for (String musculo : listaMusculos) {
                 comboMusculo2.addItem(musculo);
@@ -247,6 +334,9 @@ public class CatalogoEjercicio extends JFrame {
             });
 
             JButton botonAñadir = new JButton("AÑADIR EJERCICIO");
+            botonAñadir.setBackground(Color.WHITE);
+            botonAñadir.setForeground(new Color(70, 130, 180));
+            botonAñadir.setFont(new Font("Arial", Font.BOLD, 14));
             botonAñadir.addActionListener(e -> {
                 String nombre = añadirNombre.getText();
                 String musculo1 = (String) comboMusculo1.getSelectedItem();
@@ -326,19 +416,26 @@ public class CatalogoEjercicio extends JFrame {
 
             // Panel Eliminar Ejercicio (sin cambios)
             JPanel eliminarEjercicio = new JPanel();
+            eliminarEjercicio.setBackground(new Color(70, 130, 180));
             eliminarEjercicio.setLayout(new BoxLayout(eliminarEjercicio, BoxLayout.Y_AXIS));
             eliminarEjercicio.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(),
-                "ELIMINAR EJERCICIO",
-                TitledBorder.CENTER,
-                TitledBorder.DEFAULT_POSITION
+            		BorderFactory.createEtchedBorder(),
+                    "ELIMINAR EJERCICIO",
+                    TitledBorder.CENTER,
+                    TitledBorder.DEFAULT_POSITION,
+                    new Font("Serif", Font.BOLD, 16),
+                    Color.WHITE
             ));
 
             JLabel nombreEjercicioEliminar = new JLabel("Nombre:");
+            nombreEjercicioEliminar.setForeground(Color.WHITE);
             JTextField añadirEjercicioEliminar = new JTextField();
             añadirEjercicioEliminar.setMaximumSize(new Dimension(600, 30));
 
             JButton botonEliminar = new JButton("ELIMINAR EJERCICIO");
+            botonEliminar.setBackground(Color.WHITE);
+            botonEliminar.setForeground(new Color(70, 130, 180));
+            botonEliminar.setFont(new Font("Arial", Font.BOLD, 14));
             botonEliminar.addActionListener(e -> {
                 String nombre = añadirEjercicioEliminar.getText();
                 if (!nombre.isEmpty()) {
@@ -397,30 +494,61 @@ public class CatalogoEjercicio extends JFrame {
 
     private void mostrarDialogoSeries(String ejercicio) {
         JDialog dialogoSeries = new JDialog(this, "Número de Series - " + ejercicio, true);
-        dialogoSeries.setLayout(new GridLayout(2, 2, 10, 10));
-        dialogoSeries.setSize(300, 150);
+        dialogoSeries.setSize(400, 200);
         dialogoSeries.setLocationRelativeTo(this);
 
-        JLabel labelSeries = new JLabel("Número de series:");
+        // Configuración del panel principal
+        JPanel panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        panelPrincipal.setBackground(new Color(70, 130, 180)); // Fondo principal
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Etiqueta de título
+        JLabel labelTitulo = new JLabel("Elige la cantidad de series");
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        labelTitulo.setForeground(Color.WHITE);
+        labelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Spinner para seleccionar series
         JSpinner spinnerSeries = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        spinnerSeries.setFont(new Font("Arial", Font.PLAIN, 16));
         bloquearEdicionSpinner(spinnerSeries);
+        spinnerSeries.setMaximumSize(new Dimension(100, 30));
+        spinnerSeries.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Panel de botones
+        JPanel panelBotones = new JPanel();
+        panelBotones.setBackground(new Color(70, 130, 180));
+        panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         JButton botonAceptar = new JButton("Aceptar");
-        JButton botonCancelar = new JButton("Cancelar");
-
+        botonAceptar.setFont(new Font("Arial", Font.BOLD, 14));
+        botonAceptar.setBackground(Color.WHITE);
+        botonAceptar.setForeground(new Color(70, 130, 180));
         botonAceptar.addActionListener(e -> {
             int numSeries = (int) spinnerSeries.getValue();
             dialogoSeries.dispose();
             mostrarDialogoRepeticiones(numSeries, ejercicio);
         });
 
+        JButton botonCancelar = new JButton("Cancelar");
+        botonCancelar.setFont(new Font("Arial", Font.BOLD, 14));
+        botonCancelar.setBackground(Color.WHITE);
+        botonCancelar.setForeground(new Color(70, 130, 180));
         botonCancelar.addActionListener(e -> dialogoSeries.dispose());
+        
+        panelBotones.add(botonCancelar);
+        panelBotones.add(botonAceptar);
+        
 
-        dialogoSeries.add(labelSeries);
-        dialogoSeries.add(spinnerSeries);
-        dialogoSeries.add(botonAceptar);
-        dialogoSeries.add(botonCancelar);
+        // Agregar componentes al panel principal
+        panelPrincipal.add(labelTitulo);
+        panelPrincipal.add(Box.createVerticalStrut(20)); // Espaciado
+        panelPrincipal.add(spinnerSeries);
+        panelPrincipal.add(Box.createVerticalStrut(20)); // Espaciado
+        panelPrincipal.add(panelBotones);
 
+        dialogoSeries.add(panelPrincipal);
         dialogoSeries.setVisible(true);
     }
 
@@ -445,39 +573,47 @@ public class CatalogoEjercicio extends JFrame {
         for (int i = 0; i < numSeries; i++) {
             // Etiqueta Serie
             etiquetasSeries[i] = new JLabel("Serie " + (i + 1) + " - Repeticiones:");
+            etiquetasSeries[i].setForeground(Color.WHITE); // Texto blanco
             gbc.gridx = 0; gbc.gridy = i;
             dialogoRepeticiones.add(etiquetasSeries[i], gbc);
 
             // Spinner Repeticiones
             spinnersRepeticiones[i] = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+            spinnersRepeticiones[i].setFont(new Font("Arial", Font.PLAIN, 14));
             bloquearEdicionSpinner(spinnersRepeticiones[i]);
             gbc.gridx = 1;
             dialogoRepeticiones.add(spinnersRepeticiones[i], gbc);
 
             // Etiqueta Peso
             etiquetasPeso[i] = new JLabel("Peso:");
+            etiquetasPeso[i].setForeground(Color.WHITE); // Texto blanco
             gbc.gridx = 2;
             dialogoRepeticiones.add(etiquetasPeso[i], gbc);
 
             // Spinner Peso
             spinnersPeso[i] = new JSpinner(new SpinnerNumberModel(0, 0, 500, 1));
+            spinnersPeso[i].setFont(new Font("Arial", Font.PLAIN, 14));
             bloquearEdicionSpinner(spinnersPeso[i]);
             gbc.gridx = 3;
             dialogoRepeticiones.add(spinnersPeso[i], gbc);
 
             // Etiqueta Esfuerzo
             etiquetasEsfuerzo[i] = new JLabel("Esfuerzo:");
+            etiquetasEsfuerzo[i].setForeground(Color.WHITE); // Texto blanco
             gbc.gridx = 4;
             dialogoRepeticiones.add(etiquetasEsfuerzo[i], gbc);
 
             // Botones de Esfuerzo
             gruposEsfuerzo[i] = new ButtonGroup();
             JPanel panelEsfuerzo = new JPanel(new GridLayout(1, 3));
+            panelEsfuerzo.setBackground(new Color(70, 130, 180)); // Fondo principal
             botonesEsfuerzo[i][0] = new JRadioButton("Aprox.(W)");
             botonesEsfuerzo[i][1] = new JRadioButton("Estándar(E)");
             botonesEsfuerzo[i][2] = new JRadioButton("Topset(T)");
 
             for (JRadioButton boton : botonesEsfuerzo[i]) {
+                boton.setForeground(Color.WHITE); // Texto blanco
+                boton.setBackground(new Color(70, 130, 180)); // Fondo principal
                 gruposEsfuerzo[i].add(boton);
                 panelEsfuerzo.add(boton);
             }
@@ -488,6 +624,10 @@ public class CatalogoEjercicio extends JFrame {
 
         // Botón Aceptar
         JButton botonAceptar = new JButton("Aceptar");
+        botonAceptar.setFont(new Font("Arial", Font.BOLD, 14));
+        botonAceptar.setBackground(Color.WHITE); // Fondo blanco
+        botonAceptar.setForeground(new Color(70, 130, 180)); // Texto azul
+
         botonAceptar.addActionListener(e -> {
             List<Map<String, Integer>> seriesData = new ArrayList<>();
 
@@ -506,7 +646,6 @@ public class CatalogoEjercicio extends JFrame {
                 seriesData.add(datosSerie);
             }
 
-            
             if (callback != null) {
                 callback.onEjercicioSeleccionado(ejercicio, seriesData);
             }
@@ -528,11 +667,17 @@ public class CatalogoEjercicio extends JFrame {
             this.dispose();
         });
 
-        gbc.gridx = 0; gbc.gridy = numSeries; gbc.gridwidth = 6;
+        gbc.gridx = 0;
+        gbc.gridy = numSeries;
+        gbc.gridwidth = 6;
         dialogoRepeticiones.add(botonAceptar, gbc);
+
+        // Cambiar fondo del diálogo
+        dialogoRepeticiones.getContentPane().setBackground(new Color(70, 130, 180)); // Fondo principal
 
         dialogoRepeticiones.setVisible(true);
     }
+
 
 
 

@@ -524,9 +524,20 @@ public class VisitarPerfil extends JFrame {
 								rutinaSeleccionada = rutina2;
 							}
 						}
-						
-						EstadisticasRutina estadisticas = new EstadisticasRutina(rutinaSeleccionada);
-						estadisticas.setExtendedState(JFrame.MAXIMIZED_BOTH);
+						int SerieTotales = 0;
+						for(Entrenamiento entrenamiento : rutinaSeleccionada.getEntrenamientos()) {
+							for(EjercicioEnEntrenamiento ejercicioEnEntrenamiento : entrenamiento.getEjercicios()) {
+								for(@SuppressWarnings("unused") Serie serie : ejercicioEnEntrenamiento.getSeries()) {
+									SerieTotales++;
+								}
+							}
+						}
+						if(SerieTotales <=0) {
+							JOptionPane.showMessageDialog(VisitarPerfil.this, "Creacion de estadisticas erronea debido a rutina sin series");
+						}else {
+							EstadisticasRutina estadisticas = new EstadisticasRutina(rutinaSeleccionada);
+							estadisticas.setExtendedState(JFrame.MAXIMIZED_BOTH);
+						}
 					}
 					
 					

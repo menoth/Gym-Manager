@@ -6,105 +6,123 @@ import domain.Entrenamiento;
 import domain.EjercicioEnEntrenamiento;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class InterfazRutinaExpandida extends JFrame {
     private static final long serialVersionUID = 1L;
 
     public InterfazRutinaExpandida(Rutina rutina, String usuario) {
         setTitle("Detalle de Rutina - " + rutina.getNombre());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(1, 3)); // Configurar para tres paneles verticales
-        setSize(1000, 600);
+        setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // Establecer color de fondo de la ventana principal
-        getContentPane().setBackground(new Color(70, 130, 180)); // Color de fondo RGB(70, 130, 180)
+        getContentPane().setBackground(new Color(70, 130, 180));
+        setLayout(new BorderLayout()); // Usar BorderLayout para manejar mejor la posición del botón
 
-        // Panel 1: Día y nombre del entrenamiento
-        JPanel panelEntrenamiento = new JPanel();
-        panelEntrenamiento.setLayout(new BoxLayout(panelEntrenamiento, BoxLayout.Y_AXIS));
-        panelEntrenamiento.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
-        panelEntrenamiento.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
+        // Botón "Cerrar" en la esquina superior izquierda
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Alinear a la izquierda
+        topPanel.setBackground(new Color(70, 130, 180)); // Fondo igual al resto de la interfaz
 
-        // Cambiar color de las fuentes a blanco
-        for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
-            JLabel lblDia = new JLabel("Día: " + entrenamiento.getDía());
-            lblDia.setForeground(Color.WHITE); // Fuente blanca
-            JLabel lblNombreEntrenamiento = new JLabel("Entrenamiento: " + entrenamiento.getNombre());
-            lblNombreEntrenamiento.setForeground(Color.WHITE); // Fuente blanca
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.setFont(new Font("Arial", Font.BOLD, 12));
+        btnCerrar.setForeground(Color.WHITE);
+        btnCerrar.setBackground(new Color(220, 20, 60)); // Rojo para destacar
+        btnCerrar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Márgenes pequeños
+        btnCerrar.setFocusPainted(false);
 
-            panelEntrenamiento.add(lblDia);
-            panelEntrenamiento.add(lblNombreEntrenamiento);
-            panelEntrenamiento.add(Box.createRigidArea(new Dimension(0, 20))); // Separador visual
-        }
-
-        JScrollPane scrollPanelEntrenamiento = new JScrollPane(panelEntrenamiento); // Añadir JScrollPane
-
-        // Panel 2: Nombres de ejercicios
-        JPanel panelEjercicios = new JPanel();
-        panelEjercicios.setLayout(new BoxLayout(panelEjercicios, BoxLayout.Y_AXIS));
-        panelEjercicios.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
-        panelEjercicios.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
-
-        // Cambiar color de las fuentes a blanco
-        for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
-            JLabel lblTituloEjercicios = new JLabel("Ejercicios para " + entrenamiento.getNombre() + ":");
-            lblTituloEjercicios.setForeground(Color.WHITE); // Fuente blanca
-            panelEjercicios.add(lblTituloEjercicios);
-
-            for (EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
-                JLabel lblNombreEjercicio = new JLabel(nombreEjercicio(ejercicio.getID_Ejercicio()));
-                lblNombreEjercicio.setForeground(Color.WHITE); // Fuente blanca
-                panelEjercicios.add(lblNombreEjercicio);
+        // Acción para cerrar la ventana
+        btnCerrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
             }
+        });
 
-            panelEjercicios.add(Box.createRigidArea(new Dimension(0, 20))); // Separador visual
-        }
+        topPanel.add(btnCerrar);
+        add(topPanel, BorderLayout.NORTH); // Agregar el panel superior al borde norte
 
-        JScrollPane scrollPanelEjercicios = new JScrollPane(panelEjercicios); // Añadir JScrollPane
+        // Panel principal con diseño horizontal
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(1, rutina.getEntrenamientos().size(), 10, 10));
+        mainPanel.setBackground(new Color(70, 130, 180));
 
-        // Panel 3: Detalles de ejercicios
-        JPanel panelDetalles = new JPanel();
-        panelDetalles.setLayout(new BoxLayout(panelDetalles, BoxLayout.Y_AXIS));
-        panelDetalles.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadir borde
-        panelDetalles.setBackground(new Color(70, 130, 180)); // Establecer el fondo de panel
+        // Configuración de fuentes personalizadas
+        Font titleFont = new Font("Arial", Font.BOLD, 16);
+        Font bodyFont = new Font("Arial", Font.PLAIN, 14);
 
-        // Cambiar color de las fuentes a blanco
         for (Entrenamiento entrenamiento : rutina.getEntrenamientos()) {
+            // Panel por día
+            JPanel panelDia = new JPanel();
+            panelDia.setLayout(new BoxLayout(panelDia, BoxLayout.Y_AXIS));
+            panelDia.setBackground(new Color(70, 130, 180));
+            panelDia.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+            // Título del día
+            JLabel lblDia = new JLabel("Día: " + entrenamiento.getDía());
+            lblDia.setFont(titleFont);
+            lblDia.setForeground(Color.WHITE);
+            panelDia.add(lblDia);
+
+            // Título del entrenamiento
+            JLabel lblNombreEntrenamiento = new JLabel("Entrenamiento: " + entrenamiento.getNombre());
+            lblNombreEntrenamiento.setFont(bodyFont);
+            lblNombreEntrenamiento.setForeground(Color.WHITE);
+            panelDia.add(lblNombreEntrenamiento);
+
+            panelDia.add(Box.createRigidArea(new Dimension(0, 10)));
+
+            // Listar ejercicios y sus series
             for (EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
-                JLabel lblDetalleEjercicio = new JLabel("Ejercicio: " + nombreEjercicio(ejercicio.getID_Ejercicio()));
-                lblDetalleEjercicio.setForeground(Color.WHITE); // Fuente blanca
-                JLabel lblSeries = new JLabel("Series: " + ejercicio.getSeries().size());
-                lblSeries.setForeground(Color.WHITE); // Fuente blanca
-                panelDetalles.add(lblDetalleEjercicio);
-                panelDetalles.add(lblSeries);
+                // Ejercicio
+                JLabel lblNombreEjercicio = new JLabel("• " + nombreEjercicio(ejercicio.getID_Ejercicio()));
+                lblNombreEjercicio.setFont(bodyFont);
+                lblNombreEjercicio.setForeground(Color.WHITE);
+                panelDia.add(lblNombreEjercicio);
+
+                // Detalles de las series
+                JPanel seriesPanel = new JPanel();
+                seriesPanel.setLayout(new BoxLayout(seriesPanel, BoxLayout.Y_AXIS));
+                seriesPanel.setBackground(new Color(100, 149, 237));
+                seriesPanel.setBorder(new EmptyBorder(5, 15, 5, 15));
+
                 for (Serie serie : ejercicio.getSeries()) {
-                    JLabel lblRepeticiones = new JLabel("Repeticiones: " + serie.getRepeticiones());
-                    lblRepeticiones.setForeground(Color.WHITE); // Fuente blanca
-                    JLabel lblPeso = new JLabel("Peso: " + serie.getPeso() + " kg");
-                    lblPeso.setForeground(Color.WHITE); // Fuente blanca
-                    panelDetalles.add(lblRepeticiones);
-                    panelDetalles.add(lblPeso);
+                	String esfuerzo = new String();
+                	if (serie.getEsfuerzo().equals(Serie.Esfuerzo.APROXIMACION)) {
+						esfuerzo = "W";
+					} else if (serie.getEsfuerzo().equals(Serie.Esfuerzo.ESTANDAR)) {
+						esfuerzo = "E";
+					} else {
+						esfuerzo = "T";
+					}
+                    JLabel lblSerieDetalle = new JLabel("   - Repeticiones: " + serie.getRepeticiones() +
+                                                        ", Peso: " + serie.getPeso() + " kg" +
+                                                        ", RPE: " + esfuerzo);
+                    lblSerieDetalle.setFont(bodyFont);
+                    lblSerieDetalle.setForeground(Color.WHITE);
+                    seriesPanel.add(lblSerieDetalle);
                 }
 
-                panelDetalles.add(Box.createRigidArea(new Dimension(0, 20))); // Separador visual
+                panelDia.add(seriesPanel);
+                panelDia.add(Box.createRigidArea(new Dimension(0, 10)));
             }
+
+            mainPanel.add(panelDia);
         }
 
-        JScrollPane scrollPanelDetalles = new JScrollPane(panelDetalles); // Añadir JScrollPane
+        // Agregar desplazamiento horizontal y vertical
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        // Agregar paneles al frame dentro de JScrollPane
-        add(scrollPanelEntrenamiento);
-        add(scrollPanelEjercicios);
-        add(scrollPanelDetalles);
-
-        // Configuración final
+        add(scrollPane, BorderLayout.CENTER); // Agregar el panel principal al centro
         setVisible(true);
     }
 
@@ -116,19 +134,13 @@ public class InterfazRutinaExpandida extends JFrame {
             System.out.println("No se ha podido cargar el driver de la BD");
         }
         try {
-            Connection conn = DriverManager.getConnection
-                ("jdbc:sqlite:Sources/bd/baseDeDatos.db");
-
-            Statement stmt = conn.createStatement();
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db");
             String sql = "SELECT Nombre FROM Ejercicio WHERE ID_Ejercicio = ?";
             PreparedStatement queryStmt = conn.prepareStatement(sql);
             queryStmt.setInt(1, id);
-
             ResultSet resultado = queryStmt.executeQuery();
             nombre = resultado.getString("Nombre");
-
             queryStmt.close();
-            stmt.close();
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();

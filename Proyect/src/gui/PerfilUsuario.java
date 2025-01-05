@@ -27,7 +27,7 @@ import javax.swing.JButton;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -39,7 +39,10 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import domain.EjercicioEnEntrenamiento;
+import domain.Entrenamiento;
 import domain.Rutina;
+import domain.Serie;
 import domain.Usuario;
 
 public class PerfilUsuario extends JFrame {
@@ -576,9 +579,20 @@ public class PerfilUsuario extends JFrame {
 								rutinaSeleccionada = rutina2;
 							}
 						}
-						
-						EstadisticasRutina estadisticas = new EstadisticasRutina(rutinaSeleccionada);
-						estadisticas.setExtendedState(JFrame.MAXIMIZED_BOTH);
+						int SerieTotales = 0;
+						for(Entrenamiento entrenamiento : rutinaSeleccionada.getEntrenamientos()) {
+							for(EjercicioEnEntrenamiento ejercicioEnEntrenamiento : entrenamiento.getEjercicios()) {
+								for(@SuppressWarnings("unused") Serie serie : ejercicioEnEntrenamiento.getSeries()) {
+									SerieTotales++;
+								}
+							}
+						}
+						if(SerieTotales <=0) {
+							JOptionPane.showMessageDialog(PerfilUsuario.this, "Creacion de estadisticas erronea debido a rutina sin series");
+						}else {
+							EstadisticasRutina estadisticas = new EstadisticasRutina(rutinaSeleccionada);
+							estadisticas.setExtendedState(JFrame.MAXIMIZED_BOTH);
+						}
 					}
 					
 					
