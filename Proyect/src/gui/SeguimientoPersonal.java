@@ -47,7 +47,7 @@ public class SeguimientoPersonal extends JFrame {
         selectorAño.setSelectedItem(añoElegido);
         selectorAño.addActionListener(e -> {
             añoElegido = (int) selectorAño.getSelectedItem();
-            actualizarCalendario();
+            actualizarCalendario(usuario);
         });
 
         panelElegirAño.add(labelAño);
@@ -71,7 +71,14 @@ public class SeguimientoPersonal extends JFrame {
 
         add(panelLeyenda, BorderLayout.SOUTH);
 
-        actualizarCalendario();
+        actualizarCalendario(usuario);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cerrarConexion();
+                dispose();
+            }
+        });
         setVisible(true);
     }
 
@@ -99,13 +106,13 @@ public class SeguimientoPersonal extends JFrame {
 
     private void registrarEstado(String fecha, String estado) {
         try {
-            // Verificar si la fecha ya existe para este usuario
-            if (estadoYaExiste(fecha)) {
-                eliminarEstado(fecha);
-            }
+            // Inserta o actualiza el estado para el usuario y la fecha
+            String insertarSQL = """
+                INSERT INTO SeguimientoPersonal (fecha, estado, usuario)
+                VALUES (?, ?, ?)
+                ON CONFLICT(usuario, fecha) DO UPDATE SET estado = excluded.estado;
+            """;
 
-            // Insertar o actualizar el estado para el usuario
-            String insertarSQL = "INSERT INTO SeguimientoPersonal (fecha, estado, usuario) VALUES (?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(insertarSQL)) {
                 statement.setString(1, fecha);
                 statement.setString(2, estado);
@@ -118,14 +125,33 @@ public class SeguimientoPersonal extends JFrame {
         }
     }
 
-    private boolean estadoYaExiste(String fecha) {
-        String consultaSQL = "SELECT COUNT(*) FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
-        try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
-            statement.setString(1, usuario);
-            statement.setString(2, fecha);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0; // Si hay al menos un registro
+    private void eliminarEstado(String fecha) {
+        try {
+            // Elimina el estado para el usuario y la fecha especificada
+            String eliminarSQL = "DELETE FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
+            try (PreparedStatement statement = connection.prepareStatement(eliminarSQL)) {
+                statement.setString(1, usuario);
+                statement.setString(2, fecha);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar el estado:");
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unused")
+	private boolean estadoYaExiste(String fecha) {
+        try {
+            // Verifica si ya existe un registro para el usuario y la fecha
+            String consultaSQL = "SELECT COUNT(*) FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
+            try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
+                statement.setString(1, usuario);
+                statement.setString(2, fecha);
+                try (ResultSet rs = statement.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) > 0; // Si hay al menos un registro
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -135,37 +161,28 @@ public class SeguimientoPersonal extends JFrame {
         return false;
     }
 
-    private void eliminarEstado(String fecha) {
-        String eliminarSQL = "DELETE FROM SeguimientoPersonal WHERE usuario = ? AND fecha = ?";
-        try (PreparedStatement statement = connection.prepareStatement(eliminarSQL)) {
-            statement.setString(1, usuario);
-            statement.setString(2, fecha);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar el estado:");
-            e.printStackTrace();
-        }
-    }
-
     private void cargarEstadosDesdeBD() {
-        String consultaSQL = "SELECT fecha, estado FROM SeguimientoPersonal WHERE usuario = ?";
-        try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
-            statement.setString(1, usuario);
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    String fecha = rs.getString("fecha");
-                    String estado = rs.getString("estado");
+        try {
+            // Carga todos los estados para el usuario actual
+            String consultaSQL = "SELECT fecha, estado FROM SeguimientoPersonal WHERE usuario = ?";
+            try (PreparedStatement statement = connection.prepareStatement(consultaSQL)) {
+                statement.setString(1, usuario);
+                try (ResultSet rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        String fecha = rs.getString("fecha");
+                        String estado = rs.getString("estado");
 
-                    JButton boton = buscarBotonPorFecha(fecha);
-                    if (boton != null) {
-                        switch (estado) {
-                            case "Verde" -> {
-                                boton.setBackground(Color.GREEN);
-                                estadoBotones.put(boton, 1);
-                            }
-                            case "Rojo" -> {
-                                boton.setBackground(Color.RED);
-                                estadoBotones.put(boton, 2);
+                        JButton boton = buscarBotonPorFecha(fecha);
+                        if (boton != null) {
+                            switch (estado) {
+                                case "Verde" -> {
+                                    boton.setBackground(Color.GREEN);
+                                    estadoBotones.put(boton, 1);
+                                }
+                                case "Rojo" -> {
+                                    boton.setBackground(Color.RED);
+                                    estadoBotones.put(boton, 2);
+                                }
                             }
                         }
                     }
@@ -177,6 +194,7 @@ public class SeguimientoPersonal extends JFrame {
         }
     }
 
+
     private JButton buscarBotonPorFecha(String fecha) {
         for (JButton boton : estadoBotones.keySet()) {
             if (boton.getName().equals(fecha)) {
@@ -186,7 +204,7 @@ public class SeguimientoPersonal extends JFrame {
         return null;
     }
 
-    private void actualizarCalendario() {
+    private void actualizarCalendario(String usuario) {
         panelPrincipal.removeAll();
         estadoBotones.clear();
 
@@ -212,15 +230,13 @@ public class SeguimientoPersonal extends JFrame {
             }
 
             for (int dia = 1; dia <= totalDias; dia++) {
-                JButton botonDia = new JButton(String.valueOf(dia));
+            	JButton botonDia = new JButton(String.valueOf(dia));
                 botonDia.setName(LocalDate.of(añoElegido, mes, dia).toString());
                 botonDia.setPreferredSize(new Dimension(40, 40));
                 botonDia.setFont(new Font("Arial", Font.PLAIN, 10));
                 botonDia.setFocusPainted(false);
-
                 botonDia.addActionListener(e -> cambiarColorBoton(botonDia));
                 estadoBotones.put(botonDia, 0);
-
                 panelDias.add(botonDia);
             }
 
@@ -242,7 +258,6 @@ public class SeguimientoPersonal extends JFrame {
     private void cambiarColorBoton(JButton boton) {
         String fecha = boton.getName();
         int estadoActual = estadoBotones.getOrDefault(boton, 0);
-
         if (estadoActual == 0) {
             boton.setBackground(Color.GREEN);
             estadoBotones.put(boton, 1);
