@@ -92,9 +92,17 @@ public class InterfazRutinaExpandida extends JFrame {
                 seriesPanel.setBorder(new EmptyBorder(5, 15, 5, 15));
 
                 for (Serie serie : ejercicio.getSeries()) {
+                	String esfuerzo = new String();
+                	if (serie.getEsfuerzo().equals(Serie.Esfuerzo.APROXIMACION)) {
+						esfuerzo = "W";
+					} else if (serie.getEsfuerzo().equals(Serie.Esfuerzo.ESTANDAR)) {
+						esfuerzo = "E";
+					} else {
+						esfuerzo = "T";
+					}
                     JLabel lblSerieDetalle = new JLabel("   - Repeticiones: " + serie.getRepeticiones() +
                                                         ", Peso: " + serie.getPeso() + " kg" +
-                                                        ", RPE: " + serie.getEsfuerzo());
+                                                        ", RPE: " + esfuerzo);
                     lblSerieDetalle.setFont(bodyFont);
                     lblSerieDetalle.setForeground(Color.WHITE);
                     seriesPanel.add(lblSerieDetalle);
