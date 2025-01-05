@@ -8,8 +8,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -250,55 +253,56 @@ public class EstadisticasRutina extends JFrame {
         
         pDerecha.add(musculosOpt);
         
-        //Ultimo panel del lado derecho con el recuadro de info
-        JPanel panelInfo = new JPanel();
-        panelInfo.setForeground(new Color(255, 255, 255));
-        panelInfo.setLayout(new BorderLayout(0,10));
-        panelInfo.setBorder(new EmptyBorder(20,35,20,20));
+        // Panel de información
+        JPanel panelInfo = new JPanel(new GridBagLayout());
+        panelInfo.setBackground(Color.WHITE); 
+        panelInfo.setBorder(new EmptyBorder(20, 20, 20, 20)); 
+
+        // Configuración del GridBagLayout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); 
+
+        // Foto con el logo de información
+        ImageIcon logoInfo = new ImageIcon("Sources/imagenes/info.png");
+        Image imagenVitrina1 = logoInfo.getImage();
+        Image nuevaImagen1 = imagenVitrina1.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        logoInfo = new ImageIcon(nuevaImagen1);
+        JLabel labelLogoInfo = new JLabel(logoInfo);
+
+        //Agregarlo a la izquierda de lo que queda del pDerecha
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST; // Alinear a la izquierda
+        panelInfo.add(labelLogoInfo, gbc);
+
+        // Texto con la información
+        JTextArea informacion = new JTextArea(
+            "Recuerda que para ajustar el nivel de fatiga que le provocamos a un músculo, puedes ajustar la frecuencia con la que lo entrenas o el nivel de intensidad de cada serie."
+        );
+        informacion.setFont(new Font("Arial", Font.PLAIN, 17));
+        informacion.setBackground(Color.WHITE);
+        informacion.setLineWrap(true); 
+        informacion.setWrapStyleWord(true); 
+        informacion.setEditable(false);
+        informacion.setEnabled(false); 
+        informacion.setDisabledTextColor(Color.BLACK); 
+        informacion.setBorder(new LineBorder(Color.BLACK, 2)); 
+        informacion.setPreferredSize(new Dimension(400, 100)); 
+
+        //Agregarlo en el centro de lo que deja la imagen libre en el pDerecha y expandirse horizontalmente
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
+        gbc.weightx = 1.0; 
+        panelInfo.add(informacion, gbc);
+
         
-	    //Foto con el logo de información
-	    ImageIcon logoInfo = new ImageIcon("Sources/imagenes/info.png");
-	    Image imagenVitrina1 = logoInfo.getImage();
-	    Image nuevaImagen1 = imagenVitrina1.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-	    logoInfo = new ImageIcon(nuevaImagen1);
-	    JLabel labelLogoInfo = new JLabel(logoInfo);
-	    
-	    panelInfo.add(labelLogoInfo, BorderLayout.WEST);
-	    
-	    JPanel panelContenedor = new JPanel();
-	    panelContenedor.setForeground(new Color(255, 255, 255));
-	    panelContenedor.setLayout(new FlowLayout());
-	    panelContenedor.setBorder(new EmptyBorder(40,0,0,0));
-	    
-	    //txt con el texto
-	    JTextArea informacion = new JTextArea("Recuerda que para ajustar el nivel de fatiga que le provocamos a un musuclo, puedes ajustar la frecuencia con la que lo entrenas o el nivel de intensidad de cada serie.");
-	    informacion.setFont(new Font("Arial", Font.PLAIN, 17));
-	    informacion.setBackground(this.getBackground());
-	    informacion.setLineWrap(true);          
-	    informacion.setWrapStyleWord(true); 
-	     
-        //Para que no se pueda editar
-	    informacion.setEditable(false);  
-	    
-        //Para que no esté el cursor sobre el TxtArea
-	    informacion.setEnabled(false);
-	    
-        //Como lo tenemos que desactivar para que no esté el cursor, tenemos que cambiarle
-        //el color para cuando esta desactivado
-	    informacion.setDisabledTextColor(Color.black);
-	    
-	    informacion.setPreferredSize(new Dimension(400, 100)); 
-	    
-	    informacion.setBorder(new LineBorder(Color.BLACK, 3));
-	    	    
-	    panelContenedor.add(informacion);
-	    panelInfo.add(panelContenedor, BorderLayout.CENTER);
-	    
-	    pDerecha.add(panelInfo);
-	    
+        pDerecha.add(panelInfo, BorderLayout.CENTER);
+
+        // Agrega el panel derecho a la ventana principal
         add(pDerecha);
-        
-        
+
+        // Hace visible el marco
         setVisible(true);
 	}
 	
