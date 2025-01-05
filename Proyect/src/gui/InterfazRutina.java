@@ -63,21 +63,29 @@ public class InterfazRutina extends JFrame {
         JPanel panelInferior = new JPanel(new BorderLayout());
 
         // Sub-panel para los botones (centrados)
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton botonGuardar = new JButton("Guardar");
+        botonGuardar.setBackground(new Color(70, 130, 180)); // Fondo principal
+        botonGuardar.setForeground(Color.WHITE); // Texto blanco
+        botonGuardar.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente del texto
         botonGuardar.addActionListener(e -> guardarRutinaEnBD(nombreRutina, descripcionRutina, usuario));
 
         JButton botonCancelar = new JButton("Cancelar");
+        botonCancelar.setBackground(new Color(70, 130, 180)); // Fondo principal
+        botonCancelar.setForeground(Color.WHITE); // Texto blanco
+        botonCancelar.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente del texto
         botonCancelar.addActionListener(e -> confirmarSalida(usuario, nombreRutina));
 
         panelBotones.add(botonCancelar);
         panelBotones.add(botonGuardar);
 
-        panelInferior.add(panelBotones, BorderLayout.CENTER);
+        panelInferior.add(panelBotones, BorderLayout.EAST);
 
         // Sub-panel para el nombre de la rutina (a la izquierda)
         JPanel panelNombreRutina = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel labelRutina = new JLabel("Nombre de la rutina: " + nombreRutina);
+        labelRutina.setFont(new Font("Serif", Font.BOLD, 16)); // Aumentar tamaño y negrita
+        labelRutina.setForeground(new Color(70, 130, 180)); // Color principal
         panelNombreRutina.add(labelRutina);
 
         panelInferior.add(panelNombreRutina, BorderLayout.WEST);
@@ -155,7 +163,7 @@ public class InterfazRutina extends JFrame {
                 String sqlEntrenamiento = "INSERT INTO Entrenamiento (ID_Entrenamiento, Nombre, Descripción, ID_Rutina, Dia) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement pstmtEntrenamiento = conn.prepareStatement(sqlEntrenamiento)) {
                     pstmtEntrenamiento.setInt(1, idEntrenamiento);
-                    pstmtEntrenamiento.setString(2, nombreRutina + " - " + diaEntrenamiento);
+                    pstmtEntrenamiento.setString(2, diaEntrenamiento);
                     pstmtEntrenamiento.setString(3, descripcionRutina);
                     pstmtEntrenamiento.setInt(4, idRutina);
                     pstmtEntrenamiento.setString(5, diaEntrenamiento);
