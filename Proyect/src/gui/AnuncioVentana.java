@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-
 public class AnuncioVentana extends JDialog {
 
     private static final long serialVersionUID = 1L;
@@ -22,24 +21,23 @@ public class AnuncioVentana extends JDialog {
     private JButton cerrarButton;
     private JProgressBar barraProgreso;
     private int contador = 100; // Tiempo inicial del contador
-    
 
     public AnuncioVentana() {
-    	super((java.awt.Frame) null, true); // Configurar como modal ChatGPT
-    	setUndecorated(true);
+        setUndecorated(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(800, 450);
         setTitle("Anuncio Publicitario");
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setResizable(false);
+        setAlwaysOnTop(true);
 
         String[] rutasImagenes = {
                 "Sources/imagenes/Anuncio Valorant.jpg",
                 "Sources/imagenes/Anuncio LOL.jpg",
                 "Sources/imagenes/Anuncio Myprotein.jpg",
                 "Sources/imagenes/Anuncio Tarkov.jpg",
-                "Sources/imagenes/Anuncio Opel Corsa.jpg"                
+                "Sources/imagenes/Anuncio Opel Corsa.jpg"
         };
 
         // Seleccionar una ruta aleatoria
@@ -61,20 +59,20 @@ public class AnuncioVentana extends JDialog {
         panelImagen.add(imagenLabel);
 
         // Crear el botón de cerrar y colocarlo en la esquina superior derecha
-        ImageIcon iconoCerrar = new ImageIcon("Sources/imagenes/cruzroja.png"); // Ruta a tu imagen
-        Image imagenCerrar = iconoCerrar.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH); // Redimensionar la imagen
+        ImageIcon iconoCerrar = new ImageIcon("Sources/imagenes/cruzroja.png"); 
+        Image imagenCerrar = iconoCerrar.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH); 
         cerrarButton = new JButton();
-        cerrarButton.setIcon(new ImageIcon(imagenCerrar)); // Establecer la imagen como icono
-        cerrarButton.setEnabled(false); // Inicialmente deshabilitado
-        cerrarButton.setBounds(getWidth() - 80, 10, 50, 40); // Posición y tamaño del botón
-        cerrarButton.addActionListener(e -> dispose()); // Acción para cerrar la ventana
+        cerrarButton.setIcon(new ImageIcon(imagenCerrar)); 
+        cerrarButton.setEnabled(false);
+        cerrarButton.setBounds(getWidth() - 80, 10, 50, 40); 
+        cerrarButton.addActionListener(e -> dispose()); 
         panelImagen.add(cerrarButton);
 
         add(panelImagen, BorderLayout.CENTER);
 
         // Crear el contador
         JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setBackground(new Color(70,130,180));
+        panelTitulo.setBackground(new Color(70, 130, 180));
         JLabel anuncio = new JLabel("Anuncio Publicitario");
         anuncio.setFont(new Font("Arial", Font.BOLD, 16));
         panelTitulo.add(anuncio);
@@ -87,17 +85,15 @@ public class AnuncioVentana extends JDialog {
 
         // Iniciar el hilo del contador
         iniciarContador();
-        
+
         // Configurar el temporizador para cerrar automáticamente
         iniciarCierreAutomatico();
-        
+
         // Mostrar la ventana
         setVisible(true);
-        
-        
     }
 
-	private void iniciarContador() {
+    private void iniciarContador() {
         // Crear un hilo para el contador
         Thread hiloContador = new Thread(() -> {
             try {
@@ -105,7 +101,7 @@ public class AnuncioVentana extends JDialog {
                     Thread.sleep(100);
                     contador--;
                     SwingUtilities.invokeLater(() -> {
-                        barraProgreso.setValue(barraProgreso.getMaximum()- contador);
+                        barraProgreso.setValue(barraProgreso.getMaximum() - contador);
                     });
                 }
                 // Habilitar el botón al finalizar el contador
@@ -115,14 +111,14 @@ public class AnuncioVentana extends JDialog {
             }
         });
         hiloContador.start();
-        
     }
-	private void iniciarCierreAutomatico() {
+
+    private void iniciarCierreAutomatico() {
         Thread hiloCierre = new Thread(() -> {
             try {
                 Thread.sleep(20000); // Esperar 20 segundos
-                if (isVisible()) { // Verificar si la ventana sigue abierta
-                    SwingUtilities.invokeLater(this::dispose); // Cerrar la ventana
+                if (isVisible()) {
+                    SwingUtilities.invokeLater(this::dispose);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -130,5 +126,5 @@ public class AnuncioVentana extends JDialog {
         });
         hiloCierre.start();
     }
-	
+
 }
