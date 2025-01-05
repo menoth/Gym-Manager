@@ -1,18 +1,26 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class CatalogoEjercicio extends JFrame {
@@ -181,7 +189,7 @@ public class CatalogoEjercicio extends JFrame {
             for (String musculo : listaMusculos) {
                 comboMusculo1.addItem(musculo);
             }
-            comboMusculo1.setMaximumSize(new Dimension(200, 30)); // Reducir tamaño del JComboBox
+            comboMusculo1.setMaximumSize(new Dimension(200, 30));
 
             JLabel nombreMusculo2 = new JLabel("Músculo Secundario:");
             nombreMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -190,14 +198,60 @@ public class CatalogoEjercicio extends JFrame {
                 comboMusculo2.addItem(musculo);
             }
             comboMusculo2.setMaximumSize(new Dimension(200, 30));
-            comboMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);// Reducir tamaño del JComboBox
+            comboMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JButton añadirFoto = new JButton("AÑADIR FOTO");
+            añadirFoto.setEnabled(false); // Deshabilitado inicialmente
+
+            final File[] fotoSeleccionada = {null}; // Variable para almacenar temporalmente la imagen seleccionada
+
+            // Habilitar o deshabilitar el botón "AÑADIR FOTO" según el campo "Nombre"
+            añadirNombre.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    toggleAñadirFotoButton();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    toggleAñadirFotoButton();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    toggleAñadirFotoButton();
+                }
+
+                private void toggleAñadirFotoButton() {
+                    añadirFoto.setEnabled(!añadirNombre.getText().trim().isEmpty());
+                }
+            });
+
+            // Listener del botón "AÑADIR FOTO"
+            añadirFoto.addActionListener(e -> {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Imágenes (JPG, PNG, GIF)", "jpg", "png", "gif"));
+
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    fotoSeleccionada[0] = fileChooser.getSelectedFile(); // Almacenar temporalmente la imagen seleccionada
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Imagen seleccionada correctamente.",
+                        "Información",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                }
+            });
 
             JButton botonAñadir = new JButton("AÑADIR EJERCICIO");
             botonAñadir.addActionListener(e -> {
                 String nombre = añadirNombre.getText();
                 String musculo1 = (String) comboMusculo1.getSelectedItem();
                 String musculo2 = (String) comboMusculo2.getSelectedItem();
-                
+
                 if (musculo1 != null && musculo2 != null && musculo1.equals(musculo2)) {
                     JOptionPane.showMessageDialog(
                         CatalogoEjercicio.this,
@@ -211,8 +265,15 @@ public class CatalogoEjercicio extends JFrame {
                 if (!nombre.isEmpty() && musculo1 != null && musculo2 != null) {
                     try {
                         int nuevoId = listaEjercicios.size() + 1;
-                        InsertarDatosBD.insertarEjercicio(nuevoId, nombre, musculo1, musculo2);
 
+                        // Guardar la imagen si se seleccionó
+                        if (fotoSeleccionada[0] != null) {
+                            String nuevoNombreFoto = nombre.trim() + getExtension(fotoSeleccionada[0].getName());
+                            File destino = new File("Sources/imagenes/" + nuevoNombreFoto);
+                            Files.copy(fotoSeleccionada[0].toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        }
+
+                        InsertarDatosBD.insertarEjercicio(nuevoId, nombre, musculo1, musculo2);
                         listaEjercicios = cargarEjerciciosDesdeBD();
                         actualizarCatalogo(listaEjercicios);
 
@@ -221,6 +282,14 @@ public class CatalogoEjercicio extends JFrame {
                             "Ejercicio añadido correctamente.",
                             "Información",
                             JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                        JOptionPane.showMessageDialog(
+                            CatalogoEjercicio.this,
+                            "Error al guardar la imagen.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
                         );
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -243,18 +312,19 @@ public class CatalogoEjercicio extends JFrame {
 
             añadirEjercicio.add(nombreEjercicio);
             añadirEjercicio.add(añadirNombre);
-            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(Box.createVerticalStrut(10));
             añadirEjercicio.add(nombreMusculo1);
             añadirEjercicio.add(comboMusculo1);
-            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(Box.createVerticalStrut(10));
             añadirEjercicio.add(nombreMusculo2);
             añadirEjercicio.add(comboMusculo2);
-            añadirEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            añadirEjercicio.add(añadirFoto);
+            añadirEjercicio.add(Box.createVerticalStrut(10));
             añadirEjercicio.add(botonAñadir);
 
             dialogoAñadir_Eliminar.add(añadirEjercicio);
 
-            // Panel Eliminar Ejercicio
+            // Panel Eliminar Ejercicio (sin cambios)
             JPanel eliminarEjercicio = new JPanel();
             eliminarEjercicio.setLayout(new BoxLayout(eliminarEjercicio, BoxLayout.Y_AXIS));
             eliminarEjercicio.setBorder(BorderFactory.createTitledBorder(
@@ -266,12 +336,13 @@ public class CatalogoEjercicio extends JFrame {
 
             JLabel nombreEjercicioEliminar = new JLabel("Nombre:");
             JTextField añadirEjercicioEliminar = new JTextField();
-            añadirEjercicioEliminar.setMaximumSize(new Dimension(600, 30)); // Tamaño igual al de añadir
+            añadirEjercicioEliminar.setMaximumSize(new Dimension(600, 30));
 
             JButton botonEliminar = new JButton("ELIMINAR EJERCICIO");
             botonEliminar.addActionListener(e -> {
                 String nombre = añadirEjercicioEliminar.getText();
                 if (!nombre.isEmpty()) {
+                	eliminarFotoEjercicio(nombre);
                     eliminarEjercicioDeBaseDeDatos(nombre);
                     dialogoAñadir_Eliminar.dispose();
                 } else {
@@ -286,7 +357,7 @@ public class CatalogoEjercicio extends JFrame {
 
             eliminarEjercicio.add(nombreEjercicioEliminar);
             eliminarEjercicio.add(añadirEjercicioEliminar);
-            eliminarEjercicio.add(Box.createVerticalStrut(10)); // Espaciado
+            eliminarEjercicio.add(Box.createVerticalStrut(10));
             eliminarEjercicio.add(botonEliminar);
 
             dialogoAñadir_Eliminar.add(eliminarEjercicio);
@@ -301,6 +372,7 @@ public class CatalogoEjercicio extends JFrame {
             );
         }
     }
+
 
 
     private void eliminarEjercicioDeBaseDeDatos(String nombre) {
@@ -470,7 +542,54 @@ public class CatalogoEjercicio extends JFrame {
         if (editor instanceof JSpinner.DefaultEditor spinnerEditor) {
             spinnerEditor.getTextField().setEditable(false);
         }
-    }
+    }	
+    
+  //Generado con ChatGPT4
+  	protected String getExtension(String filename) {
+  		int lastIndex = filename.lastIndexOf('.');	
+         return lastIndex == -1 ? "" : filename.substring(lastIndex);
+  		
+  	}
+  	
+  	private void eliminarFotoEjercicio(String nombreEjercicio) {
+  	    File carpetaImagenes = new File("Sources/imagenes");
+  	    if (!carpetaImagenes.exists()) {
+  	        JOptionPane.showMessageDialog(
+  	            null,
+  	            "La carpeta de imágenes no existe.",
+  	            "Error",
+  	            JOptionPane.ERROR_MESSAGE
+  	        );
+  	        return;
+  	    }
+
+
+  	    File[] archivos = carpetaImagenes.listFiles((dir, name) -> name.startsWith(nombreEjercicio));
+  	    if (archivos != null && archivos.length > 0) {
+  	        for (File archivo : archivos) {
+  	            if (archivo.delete()) {
+  	                JOptionPane.showMessageDialog(
+  	                    null,
+  	                    "La imagen del ejercicio '" + nombreEjercicio + "' se ha eliminado correctamente.",
+  	                    "Información",
+  	                    JOptionPane.INFORMATION_MESSAGE
+  	                );
+  	            } else {
+  	                JOptionPane.showMessageDialog(
+  	                    null,
+  	                    JOptionPane.ERROR_MESSAGE
+  	                );
+  	            }
+  	        }
+  	    } else {
+  	        JOptionPane.showMessageDialog(
+  	            null,
+  	            JOptionPane.WARNING_MESSAGE
+  	        );
+  	    }
+  	}
+
+  	
     
     private List<String> cargarMusculosDesdeBD() {
         List<String> musculos = new ArrayList<>();

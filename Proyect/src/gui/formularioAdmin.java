@@ -5,6 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,7 +40,7 @@ public class formularioAdmin extends JFrame {
         datos = cargarEjerciciosDesdeBD();
 
         // Detalles de la ventana
-        setSize(new Dimension(600, 300));
+        setSize(new Dimension(1000, 400));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -74,7 +81,8 @@ public class formularioAdmin extends JFrame {
         // -------------------------CAMPO ESCRIBIR NUEVO EJERCICIO------------------------------------------
         
         JPanel panelElementosAñadir = new JPanel();
-        panelElementosAñadir.setLayout(new GridLayout(7, 1, 0, 5));
+        //panelElementosAñadir.setLayout(new GridLayout(8, 1, 0, 5));
+        panelElementosAñadir.setLayout(new FlowLayout());
         panelElementosAñadir.setBorder(new EmptyBorder(10, 10, 10, 10));
         
         JLabel introduceNombre = new JLabel("Introduce el nombre del ejercicio:");
@@ -84,6 +92,41 @@ public class formularioAdmin extends JFrame {
         JLabel introduceMusculoSecundario = new JLabel("Introduce el músculo secundario:");
         JTextField campoMusculoSecundario = new JTextField(10);
         JButton botonAñadir = new JButton("Confirmar");
+        JButton foto = new JButton("AÑADIR");
+        
+        foto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Crear JFileChooser para seleccionar imagen
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                // Filtro para permitir solo imágenes
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                        "Imágenes (JPG, PNG, GIF)", "jpg", "png", "gif"));
+
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String nuevoNombreFoto = campoNombre.getText() + getExtension(selectedFile.getName());
+                    File destino = new File("Sources/imagenes/" + nuevoNombreFoto);
+
+                    try {
+                        // Copiar la imagen a la carpeta del proyecto
+                    	
+                    	//Files.copy hecho con ChatGPT4
+                        Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                        dispose();
+
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al copiar la imagen", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
 
         // Action listener para el botón Añadir
         botonAñadir.addActionListener(e -> {
@@ -119,6 +162,7 @@ public class formularioAdmin extends JFrame {
         panelElementosAñadir.add(campoMusculoPrincipal);
         panelElementosAñadir.add(introduceMusculoSecundario);
         panelElementosAñadir.add(campoMusculoSecundario);
+        panelElementosAñadir.add(foto);
         panelElementosAñadir.add(botonAñadir);
         panelAnadir.add(panelElementosAñadir, BorderLayout.CENTER);
         
@@ -177,6 +221,13 @@ public class formularioAdmin extends JFrame {
         setVisible(true);
     }
 
+  //Generado con ChatGPT4
+  	protected String getExtension(String filename) {
+  		int lastIndex = filename.lastIndexOf('.');	
+         return lastIndex == -1 ? "" : filename.substring(lastIndex);
+  		
+  	}	
+    
     // Método para cargar los ejercicios desde la base de datos
     private List<String> cargarEjerciciosDesdeBD() {
         List<String> ejercicios = new ArrayList<>();

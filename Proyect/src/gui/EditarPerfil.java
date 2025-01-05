@@ -235,7 +235,6 @@ public class EditarPerfil extends JFrame {
 		
 	}
 
-
 	//Generado con ChatGPT4
 	protected String getExtension(String filename) {
 		int lastIndex = filename.lastIndexOf('.');	
