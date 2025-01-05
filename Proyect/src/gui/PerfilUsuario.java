@@ -247,7 +247,7 @@ public class PerfilUsuario extends JFrame {
 		desc.setWrapStyleWord(true);
 		desc.setLineWrap(true);
 		desc.setEditable(false);
-		desc.setFont(new Font("Arial", Font.PLAIN, 18));
+		desc.setFont(new Font("Arial", Font.BOLD, 18));
 		desc.setPreferredSize(new Dimension(400, 200));
 		
 		// Añadimos la descripcion a panelSubOeste1
