@@ -275,4 +275,6 @@ public class Registro extends JFrame {
   			// TODO: handle exception
   		}	
   	}
+  	
+  	
 }

@@ -61,6 +61,11 @@ public class EditorBoton implements TableCellEditor {
         } else {
             boton.setText("Añadir ejercicio"); // Si el valor es nulo, establece "Añadir ejercicio"
         }
+        
+        boton.setBackground(new Color(70, 130, 180)); // Fondo principal
+        boton.setForeground(Color.WHITE); // Texto blanco
+        boton.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente del texto
+        
         return boton;
     }
 

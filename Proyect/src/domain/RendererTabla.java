@@ -27,16 +27,23 @@ public class RendererTabla extends JPanel implements TableCellRenderer {
             setLayout(new BorderLayout()); // Usamos BorderLayout para escalar el botón
             
             
+            
             //Porseacaso si no se le asigna ningun valor
             if (value == null) {
                 JButton boton = new JButton("Añadir ejercicio"); // Si el valor es nulo, usa "Añadir ejercicio"
                 boton.setFocusPainted(false); // Evita el borde de enfoque
+                boton.setBackground(new Color(70, 130, 180)); // Fondo principal
+                boton.setForeground(Color.WHITE); // Texto blanco
+                boton.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente del texto
                 boton.setMargin(new Insets(0, 0, 0, 0)); // Sin márgenes internos
                 add(boton, BorderLayout.CENTER);
                 return this;
             } else {
                 JButton boton = new JButton(value.toString()); // Si no es nulo, convierte el valor a texto
                 boton.setFocusPainted(false); // Evita el borde de enfoque
+                boton.setBackground(new Color(70, 130, 180)); // Fondo principal
+                boton.setForeground(Color.WHITE); // Texto blanco
+                boton.setFont(new Font("Arial", Font.BOLD, 14)); // Fuente del texto
                 boton.setMargin(new Insets(0, 0, 0, 0)); // Sin márgenes internos
                 add(boton, BorderLayout.CENTER);
                 return this;
