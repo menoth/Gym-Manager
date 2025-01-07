@@ -49,8 +49,8 @@ public class PrincipalWindow extends JFrame {
 		JButton profileButton = new JButton("PERFIL");
 		profileButton.setPreferredSize(new Dimension(120, 60));
 		
-		profileButton.setBackground(new Color(255, 255, 255)); // Blanco
-		profileButton.setForeground(new Color(70, 130, 180)); // Azul acero
+		profileButton.setBackground(new Color(255, 255, 255));
+		profileButton.setForeground(new Color(70, 130, 180));
 		profileButton.setFont(new Font("Serif", Font.BOLD, 16));
 
 		profileButton.addActionListener(e -> {
@@ -185,19 +185,19 @@ public class PrincipalWindow extends JFrame {
 
 		// Crear el campo de búsqueda con un placeholder
 		campo_busqueda = new JTextField("Buscar usuario...");
-		campo_busqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Estilo cursiva para el placeholder
-		campo_busqueda.setForeground(Color.GRAY); // Color gris claro para el placeholder
-		campo_busqueda.setPreferredSize(new Dimension(500, 40)); // Ajustar tamaño del campo
+		campo_busqueda.setFont(new Font("Serif", Font.ITALIC, 23)); 
+		campo_busqueda.setForeground(Color.GRAY); 
+		campo_busqueda.setPreferredSize(new Dimension(500, 40));
 
-		// Agregar FocusListener para manejar el comportamiento del placeholder
+		// actionListener del campo_busqueda
 		campo_busqueda.addFocusListener(new FocusListener() {
 		    @Override
 		    public void focusGained(FocusEvent e) {
 		        // Cuando el campo obtiene el enfoque
 		        if (campo_busqueda.getText().equals("Buscar usuario...")) {
-		            campo_busqueda.setText(""); // Limpiar el texto
-		            campo_busqueda.setFont(new Font("Serif", Font.PLAIN, 23)); // Cambiar a fuente normal
-		            campo_busqueda.setForeground(Color.BLACK); // Cambiar a color negro
+		            campo_busqueda.setText("");
+		            campo_busqueda.setFont(new Font("Serif", Font.PLAIN, 23));
+		            campo_busqueda.setForeground(Color.BLACK);
 		        }
 		    }
 

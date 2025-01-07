@@ -734,8 +734,6 @@ public class CatalogoEjercicio extends JFrame {
   	    }
   	}
 
-  	
-    
     private List<String> cargarMusculosDesdeBD() {
         List<String> musculos = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:Sources/bd/baseDeDatos.db")) {

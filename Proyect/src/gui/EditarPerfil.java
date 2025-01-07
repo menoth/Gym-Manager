@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,18 +43,21 @@ public class EditarPerfil extends JFrame {
         
         //Panel principal
         JPanel panelPrincipal = new JPanel();
-        panelPrincipal.setBackground(new Color(176,224,230));
+        panelPrincipal.setBackground(new Color(70, 130, 180));
         panelPrincipal.setLayout(new GridLayout(12, 1, 0, 10));
         panelPrincipal.setBorder(new EmptyBorder(0, 40, 0, 40));
         
         //Panel para el botón volver
         JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout());
-        panel2.setBackground(new Color(176,224,230));
+        panel2.setBackground(new Color(70, 130, 180));
         panelPrincipal.add(panel2);
         
         //Volver
         JButton volver = new JButton("Volver");
+        volver.setBackground(new Color(255, 255, 255));
+		volver.setForeground(new Color(70, 130, 180));
+		volver.setFont(new Font("Serif", Font.BOLD, 16));
         panel2.add(volver, BorderLayout.WEST);
         
         //Action Listener para Volver
@@ -69,40 +73,75 @@ public class EditarPerfil extends JFrame {
         
         //Nombre
         JLabel nombre = new JLabel("Nombre");
+        nombre.setForeground(new Color(255, 255, 255));
+		nombre.setBackground(new Color(70, 130, 180));
+		nombre.setFont(new Font("Serif", Font.BOLD, 16));
+		
         JTextField txtNombre = new JTextField();
         txtNombre.setText(usuario.getNombre());
+        txtNombre.setFont(new Font("Serif", Font.BOLD, 23)); 
+		txtNombre.setForeground(Color.GRAY); 
+
         panelPrincipal.add(nombre);
         panelPrincipal.add(txtNombre);
         
         //Apellidos
         JLabel apellidos = new JLabel("Apellidos");
+        apellidos.setForeground(new Color(255, 255, 255));
+		apellidos.setBackground(new Color(70, 130, 180));
+		apellidos.setFont(new Font("Serif", Font.BOLD, 16));
+		
         JTextField txtApellidos = new JTextField();
+        txtApellidos.setFont(new Font("Serif", Font.BOLD, 23)); 
+		txtApellidos.setForeground(Color.GRAY); 
+        
         txtApellidos.setText(usuario.getApellidos());
         panelPrincipal.add(apellidos);
         panelPrincipal.add(txtApellidos);
         
         //Descripcion
         JLabel descripcion = new JLabel("Descripción");
+        descripcion.setForeground(new Color(255, 255, 255));
+		descripcion.setBackground(new Color(70, 130, 180));
+		descripcion.setFont(new Font("Serif", Font.BOLD, 16));
+        
         JTextField txtDescripcion = new JTextField();
+        txtDescripcion.setFont(new Font("Serif", Font.BOLD, 23)); 
+		txtDescripcion.setForeground(Color.GRAY); 
+        
         txtDescripcion.setText(usuario.getDescripcion());
         panelPrincipal.add(descripcion);
         panelPrincipal.add(txtDescripcion);
         
         //Guardar
         JButton guardar = new JButton("Guardar cambios");
+        guardar.setBackground(new Color(255, 255, 255));
+		guardar.setForeground(new Color(70, 130, 180));
+		guardar.setFont(new Font("Serif", Font.BOLD, 16));
         panelPrincipal.add(guardar);
         
         //Guardar
         JLabel otros = new JLabel("Otros cambios");
+        otros.setForeground(new Color(255, 255, 255));
+		otros.setBackground(new Color(70, 130, 180));
+		otros.setFont(new Font("Serif", Font.BOLD, 16));
         panelPrincipal.add(otros);
         
         //Fotoperfil
         JButton fotoPerfil = new JButton("Foto de perfil");
+        fotoPerfil.setBackground(new Color(255, 255, 255));
+		fotoPerfil.setForeground(new Color(70, 130, 180));
+		fotoPerfil.setFont(new Font("Serif", Font.BOLD, 16));
         panelPrincipal.add(fotoPerfil);
         
         //Vitrina
         JButton vitrina = new JButton("Vitrina");
+        vitrina.setBackground(new Color(255, 255, 255));
+		vitrina.setForeground(new Color(70, 130, 180));
+		vitrina.setFont(new Font("Serif", Font.BOLD, 16));
+		
         panelPrincipal.add(vitrina);
+        
         vitrina.addActionListener(e -> {
         	dispose();
         	new LogrosVentana(usuario);
