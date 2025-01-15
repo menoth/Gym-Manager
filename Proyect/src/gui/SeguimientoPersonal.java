@@ -38,7 +38,10 @@ public class SeguimientoPersonal extends JFrame {
         });
 
         JPanel panelElegirAño = new JPanel(new FlowLayout());
+        panelElegirAño.setBackground(new Color(70, 130, 180));
+        
         JLabel labelAño = new JLabel("Selecciona el Año:");
+        labelAño.setForeground(new Color(255, 255, 255));
         JComboBox<Integer> selectorAño = new JComboBox<>();
         for (int year = 2024; year <= 2100; year++) {
             selectorAño.addItem(year);
@@ -55,9 +58,12 @@ public class SeguimientoPersonal extends JFrame {
         add(panelElegirAño, BorderLayout.NORTH);
 
         panelPrincipal = new JPanel(new GridLayout(3, 4, 10, 10));
+
         add(panelPrincipal, BorderLayout.CENTER);
 
         JPanel panelLeyenda = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelLeyenda.setBackground(new Color(70, 130, 180));
+        
         JLabel labelCumplido = new JLabel("Cumplido:");
         labelCumplido.setForeground(Color.GREEN);
         JLabel labelNoCumplido = new JLabel("No Cumplido:");
@@ -210,13 +216,16 @@ public class SeguimientoPersonal extends JFrame {
 
         for (int mes = 1; mes <= 12; mes++) {
             JPanel panelMes = new JPanel(new BorderLayout());
+            panelMes.setBackground(new Color(70, 130, 180));
             panelMes.setBorder(BorderFactory.createTitledBorder(YearMonth.of(añoElegido, mes).getMonth().toString()));
 
             JPanel panelDias = new JPanel(new GridLayout(7, 7));
+            panelDias.setBackground(new Color(70, 130, 180));
             panelMes.add(panelDias, BorderLayout.CENTER);
 
             for (DayOfWeek dia : DayOfWeek.values()) {
                 JLabel labelDia = new JLabel(dia.toString().substring(0, 3), SwingConstants.CENTER);
+                labelDia.setForeground(new Color(255, 255, 255));
                 labelDia.setFont(new Font("Arial", Font.BOLD, 12));
                 panelDias.add(labelDia);
             }
@@ -231,6 +240,8 @@ public class SeguimientoPersonal extends JFrame {
 
             for (int dia = 1; dia <= totalDias; dia++) {
             	JButton botonDia = new JButton(String.valueOf(dia));
+            	botonDia.setBackground(new Color(255, 255, 255));
+        		botonDia.setForeground(new Color(70, 130, 180));
                 botonDia.setName(LocalDate.of(añoElegido, mes, dia).toString());
                 botonDia.setPreferredSize(new Dimension(40, 40));
                 botonDia.setFont(new Font("Arial", Font.PLAIN, 10));
@@ -267,7 +278,7 @@ public class SeguimientoPersonal extends JFrame {
             estadoBotones.put(boton, 2);
             registrarEstado(fecha, "Rojo");
         } else {
-            boton.setBackground(null);
+        	boton.setBackground(new Color(255, 255, 255));
             estadoBotones.put(boton, 0);
             eliminarEstado(fecha);
         }

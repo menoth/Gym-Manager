@@ -306,9 +306,9 @@ public class PerfilUsuario extends JFrame {
 		}
 		
 		TableCellRenderer cellRenderer = (table2, value, isSelected, hasFocus, row, column) -> {
-  			
+  			table2.setBackground(new Color(70,130,180));
 		      
-      		if(column == 1 || column == 0) {
+      		if(column == 1 || column == 2) {
       			JTextArea desc2 = new JTextArea(value.toString());
         		desc2.setBackground(new Color(255,255,255));
         		
@@ -339,7 +339,7 @@ public class PerfilUsuario extends JFrame {
       			JLabel result = new JLabel(value.toString());			
       			result.setHorizontalAlignment(JLabel.CENTER);
       			
-      			result.setFont(new Font("Arial", Font.BOLD, 13));
+      			result.setFont(new Font("Arial", Font.BOLD, 18));
       			
       			result.setBackground(new Color(25,25,112));
       			result.setForeground(new Color(255, 255, 255));
@@ -354,9 +354,12 @@ public class PerfilUsuario extends JFrame {
 		RutinaModel modelo = new RutinaModel();
 		modelo.cargarDatosDesdeBD(usuario);
 		JTable table = new JTable(modelo);
+		table.setBackground(new Color(70, 130, 180));
 		
 		table.getTableHeader().setDefaultRenderer(headerRenderer);		
     	table.setDefaultRenderer(Object.class, cellRenderer);
+    	
+    	table.getTableHeader().setPreferredSize(new Dimension(100, 40));
 		
 		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
 		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario));
