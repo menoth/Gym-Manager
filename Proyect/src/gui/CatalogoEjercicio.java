@@ -102,26 +102,26 @@ public class CatalogoEjercicio extends JFrame {
         campoBusqueda.setPreferredSize(new Dimension(500, 40));
         campoBusqueda.setFont(new Font("Serif", Font.ITALIC, 17));
         campoBusqueda.addFocusListener(new FocusListener() {
-		    @Override
-		    public void focusGained(FocusEvent e) {
-		        // Cuando el campo obtiene el enfoque
-		        if (campoBusqueda.getText().equals("Busca el ejercicio que desees")) {
-		            campoBusqueda.setText(""); // Limpiar el texto
-		            campoBusqueda.setFont(new Font("Serif", Font.PLAIN, 23)); // Cambiar a fuente normal
-		            campoBusqueda.setForeground(Color.BLACK); // Cambiar a color negro
-		        }
-		    }
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (campoBusqueda.getText().equals("Busca el ejercicio que desees")) {
+                    campoBusqueda.setText(""); // Limpiar el texto
+                    campoBusqueda.setFont(new Font("Serif", Font.PLAIN, 23)); // Cambiar a fuente normal
+                    campoBusqueda.setForeground(Color.BLACK); // Cambiar a color negro
+                }
+            }
 
-		    @Override
-		    public void focusLost(FocusEvent e) {
-		        // Cuando el campo pierde el enfoque
-		        if (campoBusqueda.getText().isEmpty()) {
-		            campoBusqueda.setText("Busca el ejercicio que desees"); // Restaurar el placeholder
-		            campoBusqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Regresar a fuente cursiva
-		            campoBusqueda.setForeground(Color.GRAY); // Cambiar a color gris
-		        }
-		    }
-		});
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (campoBusqueda.getText().isEmpty()) {
+                    campoBusqueda.setText("Busca el ejercicio que desees"); // Restaurar el placeholder
+                    campoBusqueda.setFont(new Font("Serif", Font.ITALIC, 23)); // Regresar a fuente cursiva
+                    campoBusqueda.setForeground(Color.GRAY); // Cambiar a color gris
+                    actualizarCatalogo(listaEjercicios); // Restaurar catálogo completo
+                }
+            }
+        });
+
         
         campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
@@ -141,8 +141,8 @@ public class CatalogoEjercicio extends JFrame {
 
             private void filtrarResultados() {
                 String textoBusqueda = campoBusqueda.getText().toLowerCase();
-                if (textoBusqueda.isEmpty()) {
-                    // Mostrar todos los ejercicios si el campo está vacío
+                if (textoBusqueda.isEmpty() || textoBusqueda.equals("busca el ejercicio que desees")) {
+                    // Mostrar todos los ejercicios si el campo está vacío o contiene el texto predeterminado
                     actualizarCatalogo(listaEjercicios);
                 } else {
                     // Filtrar ejercicios que contengan el texto de búsqueda
@@ -156,6 +156,7 @@ public class CatalogoEjercicio extends JFrame {
                     actualizarCatalogo(ejerciciosFiltrados);
                 }
             }
+
         });
         
         panelBusqueda.add(campoBusqueda);
@@ -191,7 +192,7 @@ public class CatalogoEjercicio extends JFrame {
             boton.setBackground(COLOR_PRINCIPAL);
             boton.setForeground(Color.WHITE);
             boton.setFont(new Font("Serif", Font.BOLD, 14));
-            int ancho = (int) (((Toolkit.getDefaultToolkit().getScreenSize().getWidth())/4)-30);
+            int ancho = (int) (((Toolkit.getDefaultToolkit().getScreenSize().getWidth()) / 4) - 30);
             panel.setPreferredSize(new Dimension(ancho, ancho + 40)); 
             
             // Asocia el método mostrarDialogoSeries
@@ -213,7 +214,7 @@ public class CatalogoEjercicio extends JFrame {
             } else {
                 label.setText("Imagen no encontrada");
             }
-            
+
             panel.add(label, BorderLayout.CENTER);
             gridPrincipal.add(panel);
         }
@@ -221,6 +222,7 @@ public class CatalogoEjercicio extends JFrame {
         gridPrincipal.revalidate();
         gridPrincipal.repaint();
     }
+
 
     private List<String> cargarEjerciciosDesdeBD() {
         List<String> ejercicios = new ArrayList<>();
