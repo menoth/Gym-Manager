@@ -140,7 +140,7 @@ public class InicioSesion extends JFrame {
 
     private boolean validarLogin(String username, String password) {
         ArrayList<Usuario> usuarios = new ArrayList<>();
-        ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
+        ConectarBaseDeDatos.ConectarBaseDeDatos2(usuarios);
 
         for (Usuario u : usuarios) {
             if ((username.equalsIgnoreCase(u.getUsuario()) || username.equalsIgnoreCase(u.getCorreoElectronico())) 

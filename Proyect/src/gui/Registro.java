@@ -200,7 +200,7 @@ public class Registro extends JFrame {
 				//Antes de comenzar con el registro buscamos en nuestro CSV
 				//si el correo ya está registrado o si el usuario está en uso.
 				List<Usuario> usuarios = new ArrayList<>();
-		    	ConectarBaseDeDatos.ConectarBaseDeDatos(usuarios);
+		    	ConectarBaseDeDatos.ConectarBaseDeDatos2(usuarios);
 				for(Usuario u : usuarios) {
 					if(buscarCoincidencia(correo, u.getCorreoElectronico())) {
 						JOptionPane.showMessageDialog(Registro.this, 

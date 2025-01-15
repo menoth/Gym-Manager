@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -39,14 +40,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import domain.Ejercicio;
 import domain.EjercicioEnEntrenamiento;
 import domain.Entrenamiento;
-import domain.Musculo;
 import domain.Rutina;
 import domain.Serie;
 import domain.Usuario;
-import domain.Musculo.TamanoMusculo;
 
 public class VisitarPerfil extends JFrame {
 	
