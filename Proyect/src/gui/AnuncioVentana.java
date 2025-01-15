@@ -2,12 +2,10 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.util.Random;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,8 +16,8 @@ public class AnuncioVentana extends JDialog {
 
     private static final long serialVersionUID = 1L;
 
-    private JButton cerrarButton;
     private JProgressBar barraProgreso;
+    private JLabel contadorLabel; // Etiqueta para el contador visual
     private int contador = 100; // Tiempo inicial del contador
 
     public AnuncioVentana() {
@@ -45,37 +43,35 @@ public class AnuncioVentana extends JDialog {
         String rutaImagen = rutasImagenes[random.nextInt(rutasImagenes.length)];
 
         ImageIcon iconoOriginal = new ImageIcon(rutaImagen);
-        Image imagen = iconoOriginal.getImage(); // Obtener la imagen
-        Image imagenRedimensionada = imagen.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH); // Redimensionar la imagen
+        Image imagen = iconoOriginal.getImage();
+        Image imagenRedimensionada = imagen.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
         ImageIcon imagenAjustada = new ImageIcon(imagenRedimensionada);
 
-        // Crear un JPanel para contener la imagen y el botón
-        JPanel panelImagen = new JPanel(null); // Diseño nulo para posición personalizada
+        // Crear un JPanel para contener la imagen
+        JPanel panelImagen = new JPanel(null);
         panelImagen.setBounds(0, 0, getWidth(), getHeight());
 
-        // Agregar la imagen al JLabel
         JLabel imagenLabel = new JLabel(imagenAjustada);
         imagenLabel.setBounds(0, 0, getWidth(), getHeight());
         panelImagen.add(imagenLabel);
 
-        // Crear el botón de cerrar y colocarlo en la esquina superior derecha
-        ImageIcon iconoCerrar = new ImageIcon("Sources/imagenes/cruzroja.png"); 
-        Image imagenCerrar = iconoCerrar.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH); 
-        cerrarButton = new JButton();
-        cerrarButton.setIcon(new ImageIcon(imagenCerrar)); 
-        cerrarButton.setEnabled(false);
-        cerrarButton.setBounds(getWidth() - 80, 10, 50, 40); 
-        cerrarButton.addActionListener(e -> dispose()); 
-        panelImagen.add(cerrarButton);
-
         add(panelImagen, BorderLayout.CENTER);
 
-        // Crear el contador
-        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Crear el panel del título con el contador visual
+        JPanel panelTitulo = new JPanel(new BorderLayout());
         panelTitulo.setBackground(new Color(70, 130, 180));
-        JLabel anuncio = new JLabel("Anuncio Publicitario");
+
+        JLabel anuncio = new JLabel("Anuncio Publicitario", JLabel.CENTER);
         anuncio.setFont(new Font("Arial", Font.BOLD, 16));
-        panelTitulo.add(anuncio);
+        anuncio.setForeground(Color.WHITE);
+        panelTitulo.add(anuncio, BorderLayout.NORTH);
+
+        // Contador visual
+        contadorLabel = new JLabel("10 segundos restantes", JLabel.CENTER);
+        contadorLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        contadorLabel.setForeground(Color.WHITE);
+        panelTitulo.add(contadorLabel, BorderLayout.SOUTH);
+
         add(panelTitulo, BorderLayout.NORTH);
 
         // Crear la barra de progreso
@@ -83,48 +79,33 @@ public class AnuncioVentana extends JDialog {
         barraProgreso.setValue(contador);
         add(barraProgreso, BorderLayout.SOUTH);
 
-        // Iniciar el hilo del contador
+        // Iniciar el contador
         iniciarContador();
-
-        // Configurar el temporizador para cerrar automáticamente
-        iniciarCierreAutomatico();
 
         // Mostrar la ventana
         setVisible(true);
     }
 
     private void iniciarContador() {
-        // Crear un hilo para el contador
         Thread hiloContador = new Thread(() -> {
             try {
                 while (contador > 0) {
                     Thread.sleep(100);
                     contador--;
+                    if(contador == 0) {
+                    	SwingUtilities.invokeLater(this::dispose);
+                    }
                     SwingUtilities.invokeLater(() -> {
                         barraProgreso.setValue(barraProgreso.getMaximum() - contador);
+                        contadorLabel.setText((contador / 10) + " segundos restantes");
                     });
                 }
-                // Habilitar el botón al finalizar el contador
-                SwingUtilities.invokeLater(() -> cerrarButton.setEnabled(true));
+                
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         hiloContador.start();
-    }
-
-    private void iniciarCierreAutomatico() {
-        Thread hiloCierre = new Thread(() -> {
-            try {
-                Thread.sleep(20000); // Esperar 20 segundos
-                if (isVisible()) {
-                    SwingUtilities.invokeLater(this::dispose);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        hiloCierre.start();
     }
 
 }
