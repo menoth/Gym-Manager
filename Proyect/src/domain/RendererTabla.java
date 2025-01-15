@@ -88,7 +88,7 @@ public class RendererTabla extends JPanel implements TableCellRenderer {
                 
                 // Etiqueta que muestra repeticiones, peso y esfuerzo
                 JLabel etiquetaSerie = new JLabel("Serie " + (i + 1) + ": " +
-                        serie.get("repeticiones") + " reps, Peso: " + serie.get("peso") + " kg, Esfuerzo: " + esfuerzo);
+                        serie.get("repeticiones") + " reps, Peso: " + serie.get("peso") + " kg, " + esfuerzo);
                 
                 etiquetaSerie.setFont(new Font(etiquetaSerie.getFont().getName(), Font.PLAIN, 13));
                 etiquetaSerie.setAlignmentX(CENTER_ALIGNMENT);

@@ -33,7 +33,7 @@ public class PrincipalWindow extends JFrame {
 		pNorte.setPreferredSize(new Dimension(0, 200));
 		
 		// Crear un JLabel para el mensaje de bienvenida
-		JLabel labelBienvenido = new JLabel("Bienvenido " + usuario + "!");
+		JLabel labelBienvenido = new JLabel("¡Bienvenido " + usuario + "!");
 		labelBienvenido.setHorizontalAlignment(SwingConstants.CENTER); // Centrar el texto
 		labelBienvenido.setFont(new Font("Serif", Font.BOLD, 66));
 		labelBienvenido.setForeground(Color.WHITE);

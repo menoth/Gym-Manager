@@ -290,7 +290,7 @@ public class CatalogoEjercicio extends JFrame {
             comboMusculo2.setMaximumSize(new Dimension(200, 30));
             comboMusculo2.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            JButton añadirFoto = new JButton("AÑADIR FOTO");
+            JButton añadirFoto = new JButton("AÑADIR FOTO (PNG)");
             añadirFoto.setEnabled(false); // Deshabilitado inicialmente
 
             final File[] fotoSeleccionada = {null}; // Variable para almacenar temporalmente la imagen seleccionada
