@@ -1,10 +1,10 @@
 package gui;
 
 import java.awt.BasicStroke;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,9 +15,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -52,7 +49,6 @@ public class EstadisticasRutina extends JFrame {
         
         //Datos para las estadísticas, de momento comentados
         String nombre = rutina.getNombre();
-        Double volumenEn = 0.0;
         ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
         ArrayList<Ejercicio> ejercicios = new ArrayList<Ejercicio>();
         ConectarBaseDeDatos.ConectarBaseDeDatosEjercicios(ejercicios);

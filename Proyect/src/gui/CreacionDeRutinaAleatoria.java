@@ -329,6 +329,7 @@ public class CreacionDeRutinaAleatoria{
     	return musculos2;
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean esOptimo(ArrayList<EjercicioEnEntrenamiento> ejerciciosEntrenamiento, ArrayList<Ejercicio> ejercicios, ArrayList<String> musculos) {
 		HashMap<String, Double> mapa = new HashMap<String, Double>();
 		boolean resultado = true;

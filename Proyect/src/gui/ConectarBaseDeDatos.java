@@ -21,9 +21,7 @@ import domain.Usuario;
 
 // Lo usaremos para conectar la base de datos con una lista de usuarios
 public class ConectarBaseDeDatos {
-	public static void main(String[] args) {
-	}
-	public static void ConectarBaseDeDatos(List<Usuario> usuarios) {
+	public static void ConectarBaseDeDatos2(List<Usuario> usuarios) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
