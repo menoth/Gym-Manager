@@ -191,6 +191,8 @@ public class CatalogoEjercicio extends JFrame {
             boton.setBackground(COLOR_PRINCIPAL);
             boton.setForeground(Color.WHITE);
             boton.setFont(new Font("Serif", Font.BOLD, 14));
+            int ancho = (int) (((Toolkit.getDefaultToolkit().getScreenSize().getWidth())/4)-30);
+            panel.setPreferredSize(new Dimension(ancho, ancho + 40)); 
             
             // Asocia el método mostrarDialogoSeries
             boton.addActionListener(e -> mostrarDialogoSeries(nombreEjercicio));
@@ -205,7 +207,7 @@ public class CatalogoEjercicio extends JFrame {
             File imageFile = new File(imagePath);
             if (imageFile.exists()) {
                 ImageIcon originalIcon = new ImageIcon(imagePath);
-                Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+                Image resizedImage = originalIcon.getImage().getScaledInstance(ancho, ancho, Image.SCALE_SMOOTH);
                 ImageIcon resizedIcon = new ImageIcon(resizedImage);
                 label.setIcon(resizedIcon);
             } else {
@@ -213,7 +215,6 @@ public class CatalogoEjercicio extends JFrame {
             }
             
             panel.add(label, BorderLayout.CENTER);
-
             gridPrincipal.add(panel);
         }
 

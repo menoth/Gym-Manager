@@ -3,8 +3,10 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,6 +40,7 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
     private JButton botonBuscar;
     private JPanel gridPrincipal; // Panel dinámico para botones
     private List<Ejercicio> listaEjercicios; // Lista dinámica para filtrar
+    private static final Color COLOR_PRINCIPAL = new Color(70, 130, 180);
     
     public CatalogoEjerciciosEditarRutina(String usuario, int idRutina, Rutina rutina, int idEntrenamiento) {
         // Detalles de la ventana
@@ -146,15 +150,24 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
         }
         return ejercicios;
     }
-
-    // Actualizar el catálogo de ejercicios
+    
     private void actualizarCatalogo(List<Ejercicio> ejercicios2, int idRutina, int idEntrenamiento, String usuario) {
-        gridPrincipal.removeAll(); // Limpiar el panel
+        gridPrincipal.removeAll(); // Limpia el catálogo anterior
+        
         for (Ejercicio ejercicio : ejercicios2) {
         	JPanel panel = new JPanel(new BorderLayout());
-            panel.setBackground(Color.WHITE);
-            
+        	panel.setBackground(Color.WHITE);
+            panel.setBorder(BorderFactory.createLineBorder(COLOR_PRINCIPAL, 2));
+            int ancho = (int) (((Toolkit.getDefaultToolkit().getScreenSize().getWidth())/4)-30);
+            panel.setPreferredSize(new Dimension(ancho, ancho + 40));
             JButton boton = new JButton("+" + ejercicio.getNombre());
+
+            boton.setBackground(COLOR_PRINCIPAL);
+            boton.setForeground(Color.WHITE);
+            boton.setFont(new Font("Serif", Font.BOLD, 14));
+            panel.setPreferredSize(new Dimension(ancho, ancho + 40)); 
+            
+            // Asocia el método mostrarDialogoSeries
             boton.addActionListener(new ActionListener() {
 				
 				@Override
@@ -164,14 +177,18 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
 					
 				}
 			});
+
             panel.add(boton, BorderLayout.SOUTH);
-            
+
             JLabel label = new JLabel();
+            label.setFont(new Font("Serif", Font.BOLD, 16));
+            label.setForeground(COLOR_PRINCIPAL);
+
             String imagePath = "Sources/imagenes/" + ejercicio.getNombre().trim() + ".png";
             File imageFile = new File(imagePath);
             if (imageFile.exists()) {
             	 ImageIcon originalIcon = new ImageIcon(imagePath);
-                 Image resizedImage = originalIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+                 Image resizedImage = originalIcon.getImage().getScaledInstance(ancho, ancho, Image.SCALE_SMOOTH);
                  ImageIcon resizedIcon = new ImageIcon(resizedImage);
                  label.setIcon(resizedIcon);
             } else {
@@ -186,6 +203,9 @@ public class CatalogoEjerciciosEditarRutina extends JFrame {
         gridPrincipal.revalidate();
         gridPrincipal.repaint();
     }
+    
+    // Actualizar el catálogo de ejercicios
+    
 
     // Filtrar ejercicios por el buscador
     private void filtrarEjercicios(int idRutina, int idEntrenamiento, String usuario) {
