@@ -196,23 +196,73 @@ public class RetoDiario extends JFrame {
         RetosModel modelo = new RetosModel(); 
         modelo.cargarDatosDesdeBD(usuario);
         JTable table = new JTable(modelo);
+        
+
+      	TableCellRenderer cellRenderer = (table2, value, isSelected, hasFocus, row, column) -> {
+      			
+      
+      		if(column == 1) {
+      			JTextArea desc = new JTextArea(value.toString());
+        		desc.setBackground(new Color(255,255,255));
+        		
+        		// Detalles del JTextArea
+        		desc.setWrapStyleWord(true);
+        		desc.setLineWrap(true);
+        		desc.setEditable(false);
+        		desc.setFont(new Font("Arial", Font.BOLD, 15));
+          			
+          		return desc;
+      		}else {
+      			JLabel result = new JLabel(value.toString());			
+      			result.setHorizontalAlignment(JLabel.CENTER);
+      			
+      			result.setFont(new Font("Arial", Font.BOLD, 13));
+      			
+      			result.setOpaque(true);
+      			result.setBackground(new Color(255, 255, 255));
+      			result.setBackground(new Color(255, 255, 255));
+      			
+      			return result;
+      		}
+    		
+      	};
+      		
+      		//Se define un CellRenderer para las cabeceras de las dos tabla usando una expresión lambda
+      		TableCellRenderer headerRenderer = (table3, value, isSelected, hasFocus, row, column) -> {
+      			JLabel result = new JLabel(value.toString());			
+      			result.setHorizontalAlignment(JLabel.CENTER);
+      			
+      			result.setFont(new Font("Arial", Font.BOLD, 13));
+      			
+      			result.setBackground(new Color(25,25,112));
+      			result.setForeground(new Color(255, 255, 255));
+      			
+      			result.setOpaque(true);
+      			
+      			return result;
+      		};        
+        
+      	table.getTableHeader().setDefaultRenderer(headerRenderer);		
+    	table.setDefaultRenderer(Object.class, cellRenderer);
+    		
         table.getColumnModel().getColumn(5).setCellRenderer(new RendererBotonReto());
         table.getColumnModel().getColumn(5).setCellEditor(new EditorBotonReto(usuario, modelo));
         
+        
         //Ajustar el tamaño de la fecha
-      	table.getColumnModel().getColumn(2).setWidth(70);
-      	table.getColumnModel().getColumn(2).setMinWidth(70);
-      	table.getColumnModel().getColumn(2).setMaxWidth(70);
+      	table.getColumnModel().getColumn(2).setWidth(75);
+      	table.getColumnModel().getColumn(2).setMinWidth(75);
+      	table.getColumnModel().getColumn(2).setMaxWidth(75);
       	
       	//Ajustar el tamaño de la dificultad
-      	table.getColumnModel().getColumn(3).setWidth(70);
-      	table.getColumnModel().getColumn(3).setMinWidth(70);
-      	table.getColumnModel().getColumn(3).setMaxWidth(70); 
+      	table.getColumnModel().getColumn(3).setWidth(80);
+      	table.getColumnModel().getColumn(3).setMinWidth(80);
+      	table.getColumnModel().getColumn(3).setMaxWidth(80); 
       	
       	//Ajustar el tamaño de la dificultad
-      	table.getColumnModel().getColumn(4).setWidth(70);
-      	table.getColumnModel().getColumn(4).setMinWidth(70);
-      	table.getColumnModel().getColumn(4).setMaxWidth(70); 
+      	table.getColumnModel().getColumn(4).setWidth(80);
+      	table.getColumnModel().getColumn(4).setMinWidth(80);
+      	table.getColumnModel().getColumn(4).setMaxWidth(80); 
       	
       	//Ajustar el tamaño de las opciones
       	table.getColumnModel().getColumn(5).setWidth(140);

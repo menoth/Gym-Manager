@@ -305,9 +305,59 @@ public class PerfilUsuario extends JFrame {
 			}
 		}
 		
+		TableCellRenderer cellRenderer = (table2, value, isSelected, hasFocus, row, column) -> {
+  			
+		      
+      		if(column == 1 || column == 0) {
+      			JTextArea desc2 = new JTextArea(value.toString());
+        		desc2.setBackground(new Color(255,255,255));
+        		
+        		// Detalles del JTextArea
+        		desc2.setWrapStyleWord(true);
+        		desc2.setLineWrap(true);
+        		desc2.setEditable(false);
+        		desc2.setFont(new Font("Arial", Font.BOLD, 15));
+          			
+          		return desc2;
+      		}else {
+      			JLabel result = new JLabel(value.toString());			
+      			result.setHorizontalAlignment(JLabel.CENTER);
+      			
+      			result.setFont(new Font("Arial", Font.BOLD, 13));
+      			
+      			result.setOpaque(true);
+      			result.setBackground(new Color(255, 255, 255));
+      			result.setBackground(new Color(255, 255, 255));
+      			
+      			return result;
+      		}
+    		
+      	};
+      		
+      		//Se define un CellRenderer para las cabeceras de las dos tabla usando una expresión lambda
+      		TableCellRenderer headerRenderer = (table3, value, isSelected, hasFocus, row, column) -> {
+      			JLabel result = new JLabel(value.toString());			
+      			result.setHorizontalAlignment(JLabel.CENTER);
+      			
+      			result.setFont(new Font("Arial", Font.BOLD, 13));
+      			
+      			result.setBackground(new Color(25,25,112));
+      			result.setForeground(new Color(255, 255, 255));
+      			
+      			result.setOpaque(true);
+      			
+      			return result;
+      		};        
+        
+      	
+		
 		RutinaModel modelo = new RutinaModel();
 		modelo.cargarDatosDesdeBD(usuario);
 		JTable table = new JTable(modelo);
+		
+		table.getTableHeader().setDefaultRenderer(headerRenderer);		
+    	table.setDefaultRenderer(Object.class, cellRenderer);
+		
 		table.getColumnModel().getColumn(3).setCellRenderer(new RendererBoton());
 		table.getColumnModel().getColumn(3).setCellEditor(new EditorBoton(usuario, rutinasUsuario));
 		

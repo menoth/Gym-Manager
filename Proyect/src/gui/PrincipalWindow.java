@@ -29,7 +29,7 @@ public class PrincipalWindow extends JFrame {
 		// ------------------------Panel norte----------------------------------------
 		JPanel pNorte = new JPanel();
 		pNorte.setLayout(new BorderLayout());
-		pNorte.setBackground(new Color(70, 130, 180)); // Azul acero
+		pNorte.setBackground(new Color(70, 130, 180));
 		pNorte.setPreferredSize(new Dimension(0, 200));
 		
 		// Crear un JLabel para el mensaje de bienvenida
