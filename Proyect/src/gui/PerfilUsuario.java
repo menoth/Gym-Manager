@@ -59,42 +59,42 @@ public class PerfilUsuario extends JFrame {
 		Usuario uElegido = new Usuario("a","a","a","a","a","a","a");
 		
 		//Carga del driver de JDBC para SQLITE
-				try {
-					Class.forName("org.sqlite.JDBC");
-				} catch (ClassNotFoundException e) {
-					System.out.println("No se ha podido cargar el driver de la BD");
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("No se ha podido cargar el driver de la BD");
+		}
+				
+		//Conectar a la BD
+		try {
+			Connection conn = DriverManager.getConnection
+					("jdbc:sqlite:Sources/bd/baseDeDatos.db");
+					
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery
+					("SELECT * FROM Usuario");
+					
+			while (rs.next()) {
+						
+						
+				String usuarioDB = rs.getString("Usuario");
+				if(usuarioDB.equals(usuario)) {
+					String nombre = rs.getString("Nombre");
+					String apellidos = rs.getString("Apellidos");
+					String correo = rs.getString("Correo");
+					String contraseña = rs.getString("Contraseña");
+					String descripcion = rs.getString("Descripcion");
+					String fotoPerfil = rs.getString("FotoDePerfil");
+					uElegido = new Usuario(nombre, apellidos, usuarioDB, correo, contraseña, descripcion, fotoPerfil);
+					usuarios.add(uElegido);
 				}
+			}
 				
-				//Conectar a la BD
-				try {
-					Connection conn = DriverManager.getConnection
-							("jdbc:sqlite:Sources/bd/baseDeDatos.db");
-					
-					Statement stmt = conn.createStatement();
-					ResultSet rs = stmt.executeQuery
-							("SELECT * FROM Usuario");
-					
-					while (rs.next()) {
-						
-						
-						String usuarioDB = rs.getString("Usuario");
-						if(usuarioDB.equals(usuario)) {
-							String nombre = rs.getString("Nombre");
-							String apellidos = rs.getString("Apellidos");
-							String correo = rs.getString("Correo");
-							String contraseña = rs.getString("Contraseña");
-							String descripcion = rs.getString("Descripcion");
-							String fotoPerfil = rs.getString("FotoDePerfil");
-							uElegido = new Usuario(nombre, apellidos, usuarioDB, correo, contraseña, descripcion, fotoPerfil);
-							usuarios.add(uElegido);
-						}
-					}
-				
-					stmt.close();
-					conn.close(); 
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}	
+			stmt.close();
+			conn.close(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 
 				
 //-----------------------------JFRAME------------------------------------------------------------
@@ -125,6 +125,7 @@ public class PerfilUsuario extends JFrame {
 		panelIz2.setBackground(new Color(70, 130, 180));
 		
 		JPanel panelIz3 = new JPanel();
+		
 		String url = "jdbc:sqlite:Sources/bd/baseDeDatos.db";
 	    String consultaSQL = "SELECT L.Nombre FROM Logro L " +
 	                         "JOIN ConsigueLogro CL ON L.ID_Logro = CL.Logro " +
@@ -189,7 +190,7 @@ public class PerfilUsuario extends JFrame {
 		
 		botonPrincipal.setBackground(new Color(255, 255, 255));
 		botonPrincipal.setForeground(new Color(70, 130, 180));
-		botonPrincipal.setFont(new Font("Arial", Font.BOLD, 16));
+		botonPrincipal.setFont(new Font("Serif", Font.BOLD, 16));
 		panelIz1.add(botonPrincipal);
 		
 		// Label para la foto de perfil
@@ -212,7 +213,7 @@ public class PerfilUsuario extends JFrame {
 		nombreApellidos.setForeground(new Color(255,255,255));
 		
 		// Cambiamos el tamaño de la fuente
-		nombreApellidos.setFont(new Font("Arial", Font.BOLD, 16));
+		nombreApellidos.setFont(new Font("Serif", Font.BOLD, 16));
 		nombreApellidos.setBackground(new Color(255, 255, 255));
 		panelIz1.add(nombreApellidos);
 		
@@ -250,7 +251,7 @@ public class PerfilUsuario extends JFrame {
 		desc.setWrapStyleWord(true);
 		desc.setLineWrap(true);
 		desc.setEditable(false);
-		desc.setFont(new Font("Arial", Font.BOLD, 18));
+		desc.setFont(new Font("Serif", Font.BOLD, 18));
 		desc.setPreferredSize(new Dimension(400, 200));
 		
 		// Añadimos la descripcion a panelSubOeste1
@@ -328,6 +329,7 @@ public class PerfilUsuario extends JFrame {
 		table.setRowHeight(120);
 
 		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBackground(new Color(70, 130, 180));
 		pDerecha.add(scrollPane, BorderLayout.CENTER);	
 		
 		// Detalles ventana
