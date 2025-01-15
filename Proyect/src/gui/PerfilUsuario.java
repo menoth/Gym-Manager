@@ -245,7 +245,7 @@ public class PerfilUsuario extends JFrame {
 
 		//Creamos un jTextArea que será la descripción del usuario
 		JTextArea desc = new JTextArea(uElegido.getDescripcion());
-		desc.setBackground(new Color(255,255,255));
+		desc.setBackground(new Color(240, 240, 240));
 		
 		// Detalles del JTextArea
 		desc.setWrapStyleWord(true);

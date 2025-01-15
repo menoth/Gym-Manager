@@ -108,7 +108,13 @@ public class PrincipalWindow extends JFrame {
 		menuDesplegable.add(opcion6);
 
 		opcion6.addActionListener(e -> confirmarSalidaSesion());
-        
+		opcion1.addActionListener(e -> confirmarSalidaSesion());
+		opcion2.addActionListener(e -> {
+			setVisible(false);
+			PerfilUsuario perfilUsuario = new PerfilUsuario(usuario);
+			perfilUsuario.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			perfilUsuario.setVisible(true);
+		});
         //Action listener para el boton reto diario
         opcion5.addActionListener(new ActionListener() {
 			
@@ -119,6 +125,7 @@ public class PrincipalWindow extends JFrame {
 				
 			}
 		});
+        
         
         opcion4.addActionListener(new ActionListener() {
 			

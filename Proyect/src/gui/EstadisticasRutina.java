@@ -38,6 +38,7 @@ public class EstadisticasRutina extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@SuppressWarnings("unused")
 	public EstadisticasRutina(Rutina rutina){
 		
 		//Detalles de la ventana
@@ -46,7 +47,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Separamos la ventana con gridlayout en dos 
         this.setLayout(new GridLayout(1,2));
-        
+        setBackground(new Color(70, 130, 180));
         //Datos para las estadísticas, de momento comentados
         String nombre = rutina.getNombre();
         ArrayList<Entrenamiento> entrenamientos = rutina.getEntrenamientos();
@@ -56,10 +57,12 @@ public class EstadisticasRutina extends JFrame {
         //Bucle para calcular el volumen de entrenamiento
         double VolumenTotal = 0;
         int NumeroEjercicios = 0;
+        int numeroSerie = 0;
         for (Entrenamiento entrenamiento : entrenamientos) {
         	for(EjercicioEnEntrenamiento ejercicio : entrenamiento.getEjercicios()) {
         		for(Serie serie : ejercicio.getSeries()) {
         			VolumenTotal+=(serie.getPeso()*serie.getRepeticiones());
+        			numeroSerie++;
         		}
         	}
 		}
@@ -89,6 +92,7 @@ public class EstadisticasRutina extends JFrame {
         JTextArea txtNombreRutina = new JTextArea("Estas son las estadísticas de tu rutina "+ nombre +", en la grafica inferior podrás ver la intensidad de trabajo de cada músuclo, siendo el valor más optimo el 12.");
         txtNombreRutina.setFont(new Font("Arial", Font.BOLD, 18));
         txtNombreRutina.setBackground(this.getBackground());
+        txtNombreRutina.setForeground(new Color(255, 255, 255));
         
         txtNombreRutina.setLineWrap(true);          
         txtNombreRutina.setWrapStyleWord(true); 
@@ -101,7 +105,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Como lo tenemos que desactivar para que no esté el cursor, tenemos que cambiarle
         //el color para cuando esta desactivado
-        txtNombreRutina.setDisabledTextColor(Color.black);
+        txtNombreRutina.setDisabledTextColor(new Color(255, 255, 255));
         
         panelNombre.add(txtNombreRutina, BorderLayout.NORTH);
         pIzquierda.add(panelNombre);
@@ -114,9 +118,11 @@ public class EstadisticasRutina extends JFrame {
         
         JLabel volumenEntrenamiento = new JLabel("VOLUMEN DE ENTRENAMIENTO");
         volumenEntrenamiento.setFont(new Font("Arial", Font.BOLD, 22));
+        volumenEntrenamiento.setForeground(new Color(255, 255, 255));
         
-        JTextArea txtVolumen = new JTextArea("Has movido un total de " + VolumenTotal + " kg este semana dividido en " + rutina.getEntrenamientos().size() + " entrenamientos y "+ NumeroEjercicios + " ejercicios diferentes");
+        JTextArea txtVolumen = new JTextArea("Has movido un total de " + VolumenTotal + " kg esta semana dividido en "+ NumeroEjercicios + " ejercicios y " + numeroSerie + " series");
         txtVolumen.setFont(new Font("Arial", Font.PLAIN, 20));
+        txtVolumen.setBackground(new Color(240, 240, 240));
         //txtVolumen.setBackground(this.getBackground());
         
         txtVolumen.setLineWrap(true);          
@@ -162,10 +168,12 @@ public class EstadisticasRutina extends JFrame {
         
         JLabel optimizacion = new JLabel("OPTIMIZACIÓN");
         optimizacion.setFont(new Font("Arial", Font.BOLD, 22));
+        optimizacion.setForeground(new Color(255, 255, 255));
         
         JTextArea txtOptimizacion = new JTextArea("Según nuestro algoritmo este es el desglose de la rutina:");
         txtOptimizacion.setFont(new Font("Arial", Font.PLAIN, 20));
         txtOptimizacion.setBackground(this.getBackground());
+        txtOptimizacion.setForeground(new Color(255, 255, 255));
         
         txtOptimizacion.setLineWrap(true);          
         txtOptimizacion.setWrapStyleWord(true); 
@@ -178,7 +186,7 @@ public class EstadisticasRutina extends JFrame {
         
         //Como lo tenemos que desactivar para que no esté el cursor, tenemos que cambiarle
         //el color para cuando esta desactivado
-        txtOptimizacion.setDisabledTextColor(Color.black);
+        txtOptimizacion.setDisabledTextColor(new Color(255, 255, 255));
         
         panelDerecha1.add(optimizacion, BorderLayout.CENTER);
         panelDerecha1.add(txtOptimizacion, BorderLayout.SOUTH);
@@ -276,14 +284,14 @@ public class EstadisticasRutina extends JFrame {
             "Recuerda que para ajustar el nivel de fatiga que le provocamos a un músculo, puedes ajustar la frecuencia con la que lo entrenas o el nivel de intensidad de cada serie."
         );
         informacion.setFont(new Font("Arial", Font.PLAIN, 17));
-        informacion.setBackground(Color.WHITE);
+        informacion.setBackground(new Color(240, 240, 240));
         informacion.setLineWrap(true); 
         informacion.setWrapStyleWord(true); 
         informacion.setEditable(false);
         informacion.setEnabled(false); 
         informacion.setDisabledTextColor(Color.BLACK); 
         informacion.setBorder(new LineBorder(Color.BLACK, 2)); 
-        informacion.setPreferredSize(new Dimension(400, 100)); 
+        informacion.setPreferredSize(new Dimension(400, 100));
 
         //Agregarlo en el centro de lo que deja la imagen libre en el pDerecha y expandirse horizontalmente
         gbc.gridx = 1;
@@ -297,6 +305,25 @@ public class EstadisticasRutina extends JFrame {
 
         // Agrega el panel derecho a la ventana principal
         add(pDerecha);
+        
+        setBackground(new Color(70, 130, 180));
+        getContentPane().setBackground(new Color(70, 130, 180)); 
+
+       
+        pIzquierda.setBackground(new Color(70, 130, 180));
+        panelNombre.setBackground(new Color(70, 130, 180)); 
+        pVolumen.setBackground(new Color(70, 130, 180)); 
+        panelGrafico.setBackground(new Color(70, 130, 180));
+        
+        // Configuración del lado derecho
+        pDerecha.setBackground(new Color(70, 130, 180)); 
+        panelDerecha1.setBackground(new Color(70, 130, 180)); 
+        musculosOpt.setBackground(new Color(70, 130, 180)); 
+        panelInfo.setBackground(new Color(70, 130, 180)); 
+
+        
+        
+
 
         // Hace visible el marco
         setVisible(true);
